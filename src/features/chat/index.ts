@@ -1,8 +1,12 @@
 export {
-  aiCourses,
   businessCoursesData,
+  courses,
   productivityCourses,
-  programmingCourses,
 } from "./constants/constants";
-export type { MessageType, CourseRecommendation, CourseInfo, Course } from "./type";
+export type {
+  Course,
+  CourseInfo,
+  CourseRecommendation,
+  MessageType,
+} from "./type";
 export { useChatStore, useSendChat } from "./useChat";

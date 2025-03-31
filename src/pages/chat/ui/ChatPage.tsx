@@ -1,14 +1,14 @@
 import { Loading } from "@/shared/ui";
+import ReferenceToggle from "./ReferenceToggle";
 import TextEditor from "./TextEditor";
 
 import { useChatStore } from "@/features/chat";
 import { useAutoScroll } from "../hooks/useAutoScroll";
 
 import styled from "styled-components";
-
 function ChatPage() {
   const { messages } = useChatStore();
-
+  console.log(messages);
   const { containerRef } = useAutoScroll({ data: messages });
 
   return (
@@ -24,6 +24,13 @@ function ChatPage() {
                   {/* <S.Profile /> */}
                   <S.MessageContainer $isChatbot={true}>
                     <TextEditor text={message.content} />
+                    {message.reference && message.reference.isLoading ? (
+                      <Loading />
+                    ) : (
+                      <ReferenceToggle
+                        reference={message.reference?.reference}
+                      />
+                    )}
                   </S.MessageContainer>
                 </S.MessageWithProfile>
               </S.MessageWithUnderObjects>

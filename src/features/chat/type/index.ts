@@ -2,6 +2,10 @@ export type MessageType = {
   role: "user" | "assistant";
   content: string;
   isLoading: boolean;
+  reference?: {
+    isLoading: boolean;
+    reference: any;
+  };
 };
 
 export interface CourseRecommendation {
@@ -11,15 +15,19 @@ export interface CourseRecommendation {
 }
 
 export interface CourseInfo {
-  강의개요: string;
-  가격: string;
-  총강의시간: string;
-  수강대상: string;
-  "1차시": string;
-  "2차시": string;
-  "3차시": string;
-  "4차시": string;
-  "5차시": string;
+  name: string;
+  price: string;
+  duration: string;
+  target: string;
+  description: string;
+  content: {
+    [key: string]: string;
+  }[];
+}
+
+export interface CourseCategory {
+  name: string;
+  courses: CourseInfo[];
 }
 
 export interface Course {

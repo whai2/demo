@@ -1,19 +1,22 @@
 import { create } from "zustand";
 
 import { functionChat, streamChat } from "./apis/chat.api";
-import { functions, metaFunctions } from "./functions";
+import { functions, metaFunctions, referenceFunctions } from "./functions";
 import {
   courseRecommendationSystemPrompt,
   currentCoursePrompt,
   formatCoursesToMarkdown,
   generalQuestionSystemPrompt,
   metaIntentClassificationSystemPrompt,
+  referenceGeneratePrompt,
+  referenceQuestionPrompt,
   userEnhancePrompt,
 } from "./prompt";
 
-import { aiCourses } from "./constants/constants";
+import { useUserInfo } from "@/features/userInfo";
+import { courses } from "./constants/constants";
 
-import { ChatState, Course, MessageType } from "./type";
+import { ChatState, CourseCategory, CourseInfo, MessageType } from "./type";
 
 export const useChatStore = create<ChatState>((set) => ({
   messages: [],
@@ -30,9 +33,17 @@ export const useChatStore = create<ChatState>((set) => ({
 
 export const useSendChat = (text: string, setText: (text: string) => void) => {
   const { setMessages, setIsLoading } = useChatStore();
+  const { courseCategory, courseName, name, job, year } = useUserInfo();
 
-  const course = aiCourses["인공지능"][0] as unknown as Course;
-  const prompt = currentCoursePrompt(course);
+  const currentCourses = courses.category.find(
+    (cat) => cat.name === courseCategory
+  );
+
+  const course = currentCourses?.courses.find(
+    (course) => course.name === courseName
+  );
+
+  const prompt = currentCoursePrompt(course as unknown as CourseInfo);
 
   const enhancedUserMessage = userEnhancePrompt(text);
 
@@ -67,11 +78,20 @@ export const useSendChat = (text: string, setText: (text: string) => void) => {
       if (intent === "general_question") {
         // ✅ 일반 스트리밍 LLM 응답
         console.log("일반 질문");
-        await runGeneralStreaming(currentText, setMessages);
+        await runGeneralStreaming(
+          currentText,
+          setMessages,
+          course as unknown as CourseInfo
+        );
       } else if (intent === "course_recommendation") {
         // ✅ 강의 추천 흐름 (2단계)
         console.log("강의 추천");
-        await runRecommendationFlow(currentText, setMessages);
+        await runRecommendationFlow(
+          currentText,
+          setMessages,
+          currentCourses as unknown as CourseCategory,
+          course as unknown as CourseInfo
+        );
       }
 
       setIsLoading(false);
@@ -88,9 +108,9 @@ const runGeneralStreaming = async (
   userMessage: string,
   setMessages: (
     messages: MessageType[] | ((prevMessages: MessageType[]) => MessageType[])
-  ) => void
+  ) => void,
+  course: CourseInfo
 ) => {
-  const course = aiCourses["인공지능"][0] as unknown as Course;
   const prompt = currentCoursePrompt(course);
 
   const enhancedUserMessage = userEnhancePrompt(userMessage);
@@ -149,20 +169,67 @@ const runGeneralStreaming = async (
       }
     }
   }
+
+  const previousQuestion = userMessage;
+  const previousAnswer = assistantMessage;
+
+  setMessages((prevMessages) => {
+    const updated = [...prevMessages];
+    updated[updated.length - 1].reference = {
+      isLoading: true,
+      reference: null,
+    };
+    return updated;
+  });
+
+  const referenceResponse = await functionChat(
+    referenceQuestionPrompt(previousAnswer),
+    referenceGeneratePrompt(
+      currentCoursePrompt(course),
+      previousQuestion,
+      previousAnswer
+    ),
+    referenceFunctions
+  );
+
+  const responseData = await referenceResponse.json();
+  const functionCall = responseData.choices[0]?.message?.function_call;
+
+  if (!functionCall) {
+    setMessages((prevMessages) => {
+      const updated = [...prevMessages];
+      updated[updated.length - 1].reference = {
+        isLoading: false,
+        reference: null,
+      };
+      return updated;
+    });
+    return;
+  }
+
+  const args = JSON.parse(functionCall.arguments || "{}");
+
+  setMessages((prevMessages) => {
+    const updated = [...prevMessages];
+    updated[updated.length - 1].reference = {
+      ...args,
+      isLoading: false,
+    };
+    return updated;
+  });
 };
 
 const runRecommendationFlow = async (
   userMessage: string,
   setMessages: (
     messages: MessageType[] | ((prevMessages: MessageType[]) => MessageType[])
-  ) => void
+  ) => void,
+  currentCourses: CourseCategory,
+  course: CourseInfo
 ) => {
-  const courses = aiCourses["인공지능"] as unknown as Course[];
+  const prompt = currentCoursePrompt(course);
 
-  const currentCourse = aiCourses["인공지능"][0] as unknown as Course;
-  const prompt = currentCoursePrompt(currentCourse);
-
-  const coursesMarkdown = formatCoursesToMarkdown(courses);
+  const coursesMarkdown = formatCoursesToMarkdown(currentCourses);
 
   const enhancedUserMessage = `
     [사용자 질문]

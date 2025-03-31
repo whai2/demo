@@ -1,18 +1,4 @@
-interface CourseInfo {
-  강의개요: string;
-  가격: string;
-  총강의시간: string;
-  수강대상: string;
-  "1차시": string;
-  "2차시": string;
-  "3차시": string;
-  "4차시": string;
-  "5차시": string;
-}
-
-interface Course {
-  [courseName: string]: CourseInfo;
-}
+import { CourseCategory, CourseInfo } from "../type";
 
 export const courseRecommendationSystemPrompt = `
   너는 프로덕트 중심의 AI 교육 어시스턴트야.
@@ -56,6 +42,40 @@ export const generalQuestionSystemPrompt = (currentCoursePrompt: string) => {
   `;
 };
 
+export const referenceGeneratePrompt = (
+  currentCoursePrompt: string,
+  previousQuestion: string,
+  previousAnswer: string
+) => {
+  return `
+    이전 강의 내용을 기반으로 참고했을 법한 자료 하나를 생성해주세요. 아래 기준을 따르세요:
+
+- 실존할 법한 제목
+- PDF나 PPT 등 파일 형태
+- 몇 페이지를 참고했는지
+- 영상에서 등장한 시점 (예: 12:42)
+
+    질문: ${previousQuestion}
+    답변: ${previousAnswer}
+
+    [현재 수강 중인 강의 목록 정보]
+    ${currentCoursePrompt}
+  `;
+};
+
+export const referenceQuestionPrompt = (previousAnswer: string) => {
+  return `
+    아래의 답변이 어떤 내용을 참고했을지를 추측해서, 참고 자료를 생성해주세요.
+    아래 기준을 따르세요:
+
+    - 실존할 법한 제목
+    - PDF나 PPT 등 파일 형태
+    - 몇 페이지를 참고했는지
+    - 영상에서 등장한 시점 (예: 12:42)
+
+    답변: ${previousAnswer}
+  `;
+};
 export const userEnhancePrompt = (userMessage: string) => {
   return `
     [사용자 질문]
@@ -63,47 +83,44 @@ export const userEnhancePrompt = (userMessage: string) => {
   `;
 };
 
-export const currentCoursePrompt = (currentCourse: Course) => {
-  const courseName = Object.keys(currentCourse)[0];
-  const info = currentCourse[courseName] as CourseInfo;
-
+export const currentCoursePrompt = (currentCourse: CourseInfo) => {
   return `
-  ### 📘 ${courseName}
+  ### 📘 ${currentCourse.name}
 
-    - **강의 개요**: ${info.강의개요}
-    - **⏱ 총 강의 시간**: ${info.총강의시간}
-    - **🎯 수강 대상**: ${info.수강대상}
+    - **강의 개요**: ${currentCourse.description}
+    - **⏱ 총 강의 시간**: ${currentCourse.duration}
+    - **🎯 수강 대상**: ${currentCourse.target}
 
     #### 📚 커리큘럼
-    1. ${info["1차시"]}
-    2. ${info["2차시"]}
-    3. ${info["3차시"]}
-    4. ${info["4차시"]}
-    5. ${info["5차시"]}
+    1. ${currentCourse.content[0]}
+    2. ${currentCourse.content[1]}
+    3. ${currentCourse.content[2]}
+    4. ${currentCourse.content[3]}
+    5. ${currentCourse.content[4]}
   `;
 };
 
-export function formatCoursesToMarkdown(courses: Course[]): string {
-  return courses
+export function formatCoursesToMarkdown(courses: CourseCategory): string {
+  return courses.courses
     .map((course, index) => {
-      const courseName = Object.keys(course)[0];
-      const info = course[courseName];
+      const courseName = course.name;
+      const info = course;
 
       return `
-### ${index + 1}. 📘 ${courseName}
+  ### ${index + 1}. 📘 ${courseName}
 
-- **강의 개요**: ${info.강의개요}
-- **💰 가격**: ${info.가격}
-- **⏱ 총 강의 시간**: ${info.총강의시간}
-- **🎯 수강 대상**: ${info.수강대상}
+  - **강의 개요**: ${info.description}
+  - **💰 가격**: ${info.price}
+  - **⏱ 총 강의 시간**: ${info.duration}
+  - **🎯 수강 대상**: ${info.target}
 
-#### 📚 커리큘럼
-1. ${info["1차시"]}
-2. ${info["2차시"]}
-3. ${info["3차시"]}
-4. ${info["4차시"]}
-5. ${info["5차시"]}
-`;
+  #### 📚 커리큘럼
+  1. ${info.content[0]}
+  2. ${info.content[1]}
+  3. ${info.content[2]}
+  4. ${info.content[3]}
+  5. ${info.content[4]}
+  `;
     })
     .join("\n---\n");
 }

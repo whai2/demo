@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { aiCourses } from "@/features/chat";
+import { courses } from "@/features/chat";
 import { COURSE_CATEGORY, JOBS, useUserInfo, YEARS } from "@/features/userInfo";
 import { ReactComponent as Arrow } from "../assets/arrow.svg";
 
@@ -30,11 +30,19 @@ function LoginPage() {
   } = useUserInfo();
 
   useEffect(() => {
-    if (courseCategory === "인공지능") {
-      const courseTitles = aiCourses[courseCategory].map(
-        (courseObj) => Object.keys(courseObj)[0]
+    if (courseCategory) {
+      const selectedCategory = courses.category.find(
+        (cat) => cat.name === courseCategory
       );
-      setCourseList(courseTitles);
+
+      if (selectedCategory) {
+        const courseTitles = selectedCategory.courses.map(
+          (course) => course.name
+        );
+        setCourseList(courseTitles);
+      } else {
+        setCourseList([]);
+      }
     }
   }, [courseCategory]);
 
@@ -84,7 +92,6 @@ function LoginPage() {
     courseName !== "";
 
   const handleNext = () => {
-    console.log(tab);
     if (!isActive) return;
 
     setTab((prev) => prev + 1);
