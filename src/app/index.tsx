@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 import { Video } from "@/pages/background/video";
-import { HomePage } from "@/pages/home";
+// import { HomePage } from "@/pages/home";
 import { ChatPage } from "@/pages/chat";
 import ChatPopUpLayout from "@/pages/layout/Layout";
 import { WidgetButton } from "@/widgets/widgetButton";
