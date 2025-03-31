@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
 const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
 const PLAYLIST_ID = "PLC3y8-rFHvwgg3vaYJgHGnModB54rxOk3";
@@ -14,6 +13,7 @@ type Video = {
     resourceId: {
       videoId: string;
     };
+    description: string;
   };
 };
 
@@ -30,29 +30,22 @@ interface VideoType {
   setProgress: (videoId: string, currentTime: number) => void;
 }
 
-export const videoStore = create<VideoType>()(
-  persist(
-    (set) => ({
-      videos: [],
-      totalDuration: "",
-      currentVideo: null,
-      currentVideoDescription: null,
-      progress: {},
-      setVideos: (videos) => set({ videos }),
-      setTotalDuration: (totalDuration) => set({ totalDuration }),
-      setCurrentVideo: (currentVideo) => set({ currentVideo }),
-      setCurrentVideoDescription: (currentVideoDescription) =>
-        set({ currentVideoDescription }),
-      setProgress: (videoId, currentTime) =>
-        set((state) => ({
-          progress: { ...state.progress, [videoId]: currentTime },
-        })),
-    }),
-    {
-      name: "video-store",
-    }
-  )
-);
+export const videoStore = create<VideoType>()((set) => ({
+  videos: [],
+  totalDuration: "",
+  currentVideo: null,
+  currentVideoDescription: null,
+  progress: {},
+  setVideos: (videos) => set({ videos }),
+  setTotalDuration: (totalDuration) => set({ totalDuration }),
+  setCurrentVideo: (currentVideo) => set({ currentVideo }),
+  setCurrentVideoDescription: (currentVideoDescription) =>
+    set({ currentVideoDescription }),
+  setProgress: (videoId, currentTime) =>
+    set((state) => ({
+      progress: { ...state.progress, [videoId]: currentTime },
+    })),
+}));
 
 export const useGetVideo = () => {
   const {
@@ -68,7 +61,7 @@ export const useGetVideo = () => {
   useEffect(() => {
     // 먼저 플레이리스트의 비디오 ID 목록을 가져옴
     fetch(
-      `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${PLAYLIST_ID}&maxResults=20&key=${API_KEY}`
+      `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${PLAYLIST_ID}&maxResults=5&key=${API_KEY}`
     )
       .then((res) => res.json())
       .then(async (data) => {
@@ -127,18 +120,20 @@ export const useGetVideo = () => {
       // XML 파싱
       const parser = new DOMParser();
       const xml = parser.parseFromString(xmlText, "text/xml");
-      const texts = Array.from(xml.getElementsByTagName("text")).map((node) =>
-        node.textContent
+      const texts = Array.from(xml.getElementsByTagName("text")).map(
+        (node) => node.textContent
       );
-    
+
       const fullTranscript = texts.join(" ");
       return fullTranscript;
     };
 
     if (currentVideo) {
-      fetchCaptions(currentVideo?.snippet.resourceId.videoId).then((transcript) => {
-        setCurrentVideoDescription(transcript);
-      });
+      fetchCaptions(currentVideo?.snippet.resourceId.videoId).then(
+        (transcript) => {
+          setCurrentVideoDescription(transcript);
+        }
+      );
     }
   }, [currentVideo]);
 

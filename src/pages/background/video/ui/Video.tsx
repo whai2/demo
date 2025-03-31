@@ -71,7 +71,7 @@ const InteractiveYouTubePlayer = ({ videoId }: { videoId: string }) => {
       if (currentTime) {
         setProgress(videoId, currentTime);
       }
-    }, 3000);
+    }, 500);
   };
 
   return (
