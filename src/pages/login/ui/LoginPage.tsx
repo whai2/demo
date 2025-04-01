@@ -310,7 +310,6 @@ const S = {
     color: white;
     border: none;
     cursor: ${({ $isActive }) => ($isActive ? "pointer" : "default")};
-    z-index: 100;
   `,
 
   InputWrapper: styled.div`
@@ -358,20 +357,28 @@ const S = {
     border: 1px solid var(--gray-300-border, #d1d5db);
 
     transition: height 0.3s ease;
-    height: ${(props) => (props.$isOpen ? "auto" : "40px")};
+    // height: ${(props) => (props.$isOpen ? "auto" : "40px")};
+    height: 45px;
   `,
 
   JobList: styled.div<{ $isOpen: boolean }>`
     display: flex;
+    position: absolute;
+    width: 100%;
     flex-direction: column;
     align-items: flex-start;
     align-self: stretch;
+    background-color: white;
+    border-radius: 8px;
+    height: 164px;
+    overflow-y: auto;
+    border: 1px solid var(--gray-300-border, #d1d5db);
 
     opacity: ${(props) => (props.$isOpen ? 1 : 0)};
     transform: ${(props) =>
       props.$isOpen ? "translateY(0)" : "translateY(-10px)"};
     transition: opacity 0.3s ease, transform 0.3s ease;
-    z-index: ${(props) => (props.$isOpen ? "auto" : -1)};
+    z-index: ${(props) => (props.$isOpen ? "1" : "-1")};
   `,
 
   JobItem: styled.div`
