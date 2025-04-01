@@ -7,7 +7,7 @@ export const metaFunctions = [
       properties: {
         intent: {
           type: "string",
-          enum: ["general_question", "course_recommendation"],
+          enum: ["general_question", "course_recommendation", "course_quiz"],
           description: "질문의 목적 유형",
         },
       },

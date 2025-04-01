@@ -13,7 +13,9 @@ export const courseRecommendationSystemPrompt = (
 
   [필수 사항]
   사용자의 이름은 ${name}이고, 직무는 ${job}이며, 연차는 ${year}입니다.
-  또한, 현재 수강률은 ${courseAttendanceRate ? `${courseAttendanceRate * 100}%` : "0%"}입니다.
+  또한, 현재 수강률은 ${
+    courseAttendanceRate ? `${courseAttendanceRate * 100}%` : "0%"
+  }입니다.
 
   수강률에 따라 격려의 말을 해주세요. 개인화된 조언을 제공해주세요. (수강률은 마크다운으로 강조)
   
@@ -38,7 +40,6 @@ export const courseFunctionPrompt = (
   [이전 답변]을 참고해, 다음 강의로 들으면 좋을 것 같은 강의 3개를 추천해주세요.
 `;
 
-
 export const metaIntentClassificationSystemPrompt = (
   currentCoursePrompt: string
 ) => {
@@ -46,8 +47,8 @@ export const metaIntentClassificationSystemPrompt = (
     당신은 사용자의 입력을 분석해 intent를 분류하는 AI입니다.
     intent는 다음 세 가지 중 하나입니다:
       
-    1. general_question: 강의 내용에 대한 일반 질문
-    2. course_recommendation: 현재 수강 중인 강의를 기반으로 다음 강의를 추천해달라는 요청, 개인화 커리큘럼 제공
+    1. general_question: 강의 내용에 대한 일반 질문. (강의 키워드, 설명 표 제시)
+    2. course_recommendation: 현재 수강 중인 강의를 기반으로 다음 강의를 추천해달라는 요청, 개인화 커리큘럼 제공. 강의 어려운 경우, 다르 강의 추천.
     3. course_quiz: 현재 수강 중인 강의에 대한 퀴즈 문제를 내주세요.
 
     [현재 수강 중인 강의 목록 정보 = 내가 본 강의]
@@ -147,11 +148,11 @@ export const currentCoursePrompt = (currentCourse: CourseInfo) => {
     - **🎯 수강 대상**: ${currentCourse.target}
 
     #### 📚 커리큘럼
-    1. ${currentCourse.content[0]}
-    2. ${currentCourse.content[1]}
-    3. ${currentCourse.content[2]}
-    4. ${currentCourse.content[3]}
-    5. ${currentCourse.content[4]}
+    1. ${currentCourse.content[0]["1차시"]}
+    2. ${currentCourse.content[0]["2차시"]}
+    3. ${currentCourse.content[0]["3차시"]}
+    4. ${currentCourse.content[0]["4차시"]}
+    5. ${currentCourse.content[0]["5차시"]}
   `;
 };
 
@@ -170,11 +171,11 @@ export function formatCoursesToMarkdown(courses: CourseCategory): string {
   - **🎯 수강 대상**: ${info.target}
 
   #### 📚 커리큘럼
-  1. ${info.content[0]}
-  2. ${info.content[1]}
-  3. ${info.content[2]}
-  4. ${info.content[3]}
-  5. ${info.content[4]}
+  1. ${info.content[0]["1차시"]}
+  2. ${info.content[0]["2차시"]}
+  3. ${info.content[0]["3차시"]}
+  4. ${info.content[0]["4차시"]}
+  5. ${info.content[0]["5차시"]}
   `;
     })
     .join("\n---\n");

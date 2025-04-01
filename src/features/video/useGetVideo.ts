@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { useUserInfo } from "@/features/userInfo";
 
 const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
-// const PLAYLIST_ID = "PLC3y8-rFHvwgg3vaYJgHGnModB54rxOk3";
+const PLAYLIST_ID = "PLC3y8-rFHvwgg3vaYJgHGnModB54rxOk3";
 
 type Video = {
   videoId: string;

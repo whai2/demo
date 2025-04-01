@@ -1,9 +1,11 @@
 import { QuickTapsType } from "../constants/quickTaps";
 
+import { useClickTapQuestion } from "../hooks/useClickTapQuestion";
+
 import styled from "styled-components";
 
 function QuickTaps({ title, items }: QuickTapsType) {
-  // const { handleSendQuickTapQuestion } = useSendQuickTapQuestion();
+  const { handleClickTapQuestion } = useClickTapQuestion();
 
   return (
     <S.QuickTaps>
@@ -11,7 +13,7 @@ function QuickTaps({ title, items }: QuickTapsType) {
       {items.map((item) => (
         <S.QuickTap
           key={item.text}
-          // onClick={() => handleSendQuickTapQuestion(item.text)}
+          onClick={() => handleClickTapQuestion(item.text)}
         >
           <S.QuickTapIcon as={item.icon} />
           <S.QuickTapText>{item.text}</S.QuickTapText>

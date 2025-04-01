@@ -8,6 +8,7 @@ import {
   referenceFunctions,
 } from "./functions";
 import {
+  courseFunctionPrompt,
   courseRecommendationSystemPrompt,
   currentCoursePrompt,
   followupQuestionPrompt,
@@ -17,7 +18,6 @@ import {
   referenceGeneratePrompt,
   referenceQuestionPrompt,
   userEnhancePrompt,
-  courseFunctionPrompt,
 } from "./prompt";
 
 import { useUserInfo } from "@/features/userInfo";
@@ -38,10 +38,10 @@ export const useChatStore = create<ChatState>((set) => ({
   setRecommendations: (recommendations) => set({ recommendations }),
 }));
 
-export const useSendChat = (text: string, setText: (text: string) => void) => {
+export const useSendChat = () => {
   const { setMessages, setIsLoading } = useChatStore();
-  const { courseCategory, courseName, name, job, year, courseAttendanceRate } = useUserInfo();
-  console.log(courseAttendanceRate);
+  const { courseCategory, courseName, name, job, year, courseAttendanceRate } =
+    useUserInfo();
 
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory
@@ -53,9 +53,11 @@ export const useSendChat = (text: string, setText: (text: string) => void) => {
 
   const prompt = currentCoursePrompt(course as unknown as CourseInfo);
 
-  const enhancedUserMessage = userEnhancePrompt(text);
-
-  const sendChatCallback = async () => {
+  const sendChatCallback = async (
+    text: string,
+    setText?: (text: string) => void
+  ) => {
+    const enhancedUserMessage = userEnhancePrompt(text);
     const currentText = text;
 
     setMessages((prevMessages) => [
@@ -63,7 +65,7 @@ export const useSendChat = (text: string, setText: (text: string) => void) => {
       { role: "user", content: currentText, isLoading: false },
     ]);
 
-    setText("");
+    setText && setText("");
     setIsLoading(true);
 
     setMessages((prevMessages) => [
@@ -79,6 +81,7 @@ export const useSendChat = (text: string, setText: (text: string) => void) => {
       );
 
       const metaData = await metaResponse.json();
+
       const intent = JSON.parse(
         metaData.choices[0].message.function_call.arguments
       ).intent;
@@ -92,7 +95,7 @@ export const useSendChat = (text: string, setText: (text: string) => void) => {
           course as unknown as CourseInfo,
           name,
           job,
-          year,
+          year
         );
       } else if (intent === "course_recommendation") {
         // ✅ 강의 추천 흐름 (2단계)
@@ -127,7 +130,7 @@ const runGeneralStreaming = async (
   course: CourseInfo,
   name: string,
   job: string,
-  year: string,
+  year: string
 ) => {
   const prompt = currentCoursePrompt(course);
 
@@ -327,7 +330,7 @@ const runRecommendationFlow = async (
       }
     }
 
-    let generatedAnswer = '';
+    let generatedAnswer = "";
     setMessages((prevMessages) => {
       const updated = [...prevMessages];
       generatedAnswer = updated[updated.length - 1].content;
@@ -401,14 +404,14 @@ export const getTailQuestion = async (messages: MessageType[]) => {
     const functionCall = responseData.choices[0]?.message?.function_call;
 
     if (!functionCall) {
-      return null;
+      return [];
     }
 
     const args = JSON.parse(functionCall.arguments || "{}");
     return args.questions || [];
   } catch (error) {
     console.error("Failed to generate follow-up questions:", error);
-    return null;
+    return [];
   }
 };
 

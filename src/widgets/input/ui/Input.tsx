@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import AnswerStyles from "./answerStyle/AnswerStyles";
 
+import { ROUTES, useNavigate } from "@/features/navigate";
 import { BackDrop } from "@/shared/ui";
 import { useHandleAnswerStyle } from "../hooks/useHandleAnswerStyle";
 import { useHandleInputSize } from "../hooks/useHandleInputSize";
@@ -17,8 +18,9 @@ function Input() {
   const [text, setText] = useState("");
   const { textareaRef } = useHandleInputSize(text);
   const { isOpen } = usePopUpOpen();
+  const { setCurrentPage } = useNavigate();
 
-  const sendChatCallback = useSendChat(text, setText);
+  const sendChatCallback = useSendChat();
 
   const {
     answerStyleTitle,
@@ -44,7 +46,8 @@ function Input() {
       event.preventDefault();
 
       if (text.trim() !== "") {
-        await sendChatCallback();
+        setCurrentPage(ROUTES.CHAT);
+        await sendChatCallback(text, setText);
       }
     }
   };
@@ -84,7 +87,10 @@ function Input() {
           <S.SendIcon
             $isTextInput={text !== ""}
             $disabled={false}
-            onClick={sendChatCallback}
+            onClick={async () => {
+              setCurrentPage(ROUTES.CHAT);
+              await sendChatCallback(text, setText);
+            }}
           />
 
           {isAnswerStylesOpen && (

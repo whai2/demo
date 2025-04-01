@@ -1,13 +1,21 @@
+import { ROUTES, useNavigate } from "@/features/navigate";
+
 import { ReactComponent as ChatHistoryIcon } from "../assets/chatHistory.svg";
 import { ReactComponent as CustomerCentorIcon } from "../assets/customerCentor.svg";
 import { ReactComponent as InfoIcon } from "../assets/info.svg";
+import { ReactComponent as BackIcon } from "../assets/leftChervron.svg";
 
 import styled from "styled-components";
 
 function TopBar() {
+  const { currentPage, goBack } = useNavigate();
+
   return (
     <S.Container>
-      <S.TitleContainer>{/* <S.Title>AI 챗봇</S.Title> */}</S.TitleContainer>
+      <S.TitleContainer>
+        {/* <S.Title>AI 챗봇</S.Title> */}
+        {currentPage !== ROUTES.HOME && <S.BackIcon onClick={goBack} />}
+      </S.TitleContainer>
 
       <S.NavContainer>
         <S.ChatHistoryIcon />
@@ -35,6 +43,16 @@ const S = {
     padding: 14px 20px;
     justify-content: space-between;
     align-items: center;
+  `,
+
+  BackIcon: styled(BackIcon)`
+    width: 20px;
+    height: 20px;
+    color: #97999b;
+    cursor: pointer;
+    &:hover {
+      color: #000;
+    }
   `,
 
   TitleContainer: styled.div`

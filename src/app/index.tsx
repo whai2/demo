@@ -1,10 +1,8 @@
 import { useEffect } from "react";
 
+import { Router } from "@/app/routers";
 import { Video } from "@/pages/background/video";
 import { LoginPage } from "@/pages/login";
-// import { HomePage } from "@/pages/home";
-import { ChatPage } from "@/pages/chat";
-import ChatPopUpLayout from "@/pages/layout/Layout";
 import { WidgetButton } from "@/widgets/widgetButton";
 
 import { usePopUpOpen } from "@/features/popUpOpen";
@@ -37,11 +35,7 @@ function App() {
         <S.Container>
           <Video />
           <WidgetButton isOpen={isOpen} setIsOpen={setToggle} />
-          {isOpen && (
-            <ChatPopUpLayout>
-              <ChatPage />
-            </ChatPopUpLayout>
-          )}
+          {isOpen && <Router />}
         </S.Container>
       ) : (
         <S.LoginLayout>
