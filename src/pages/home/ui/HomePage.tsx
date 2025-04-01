@@ -1,5 +1,7 @@
 import QuickTaps from "./QuickTaps";
 
+import { useUserInfo } from "@/features/userInfo";
+
 import {
   courseLoadMaps,
   oftenQuestionsTaps,
@@ -11,12 +13,14 @@ import { ReactComponent as CoxwaveLogo } from "@/shared/assets/coxwave.svg";
 import styled from "styled-components";
 
 function HomePage() {
+  const { name } = useUserInfo();
+
   return (
     <S.Container>
       <S.Header>
         <S.CoxwaveLogo />
         <S.Title>
-          안녕하세요! 콕스웨이브님
+          안녕하세요! {name}님
           <br />
           무엇을 도와드릴까요?
         </S.Title>
