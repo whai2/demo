@@ -8,7 +8,7 @@ import { ReactComponent as BackIcon } from "../assets/leftChervron.svg";
 import styled from "styled-components";
 
 function TopBar() {
-  const { currentPage, goBack } = useNavigate();
+  const { currentPage, goBack, setCurrentPage } = useNavigate();
 
   return (
     <S.Container>
@@ -18,7 +18,7 @@ function TopBar() {
       </S.TitleContainer>
 
       <S.NavContainer>
-        <S.ChatHistoryIcon />
+        <S.ChatHistoryIcon onClick={() => setCurrentPage(ROUTES.CHAT)} />
         <S.CustomerCentorIcon />
       </S.NavContainer>
     </S.Container>
