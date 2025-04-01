@@ -17,6 +17,7 @@ import {
   referenceGeneratePrompt,
   referenceQuestionPrompt,
   userEnhancePrompt,
+  courseFunctionPrompt,
 } from "./prompt";
 
 import { useUserInfo } from "@/features/userInfo";
@@ -39,7 +40,8 @@ export const useChatStore = create<ChatState>((set) => ({
 
 export const useSendChat = (text: string, setText: (text: string) => void) => {
   const { setMessages, setIsLoading } = useChatStore();
-  const { courseCategory, courseName, name, job, year } = useUserInfo();
+  const { courseCategory, courseName, name, job, year, courseAttendanceRate } = useUserInfo();
+  console.log(courseAttendanceRate);
 
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory
@@ -90,7 +92,7 @@ export const useSendChat = (text: string, setText: (text: string) => void) => {
           course as unknown as CourseInfo,
           name,
           job,
-          year
+          year,
         );
       } else if (intent === "course_recommendation") {
         // ✅ 강의 추천 흐름 (2단계)
@@ -102,7 +104,8 @@ export const useSendChat = (text: string, setText: (text: string) => void) => {
           course as unknown as CourseInfo,
           name,
           job,
-          year
+          year,
+          courseAttendanceRate
         );
       }
 
@@ -124,7 +127,7 @@ const runGeneralStreaming = async (
   course: CourseInfo,
   name: string,
   job: string,
-  year: string
+  year: string,
 ) => {
   const prompt = currentCoursePrompt(course);
 
@@ -243,7 +246,8 @@ const runRecommendationFlow = async (
   course: CourseInfo,
   name: string,
   job: string,
-  year: string
+  year: string,
+  courseAttendanceRate: number
 ) => {
   const prompt = currentCoursePrompt(course);
 
@@ -262,7 +266,7 @@ const runRecommendationFlow = async (
 
   const response = await streamChat(
     enhancedUserMessage,
-    courseRecommendationSystemPrompt(name, job, year)
+    courseRecommendationSystemPrompt(name, job, year, courseAttendanceRate)
   );
 
   if (!response.ok || !response.body) {
@@ -323,8 +327,10 @@ const runRecommendationFlow = async (
       }
     }
 
+    let generatedAnswer = '';
     setMessages((prevMessages) => {
       const updated = [...prevMessages];
+      generatedAnswer = updated[updated.length - 1].content;
       updated[updated.length - 1].recommendationCourses = {
         isLoading: true,
         courses: [],
@@ -334,7 +340,7 @@ const runRecommendationFlow = async (
 
     const getRecommendationCoursesResponse = await functionChat(
       enhancedUserMessage,
-      courseRecommendationSystemPrompt(name, job, year),
+      courseFunctionPrompt(name, job, year, generatedAnswer),
       functions
     );
 

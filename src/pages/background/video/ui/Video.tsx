@@ -1,13 +1,27 @@
+import { useEffect } from "react";
 import YouTube from "react-youtube";
 
 import { useAlarmStore } from "@/features/alarm";
+import { useUserInfo } from "@/features/userInfo";
 import { parseDuration, useGetVideo, videoStore } from "@/features/video";
 
 import styled from "styled-components";
 
 const YoutubePlaylist = () => {
-  const { videos, totalDuration, currentVideo, setCurrentVideo } =
+  const { currentVideo, videos, totalDuration, setCurrentVideo } =
     useGetVideo();
+  const { setIsTaken } = videoStore();
+  const { setCourseAttendanceRate } = useUserInfo();
+
+  useEffect(() => {
+    setIsTaken(videos[0]?.snippet.resourceId.videoId, true);
+  }, [currentVideo]);
+
+  useEffect(() => {
+    const takenVideos = videos.filter((video) => video.isTaken);
+
+    setCourseAttendanceRate(takenVideos.length / videos.length);
+  }, [videos, currentVideo]);
 
   return (
     <S.Container>
@@ -42,6 +56,7 @@ const YoutubePlaylist = () => {
             onClick={() => {
               useAlarmStore.getState().reset();
               setCurrentVideo(video);
+              setIsTaken(video.snippet.resourceId.videoId, true);
             }}
           >
             {index + 1}. {video.snippet.title}

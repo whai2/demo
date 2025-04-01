@@ -15,6 +15,7 @@ type Video = {
     };
     description: string;
   };
+  isTaken: boolean;
 };
 
 interface VideoType {
@@ -28,6 +29,7 @@ interface VideoType {
   setCurrentVideo: (currentVideo: Video | null) => void;
   setCurrentVideoDescription: (currentVideoDescription: string | null) => void;
   setProgress: (videoId: string, currentTime: number) => void;
+  setIsTaken: (videoId: string, isTaken: boolean) => void;
 }
 
 export const videoStore = create<VideoType>()((set) => ({
@@ -44,6 +46,12 @@ export const videoStore = create<VideoType>()((set) => ({
   setProgress: (videoId, currentTime) =>
     set((state) => ({
       progress: { ...state.progress, [videoId]: currentTime },
+    })),
+  setIsTaken: (videoId, isTaken) =>
+    set((state) => ({
+      videos: state.videos.map((video) =>
+        video.snippet.resourceId.videoId === videoId ? { ...video, isTaken } : video
+      ),
     })),
 }));
 

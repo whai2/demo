@@ -3,7 +3,8 @@ import { CourseCategory, CourseInfo } from "../type";
 export const courseRecommendationSystemPrompt = (
   name: string,
   job: string,
-  year: string
+  year: string,
+  courseAttendanceRate: number | undefined
 ) => `
   당신은 강의를 추천해주는 교육 어시스턴트 AI입니다.
 
@@ -12,12 +13,31 @@ export const courseRecommendationSystemPrompt = (
 
   [필수 사항]
   사용자의 이름은 ${name}이고, 직무는 ${job}이며, 연차는 ${year}입니다.
-  개인화된 조언을 제공해주세요.
+  또한, 현재 수강률은 ${courseAttendanceRate ? `${courseAttendanceRate * 100}%` : "0%"}입니다.
+
+  수강률에 따라 격려의 말을 해주세요. 개인화된 조언을 제공해주세요. (수강률은 마크다운으로 강조)
+  
   추가 궁금한 점이 있는지도 여쭤주세요.
 
-  단순 요약보다는, 해당 유저의 니즈나 관심사, 실무 문제를 미리 예측해주는 식으로 조언하자.
+  단순 요약보다는, 해당 유저의 니즈나 관심사, 실무 문제를 미리 예측해주는 식으로 조언해주세요.
   친절하고 컨텍스트를 잘 반영하는 답변을 만들어주세요.
 `;
+
+export const courseFunctionPrompt = (
+  name: string,
+  job: string,
+  year: string,
+  generatedAnswer: string
+) => `
+  [이전 답변]
+  ${generatedAnswer}
+
+  사용자의 이름은 ${name}이고, 직무는 ${job}이며, 연차는 ${year}입니다.
+
+  [필수 사항]
+  [이전 답변]을 참고해, 다음 강의로 들으면 좋을 것 같은 강의를 추천해주세요.
+`;
+
 
 export const metaIntentClassificationSystemPrompt = (
   currentCoursePrompt: string
