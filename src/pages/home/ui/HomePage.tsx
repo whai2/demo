@@ -6,7 +6,7 @@ import {
   othersQuestionsTaps,
 } from "../constants/quickTaps";
 
-import { ReactComponent as CoxwaveLogo } from "../assets/coxwave.svg";
+import { ReactComponent as CoxwaveLogo } from "@/shared/assets/coxwave.svg";
 
 import styled from "styled-components";
 

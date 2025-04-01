@@ -1,35 +1,20 @@
-import { useEffect, useState } from "react";
-
 import { Loading } from "@/shared/ui";
 import ReferenceToggle from "./ReferenceToggle";
 import TailQuestions from "./TailQuestion";
 import TextEditor from "./TextEditor";
 
-import { getTailQuestion, useChatStore } from "@/features/chat";
+import { useChatStore } from "@/features/chat";
 import { useAutoScroll } from "../hooks/useAutoScroll";
 
 import styled from "styled-components";
 
 function ChatPage() {
-  const [tailQuestion, setTailQuestion] = useState<string[]>([]);
   const { messages, isLoading } = useChatStore();
   const { containerRef } = useAutoScroll({ data: messages });
 
-  useEffect(() => {
-    if (messages.length === 0) return;
+  const lastMessage = messages[messages.length - 1];
 
-    if (isLoading) {
-      setTailQuestion([]);
-      return;
-    }
-
-    const fetchTailQuestion = async () => {
-      const tailQuestion = await getTailQuestion(messages);
-      setTailQuestion(tailQuestion);
-    };
-
-    fetchTailQuestion();
-  }, [messages, isLoading]);
+  console.log(lastMessage);
 
   return (
     <S.Container ref={containerRef}>
@@ -53,6 +38,11 @@ function ChatPage() {
                     )}
                   </S.MessageContainer>
                 </S.MessageWithProfile>
+
+                {message.recommendationCourses &&
+                  message.recommendationCourses.isLoading && (
+                    <Loading />
+                  )}
               </S.MessageWithUnderObjects>
             </S.MessagePosition>
           )
@@ -64,8 +54,8 @@ function ChatPage() {
           </S.MessagePosition>
         )
       )}
-      {tailQuestion.length > 0 && (
-        <TailQuestions tailQuestions={tailQuestion} />
+      {!isLoading && lastMessage && !lastMessage.isCourseRecommendation && (
+        <TailQuestions lastMessage={lastMessage} />
       )}
     </S.Container>
   );

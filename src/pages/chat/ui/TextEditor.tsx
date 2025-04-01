@@ -155,7 +155,8 @@ const S = {
     color: #cc2219;
     line-height: 1.4;
     margin: 10px 0;
-    white-space: pre;
-    word-break: keep-all;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
   `,
 };

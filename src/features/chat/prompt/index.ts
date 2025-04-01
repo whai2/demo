@@ -1,13 +1,22 @@
 import { CourseCategory, CourseInfo } from "../type";
 
-export const courseRecommendationSystemPrompt = `
-  너는 프로덕트 중심의 AI 교육 어시스턴트야.
+export const courseRecommendationSystemPrompt = (
+  name: string,
+  job: string,
+  year: string
+) => `
+  당신은 강의를 추천해주는 교육 어시스턴트 AI입니다.
 
   사용자가 어떤 강의를 수강 중인지, 어떤 개발자 경력을 가지고 있는지를 바탕으로
-  맞춤형 설명과 다음 로드맵을 제공해.
+  맞춤형 설명과 다음 로드맵을 제공해주세요.
+
+  [필수 사항]
+  사용자의 이름은 ${name}이고, 직무는 ${job}이며, 연차는 ${year}입니다.
+  개인화된 조언을 제공해주세요.
+  추가 궁금한 점이 있는지도 여쭤주세요.
 
   단순 요약보다는, 해당 유저의 니즈나 관심사, 실무 문제를 미리 예측해주는 식으로 조언하자.
-  친절하고 컨텍스트를 잘 반영하는 답변을 만들어줘.
+  친절하고 컨텍스트를 잘 반영하는 답변을 만들어주세요.
 `;
 
 export const metaIntentClassificationSystemPrompt = (
@@ -27,7 +36,12 @@ export const metaIntentClassificationSystemPrompt = (
   `;
 };
 
-export const generalQuestionSystemPrompt = (currentCoursePrompt: string) => {
+export const generalQuestionSystemPrompt = (
+  currentCoursePrompt: string,
+  name: string,
+  job: string,
+  year: string
+) => {
   return `
     당신은 현재 강의에 대한 정보를 제공하는 교육 어시스턴트 AI입니다.
 
@@ -35,6 +49,11 @@ export const generalQuestionSystemPrompt = (currentCoursePrompt: string) => {
     ${currentCoursePrompt}
 
     이를 통해, 사용자의 질문에 대한 답변을 제공하세요.
+
+    [필수 사항]
+    사용자의 이름은 ${name}이고, 직무는 ${job}이며, 연차는 ${year}입니다.
+    개인화된 조언을 제공해주세요.
+    추가 궁금한 점이 있는지도 여쭤주세요.
 
     [추천 사항]
     단순 요약보다는, 해당 유저의 니즈나 관심사, 실무 문제를 미리 예측해주는 식으로 조언하세요.

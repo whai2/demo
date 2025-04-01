@@ -87,7 +87,10 @@ export const useSendChat = (text: string, setText: (text: string) => void) => {
         await runGeneralStreaming(
           currentText,
           setMessages,
-          course as unknown as CourseInfo
+          course as unknown as CourseInfo,
+          name,
+          job,
+          year
         );
       } else if (intent === "course_recommendation") {
         // ✅ 강의 추천 흐름 (2단계)
@@ -96,7 +99,10 @@ export const useSendChat = (text: string, setText: (text: string) => void) => {
           currentText,
           setMessages,
           currentCourses as unknown as CourseCategory,
-          course as unknown as CourseInfo
+          course as unknown as CourseInfo,
+          name,
+          job,
+          year
         );
       }
 
@@ -115,7 +121,10 @@ const runGeneralStreaming = async (
   setMessages: (
     messages: MessageType[] | ((prevMessages: MessageType[]) => MessageType[])
   ) => void,
-  course: CourseInfo
+  course: CourseInfo,
+  name: string,
+  job: string,
+  year: string
 ) => {
   const prompt = currentCoursePrompt(course);
 
@@ -123,7 +132,7 @@ const runGeneralStreaming = async (
 
   const response = await streamChat(
     enhancedUserMessage,
-    generalQuestionSystemPrompt(prompt)
+    generalQuestionSystemPrompt(prompt, name, job, year)
   );
 
   if (!response.ok || !response.body) {
@@ -231,7 +240,10 @@ const runRecommendationFlow = async (
     messages: MessageType[] | ((prevMessages: MessageType[]) => MessageType[])
   ) => void,
   currentCourses: CourseCategory,
-  course: CourseInfo
+  course: CourseInfo,
+  name: string,
+  job: string,
+  year: string
 ) => {
   const prompt = currentCoursePrompt(course);
 
@@ -250,7 +262,7 @@ const runRecommendationFlow = async (
 
   const response = await streamChat(
     enhancedUserMessage,
-    courseRecommendationSystemPrompt
+    courseRecommendationSystemPrompt(name, job, year)
   );
 
   if (!response.ok || !response.body) {
@@ -260,6 +272,7 @@ const runRecommendationFlow = async (
   setMessages((prevMessages) => {
     const updatedMessages = [...prevMessages];
     updatedMessages[updatedMessages.length - 1].isLoading = false;
+    updatedMessages[updatedMessages.length - 1].isCourseRecommendation = true;
     return updatedMessages;
   });
 
@@ -310,74 +323,55 @@ const runRecommendationFlow = async (
       }
     }
 
-    let functionName = "";
-    let functionArguments = "";
-    let functionCallFinished = false;
+    setMessages((prevMessages) => {
+      const updated = [...prevMessages];
+      updated[updated.length - 1].recommendationCourses = {
+        isLoading: true,
+        courses: [],
+      };
+      return updated;
+    });
 
-    const response2 = await functionChat(
-      assistantMessage,
-      courseRecommendationSystemPrompt,
+    const getRecommendationCoursesResponse = await functionChat(
+      enhancedUserMessage,
+      courseRecommendationSystemPrompt(name, job, year),
       functions
     );
 
-    if (!response2.ok || !response2.body) {
+    if (
+      !getRecommendationCoursesResponse.ok ||
+      !getRecommendationCoursesResponse.body
+    ) {
       throw new Error("네트워크 응답 실패");
     }
 
-    const reader2 = response2.body.getReader();
-    const decoder2 = new TextDecoder("utf-8");
+    const getRecommendationCoursesResponseData =
+      await getRecommendationCoursesResponse.json();
+    const functionCall =
+      getRecommendationCoursesResponseData.choices[0]?.message?.function_call;
 
-    while (true) {
-      const { done, value } = await reader2.read();
-      if (done) break;
-
-      const chunk = decoder2.decode(value, { stream: true });
-      const lines = chunk.split("\n").filter((line) => line.trim() !== "");
-
-      for (const line of lines) {
-        if (line === "data: [DONE]") {
-          // 스트리밍 종료
-          break;
-        }
-
-        if (line.startsWith("data: ")) {
-          const jsonStr = line.replace("data: ", "").trim();
-
-          try {
-            const parsed = JSON.parse(jsonStr);
-            const delta = parsed.choices[0].delta;
-
-            if (delta?.function_call?.name) {
-              functionName = delta.function_call.name;
-            }
-
-            if (delta?.function_call?.arguments) {
-              functionArguments += delta.function_call.arguments;
-            }
-
-            if (parsed.choices[0].finish_reason === "function_call") {
-              if (functionName === "recommend_course") {
-                try {
-                  const args = JSON.parse(functionArguments);
-                } catch (error) {
-                  console.error(
-                    "❌ function_call arguments 파싱 실패:",
-                    functionArguments,
-                    error
-                  );
-                }
-
-                return;
-              }
-            }
-          } catch (error) {
-            console.error("JSON 파싱 에러", error);
-          }
-        }
-      }
-
-      if (functionCallFinished) break;
+    if (!functionCall) {
+      setMessages((prevMessages) => {
+        const updated = [...prevMessages];
+        updated[updated.length - 1].recommendationCourses = {
+          isLoading: false,
+          courses: [],
+        };
+        return updated;
+      });
+      return;
     }
+
+    const args = JSON.parse(functionCall.arguments || "{}");
+
+    setMessages((prevMessages) => {
+      const updated = [...prevMessages];
+      updated[updated.length - 1].recommendationCourses = {
+        isLoading: false,
+        courses: args.courses || [],
+      };
+      return updated;
+    });
   }
 };
 
@@ -440,7 +434,10 @@ export const useSendTailQuestion = () => {
     await runGeneralStreaming(
       question,
       setMessages,
-      course as unknown as CourseInfo
+      course as unknown as CourseInfo,
+      name,
+      job,
+      year
     );
 
     setIsLoading(false);

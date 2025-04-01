@@ -19,20 +19,37 @@ export const metaFunctions = [
 export const functions = [
   {
     name: "recommend_course",
-    description: "수강 중인 강의를 기반으로 다음 학습 과정을 추천합니다.",
+    description:
+      "수강 중인 강의, 제공된 전체 강의를 기반으로 다음 학습 과정 3개를 추천합니다.",
     parameters: {
       type: "object",
       properties: {
-        currentCourse: {
-          type: "string",
-          description: "현재 수강 중인 강의 이름",
-        },
-        userExperience: {
-          type: "string",
-          description: "유저의 경력 수준",
+        courses: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              name: {
+                type: "string",
+                description: "추천 강의 이름",
+              },
+              price: {
+                type: "string",
+                description: "추천 강의 가격",
+              },
+              duration: {
+                type: "string",
+                description: "추천 강의 시간",
+              },
+              target: {
+                type: "string",
+                description: "추천 강의 대상",
+              },
+            },
+          },
         },
       },
-      required: ["currentCourse", "userExperience"],
+      required: ["courses"],
     },
   },
 ];

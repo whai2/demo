@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { courses } from "@/features/chat";
 import { COURSE_CATEGORY, JOBS, useUserInfo, YEARS } from "@/features/userInfo";
+import { ReactComponent as CoxwaveLogo } from "@/shared/assets/coxwave.svg";
 import { ReactComponent as Arrow } from "../assets/arrow.svg";
 
 import styled from "styled-components";
@@ -97,8 +98,10 @@ function LoginPage() {
   return (
     <S.LoginLayout>
       <S.Header>
-        <S.HeaderTitle>로그인</S.HeaderTitle>
-        <S.HeaderSubTitle>로그인 정보를 입력해주세요</S.HeaderSubTitle>
+        <S.HeaderTitle>
+          <CoxwaveLogo />
+        </S.HeaderTitle>
+        <S.HeaderSubTitle>정보를 입력해주세요</S.HeaderSubTitle>
       </S.Header>
 
       <S.Container>

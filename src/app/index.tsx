@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 import { Video } from "@/pages/background/video";
 import { LoginPage } from "@/pages/login";
-// import { HomePage } from "@/pages/home";
+import { HomePage } from "@/pages/home";
 import { ChatPage } from "@/pages/chat";
 import ChatPopUpLayout from "@/pages/layout/Layout";
 import { WidgetButton } from "@/widgets/widgetButton";
@@ -56,7 +56,7 @@ export default App;
 
 const S = {
   LoginLayout: styled.div`
-    padding-top: 266px;
+    padding-top: 133px;
     width: 100%;
     display: flex;
     flex-direction: column;

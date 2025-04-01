@@ -6,7 +6,19 @@ export type MessageType = {
     isLoading: boolean;
     reference: any;
   };
+  isCourseRecommendation?: boolean;
+  recommendationCourses?: {
+    isLoading: boolean;
+    courses: RecommendationCourse[];
+  };
 };
+
+export interface RecommendationCourse {
+  name: string;
+  price: string;
+  duration: string;
+  target: string;
+}
 
 export interface CourseRecommendation {
   title: string;

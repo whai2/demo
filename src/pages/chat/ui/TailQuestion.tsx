@@ -1,12 +1,25 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { useSendTailQuestion } from "@/features/chat";
-
+import { getTailQuestion, useSendTailQuestion } from "@/features/chat";
+import { MessageType } from "@/features/chat/type";
 import styled from "styled-components";
 
-function TailQuestions({ tailQuestions }: { tailQuestions: string[] }) {
+function TailQuestions({ lastMessage }: { lastMessage: MessageType }) {
+  const [tailQuestions, setTailQuestions] = useState<string[]>([]);
+
   const sendTailQuestion = useSendTailQuestion();
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (lastMessage.isCourseRecommendation) return;
+
+    const fetchTailQuestion = async () => {
+      const tailQuestion = await getTailQuestion([lastMessage]);
+      setTailQuestions(tailQuestion);
+    };
+
+    fetchTailQuestion();
+  }, [lastMessage]);
 
   useEffect(() => {
     if (tailQuestions.length > 0) {
