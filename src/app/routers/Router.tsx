@@ -5,7 +5,7 @@ import { ChatPopUpLayout } from "@/pages/layout";
 import { ROUTES, useNavigate } from "@/features/navigate";
 
 const Router = () => {
-  const { params, currentPage } = useNavigate();
+  const { currentPage } = useNavigate();
 
   const renderContent = () => {
     if (ROUTES.CHAT === currentPage) {
