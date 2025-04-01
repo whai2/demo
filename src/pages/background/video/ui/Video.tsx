@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import YouTube from "react-youtube";
 
 import { useAlarmStore } from "@/features/alarm";
@@ -14,7 +14,7 @@ const YoutubePlaylist = () => {
   const { setCourseAttendanceRate } = useUserInfo();
 
   useEffect(() => {
-    setIsTaken(videos[0]?.snippet.resourceId.videoId, true);
+    setIsTaken(videos[0]?.id, true);
   }, [currentVideo]);
 
   useEffect(() => {
@@ -26,16 +26,14 @@ const YoutubePlaylist = () => {
   return (
     <S.Container>
       <S.Content>
-        {currentVideo && (
+        {currentVideo && currentVideo.id && (
           <>
             <S.TopBar>
               <div>{currentVideo.snippet.title}</div>
               <div>{totalDuration}</div>
             </S.TopBar>
             <S.VideoContainer>
-              <InteractiveYouTubePlayer
-                videoId={currentVideo.snippet.resourceId.videoId}
-              />
+              <InteractiveYouTubePlayer videoId={currentVideo.id} />
             </S.VideoContainer>
           </>
         )}
@@ -48,15 +46,12 @@ const YoutubePlaylist = () => {
         <S.SideBarHeader>강의 목차</S.SideBarHeader>
         {videos.map((video: any, index: number) => (
           <S.SideBarItem
-            key={video.snippet.resourceId.videoId}
-            active={
-              currentVideo?.snippet.resourceId.videoId ===
-              video.snippet.resourceId.videoId
-            }
+            key={video.id}
+            active={currentVideo?.id === video.id}
             onClick={() => {
               useAlarmStore.getState().reset();
               setCurrentVideo(video);
-              setIsTaken(video.snippet.resourceId.videoId, true);
+              setIsTaken(video.id, true);
             }}
           >
             {index + 1}. {video.snippet.title}
@@ -72,21 +67,64 @@ export default YoutubePlaylist;
 
 const InteractiveYouTubePlayer = ({ videoId }: { videoId: string }) => {
   const { progress, setProgress } = videoStore();
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const hasSeeked = useRef(false);
 
-  const onReady = (event: any) => {
-    const savedTime = progress[videoId];
+  // const onReady = (event: any) => {
+  //   const savedTime = progress[videoId];
 
-    if (savedTime) {
-      event.target.seekTo(savedTime);
+  //   if (savedTime) {
+  //     event.target.seekTo(savedTime);
+  //   }
+
+  //   setInterval(() => {
+  //     const currentTime = event.target.getCurrentTime();
+
+  //     if (currentTime) {
+  //       setProgress(videoId, currentTime);
+  //     }
+  //   }, 500);
+  // };
+
+  const onStateChange = (event: any) => {
+    const player = event.target;
+    const playerState = event.data;
+
+    if (playerState === 1) {
+      // ✅ PLAYING일 때: 처음 한 번만 seekTo
+      if (!hasSeeked.current) {
+        const savedTime = progress[videoId];
+        if (savedTime) {
+          player.seekTo(savedTime, true);
+        }
+        hasSeeked.current = true;
+      }
+
+      // 감지 시작
+      if (intervalRef.current) clearInterval(intervalRef.current);
+
+      intervalRef.current = setInterval(() => {
+        const currentTime = player.getCurrentTime();
+
+        if (currentTime) {
+          console.log("currentTime", currentTime);
+          setProgress(videoId, currentTime);
+        }
+      }, 500);
+    } else {
+      // 정지/종료 시 감지 멈추기
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
     }
 
-    setInterval(() => {
+    // 영상이 일시정지 되었을 때
+    if (playerState === 2) {
       const currentTime = event.target.getCurrentTime();
 
-      if (currentTime) {
-        setProgress(videoId, currentTime);
-      }
-    }, 500);
+      setProgress(videoId, currentTime);
+    }
   };
 
   return (
@@ -94,7 +132,8 @@ const InteractiveYouTubePlayer = ({ videoId }: { videoId: string }) => {
       <YouTube
         videoId={videoId}
         opts={{ width: "100%", height: "100%" }}
-        onReady={onReady}
+        // onReady={onReady}
+        onStateChange={onStateChange}
       />
     </S.PlayerWrapper>
   );

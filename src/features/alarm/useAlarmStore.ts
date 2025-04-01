@@ -164,7 +164,7 @@ export const useTriggerInterval = () => {
       currentVideo?.duration ?? ""
     );
 
-    const currentVideoId = currentVideo?.snippet.resourceId.videoId;
+    const currentVideoId = currentVideo?.id;
     const currentVideoProgress = progress[currentVideoId ?? ""];
 
     const progressPercentage = currentVideoDuration
