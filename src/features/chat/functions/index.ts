@@ -75,3 +75,25 @@ export const referenceFunctions = [
     },
   },
 ];
+
+export const followupQuestionFunctions = [
+  {
+    name: "generate_tail_questions",
+    description:
+      "챗봇의 이전 답변을 참고해, 다음 흐름에서 유저가 자연스럽게 이어서 할 수 있는 꼬리 질문 2개를 생성합니다.",
+    parameters: {
+      type: "object",
+      properties: {
+        questions: {
+          type: "array",
+          items: {
+            type: "string",
+            description: "유저가 이어서 던지기 좋은 질문",
+          },
+          description: "생성된 꼬리 질문 리스트 (총 2개)",
+        },
+      },
+      required: ["questions"],
+    },
+  },
+];

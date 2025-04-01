@@ -76,6 +76,21 @@ export const referenceQuestionPrompt = (previousAnswer: string) => {
     답변: ${previousAnswer}
   `;
 };
+
+export function followupQuestionPrompt(previousAnswer: string): string {
+  return `
+    아래 답변을 읽고, 유저가 이어서 할 법한 자연스러운 꼬리 질문 두 개를 생성하세요.
+
+    답변:
+    ${previousAnswer}
+
+    조건:
+    - 전체 흐름과 관련성 있는 질문일 것
+    - 너무 포괄적이거나 모호하지 않게 작성
+    - 정보 탐색을 이어갈 수 있도록 실용적으로 작성
+    `;
+}
+
 export const userEnhancePrompt = (userMessage: string) => {
   return `
     [사용자 질문]

@@ -13,8 +13,6 @@ function LoginPage() {
   const [isCourseOpen, setIsCourseOpen] = useState(false);
   const [courseList, setCourseList] = useState<string[]>([]);
 
-  const [tab, setTab] = useState(0);
-
   const {
     name,
     job,
@@ -83,19 +81,12 @@ function LoginPage() {
     setIsCourseOpen(false);
   };
 
-  const isActive = name !== "" && job !== "";
   const isLoginActive =
     name !== "" &&
     job !== "" &&
     year !== "" &&
     courseCategory !== "" &&
     courseName !== "";
-
-  const handleNext = () => {
-    if (!isActive) return;
-
-    setTab((prev) => prev + 1);
-  };
 
   const handleLogin = () => {
     if (!isLoginActive) return;
@@ -110,132 +101,118 @@ function LoginPage() {
         <S.HeaderSubTitle>로그인 정보를 입력해주세요</S.HeaderSubTitle>
       </S.Header>
 
-      {tab === 0 && (
-        <>
-          <S.Container>
-            <S.Wrapper>
-              <S.Title>이름</S.Title>
-              <S.Input
-                placeholder="이름을 입력해 주세요."
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </S.Wrapper>
+      <S.Container>
+        <S.Wrapper>
+          <S.Title>이름</S.Title>
+          <S.Input
+            placeholder="이름을 입력해 주세요."
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </S.Wrapper>
 
-            <S.Wrapper>
-              <S.Title>직무</S.Title>
+        <S.Wrapper>
+          <S.Title>직무</S.Title>
 
-              <S.InputContainer $isOpen={isJobOpen}>
-                <S.InputWrapper onClick={toggleJobOpen}>
-                  <S.InnerInput>
-                    <S.InnerInputText>{job ? job : "선택"}</S.InnerInputText>
-                  </S.InnerInput>
-                  <S.ChevronDown $isOpen={isJobOpen} />
-                </S.InputWrapper>
+          <S.InputContainer $isOpen={isJobOpen}>
+            <S.InputWrapper onClick={toggleJobOpen}>
+              <S.InnerInput>
+                <S.InnerInputText>{job ? job : "선택"}</S.InnerInputText>
+              </S.InnerInput>
+              <S.ChevronDown $isOpen={isJobOpen} />
+            </S.InputWrapper>
 
-                <S.JobList $isOpen={isJobOpen}>
-                  {JOBS.map((job) => (
-                    <S.JobItem key={job} onClick={() => handleJobClick(job)}>
-                      {job}
-                    </S.JobItem>
-                  ))}
-                </S.JobList>
-              </S.InputContainer>
-            </S.Wrapper>
-          </S.Container>
+            <S.JobList $isOpen={isJobOpen}>
+              {JOBS.map((job) => (
+                <S.JobItem key={job} onClick={() => handleJobClick(job)}>
+                  {job}
+                </S.JobItem>
+              ))}
+            </S.JobList>
+          </S.InputContainer>
+        </S.Wrapper>
 
-          <S.Button $isActive={isActive} onClick={handleNext}>
-            다음
-          </S.Button>
-        </>
-      )}
+        <S.Wrapper>
+          <S.Title>연차</S.Title>
 
-      {tab === 1 && (
-        <>
-          <S.Container>
-            <S.Wrapper>
-              <S.Title>연차</S.Title>
+          <S.InputContainer $isOpen={isYearOpen}>
+            <S.InputWrapper onClick={toggleYearOpen}>
+              <S.InnerInput>
+                <S.InnerInputText>{year ? year : "선택"}</S.InnerInputText>
+              </S.InnerInput>
+              <S.ChevronDown $isOpen={isYearOpen} />
+            </S.InputWrapper>
 
-              <S.InputContainer $isOpen={isYearOpen}>
-                <S.InputWrapper onClick={toggleYearOpen}>
-                  <S.InnerInput>
-                    <S.InnerInputText>{year ? year : "선택"}</S.InnerInputText>
-                  </S.InnerInput>
-                  <S.ChevronDown $isOpen={isYearOpen} />
-                </S.InputWrapper>
+            <S.JobList $isOpen={isYearOpen}>
+              {YEARS.map((year) => (
+                <S.JobItem key={year} onClick={() => handleYearClick(year)}>
+                  {year}
+                </S.JobItem>
+              ))}
+            </S.JobList>
+          </S.InputContainer>
+        </S.Wrapper>
 
-                <S.JobList $isOpen={isYearOpen}>
-                  {YEARS.map((year) => (
-                    <S.JobItem key={year} onClick={() => handleYearClick(year)}>
-                      {year}
-                    </S.JobItem>
-                  ))}
-                </S.JobList>
-              </S.InputContainer>
-            </S.Wrapper>
+        <S.Wrapper>
+          <S.Title>강의 카테고리</S.Title>
 
-            <S.Wrapper>
-              <S.Title>강의 카테고리</S.Title>
+          <S.InputContainer $isOpen={isCourseCategoryOpen}>
+            <S.InputWrapper onClick={toggleCourseCategoryOpen}>
+              <S.InnerInput>
+                <S.InnerInputText>
+                  {courseCategory ? courseCategory : "선택"}
+                </S.InnerInputText>
+              </S.InnerInput>
+              <S.ChevronDown $isOpen={isCourseCategoryOpen} />
+            </S.InputWrapper>
 
-              <S.InputContainer $isOpen={isCourseCategoryOpen}>
-                <S.InputWrapper onClick={toggleCourseCategoryOpen}>
-                  <S.InnerInput>
-                    <S.InnerInputText>
-                      {courseCategory ? courseCategory : "선택"}
-                    </S.InnerInputText>
-                  </S.InnerInput>
-                  <S.ChevronDown $isOpen={isCourseCategoryOpen} />
-                </S.InputWrapper>
+            <S.JobList $isOpen={isCourseCategoryOpen}>
+              {COURSE_CATEGORY.map((courseCategory) => (
+                <S.JobItem
+                  key={courseCategory}
+                  onClick={() => handleCourseCategoryClick(courseCategory)}
+                >
+                  {courseCategory}
+                </S.JobItem>
+              ))}
+            </S.JobList>
+          </S.InputContainer>
+        </S.Wrapper>
 
-                <S.JobList $isOpen={isCourseCategoryOpen}>
-                  {COURSE_CATEGORY.map((courseCategory) => (
-                    <S.JobItem
-                      key={courseCategory}
-                      onClick={() => handleCourseCategoryClick(courseCategory)}
-                    >
-                      {courseCategory}
-                    </S.JobItem>
-                  ))}
-                </S.JobList>
-              </S.InputContainer>
-            </S.Wrapper>
+        <S.Wrapper>
+          <S.Title>강의명</S.Title>
 
-            <S.Wrapper>
-              <S.Title>강의명</S.Title>
+          <S.InputContainer $isOpen={isCourseOpen}>
+            <S.InputWrapper onClick={toggleCourseOpen}>
+              <S.InnerInput>
+                <S.InnerInputText>
+                  {courseName ? courseName : "선택"}
+                </S.InnerInputText>
+              </S.InnerInput>
+              <S.ChevronDown $isOpen={isCourseOpen} />
+            </S.InputWrapper>
 
-              <S.InputContainer $isOpen={isCourseOpen}>
-                <S.InputWrapper onClick={toggleCourseOpen}>
-                  <S.InnerInput>
-                    <S.InnerInputText>
-                      {courseName ? courseName : "선택"}
-                    </S.InnerInputText>
-                  </S.InnerInput>
-                  <S.ChevronDown $isOpen={isCourseOpen} />
-                </S.InputWrapper>
+            <S.JobList $isOpen={isCourseOpen}>
+              {courseList.length === 0 ? (
+                <S.JobItem>강의 카테고리를 선택하세요</S.JobItem>
+              ) : (
+                courseList.map((course, index) => (
+                  <S.JobItem
+                    key={index}
+                    onClick={() => handleCourseClick(course)}
+                  >
+                    {course}
+                  </S.JobItem>
+                ))
+              )}
+            </S.JobList>
+          </S.InputContainer>
+        </S.Wrapper>
+      </S.Container>
 
-                <S.JobList $isOpen={isCourseOpen}>
-                  {courseList.length === 0 ? (
-                    <S.JobItem>강의 카테고리를 선택하세요</S.JobItem>
-                  ) : (
-                    courseList.map((course, index) => (
-                      <S.JobItem
-                        key={index}
-                        onClick={() => handleCourseClick(course)}
-                      >
-                        {course}
-                      </S.JobItem>
-                    ))
-                  )}
-                </S.JobList>
-              </S.InputContainer>
-            </S.Wrapper>
-          </S.Container>
-
-          <S.Button $isActive={isLoginActive} onClick={handleLogin}>
-            로그인
-          </S.Button>
-        </>
-      )}
+      <S.Button $isActive={isLoginActive} onClick={handleLogin}>
+        다음
+      </S.Button>
     </S.LoginLayout>
   );
 }

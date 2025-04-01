@@ -1,10 +1,16 @@
 import { create } from "zustand";
 
 import { functionChat, streamChat } from "./apis/chat.api";
-import { functions, metaFunctions, referenceFunctions } from "./functions";
+import {
+  followupQuestionFunctions,
+  functions,
+  metaFunctions,
+  referenceFunctions,
+} from "./functions";
 import {
   courseRecommendationSystemPrompt,
   currentCoursePrompt,
+  followupQuestionPrompt,
   formatCoursesToMarkdown,
   generalQuestionSystemPrompt,
   metaIntentClassificationSystemPrompt,
@@ -353,8 +359,6 @@ const runRecommendationFlow = async (
               if (functionName === "recommend_course") {
                 try {
                   const args = JSON.parse(functionArguments);
-
-                  console.log(args);
                 } catch (error) {
                   console.error(
                     "❌ function_call arguments 파싱 실패:",
@@ -375,4 +379,72 @@ const runRecommendationFlow = async (
       if (functionCallFinished) break;
     }
   }
+};
+
+export const getTailQuestion = async (messages: MessageType[]) => {
+  const lastAssistantMessage = [...messages]
+    .reverse()
+    .find((message) => message.role === "assistant");
+
+  if (!lastAssistantMessage) {
+    return null;
+  }
+
+  try {
+    const followupResponse = await functionChat(
+      followupQuestionPrompt(lastAssistantMessage.content),
+      followupQuestionPrompt(lastAssistantMessage.content),
+      followupQuestionFunctions
+    );
+
+    const responseData = await followupResponse.json();
+    const functionCall = responseData.choices[0]?.message?.function_call;
+
+    if (!functionCall) {
+      return null;
+    }
+
+    const args = JSON.parse(functionCall.arguments || "{}");
+    return args.questions || [];
+  } catch (error) {
+    console.error("Failed to generate follow-up questions:", error);
+    return null;
+  }
+};
+
+export const useSendTailQuestion = () => {
+  const { setMessages, setIsLoading } = useChatStore();
+  const { courseCategory, courseName, name, job, year } = useUserInfo();
+
+  const currentCourses = courses.category.find(
+    (cat) => cat.name === courseCategory
+  );
+
+  const course = currentCourses?.courses.find(
+    (course) => course.name === courseName
+  );
+
+  const sendTailQuestionCallback = async (question: string) => {
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { role: "user", content: question, isLoading: false },
+    ]);
+
+    setIsLoading(true);
+
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { role: "assistant", content: "", isLoading: true },
+    ]);
+
+    await runGeneralStreaming(
+      question,
+      setMessages,
+      course as unknown as CourseInfo
+    );
+
+    setIsLoading(false);
+  };
+
+  return sendTailQuestionCallback;
 };

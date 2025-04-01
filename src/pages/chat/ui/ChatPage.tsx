@@ -1,15 +1,35 @@
+import { useEffect, useState } from "react";
+
 import { Loading } from "@/shared/ui";
 import ReferenceToggle from "./ReferenceToggle";
+import TailQuestions from "./TailQuestion";
 import TextEditor from "./TextEditor";
 
-import { useChatStore } from "@/features/chat";
+import { getTailQuestion, useChatStore } from "@/features/chat";
 import { useAutoScroll } from "../hooks/useAutoScroll";
 
 import styled from "styled-components";
+
 function ChatPage() {
-  const { messages } = useChatStore();
-  console.log(messages);
+  const [tailQuestion, setTailQuestion] = useState<string[]>([]);
+  const { messages, isLoading } = useChatStore();
   const { containerRef } = useAutoScroll({ data: messages });
+
+  useEffect(() => {
+    if (messages.length === 0) return;
+
+    if (isLoading) {
+      setTailQuestion([]);
+      return;
+    }
+
+    const fetchTailQuestion = async () => {
+      const tailQuestion = await getTailQuestion(messages);
+      setTailQuestion(tailQuestion);
+    };
+
+    fetchTailQuestion();
+  }, [messages, isLoading]);
 
   return (
     <S.Container ref={containerRef}>
@@ -43,6 +63,9 @@ function ChatPage() {
             </S.MessageContainer>
           </S.MessagePosition>
         )
+      )}
+      {tailQuestion.length > 0 && (
+        <TailQuestions tailQuestions={tailQuestion} />
       )}
     </S.Container>
   );

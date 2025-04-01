@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { useUserInfo } from "@/features/userInfo";
+
 import { ReactComponent as ChevronDown } from "../assets/chevronDown.svg";
 import { ReactComponent as LinkIcon } from "../assets/link.svg";
 import { ReactComponent as Rectangle } from "../assets/rectangle.svg";
@@ -7,8 +9,9 @@ import { ReactComponent as Rectangle } from "../assets/rectangle.svg";
 import styled from "styled-components";
 
 function ReferenceToggle({ reference }: { reference: any }) {
+  const { courseName } = useUserInfo();
+
   if (!reference) return null;
-  console.log(reference);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -27,8 +30,8 @@ function ReferenceToggle({ reference }: { reference: any }) {
           pages={reference.pages}
           title={reference.title}
           file={reference.file}
-          time={reference.time}
         />
+        <ReferenceItem title={courseName} time={reference.time} />
       </S.ReferenceList>
     </S.Container>
   );
@@ -42,34 +45,36 @@ function ReferenceItem({
   file,
   time,
 }: {
-  pages: string;
+  pages?: string;
   title: string;
-  file: string;
-  time: string;
+  file?: string;
+  time?: string;
 }) {
   return (
     <S.ReferenceItem>
       <S.LinkIcon />
       <S.ReferenceTextContainer>
         <S.ReferenceTextWrapper>
-          {/* {type === "script" && (
-            <S.ReferenceHeader>강의클립 </S.ReferenceHeader>
-          )}
-          {type === "content" && (
-            <S.ReferenceHeader>강의자료 </S.ReferenceHeader>
-          )} */}
+          {time && <S.ReferenceHeader>강의클립 </S.ReferenceHeader>}
+          {pages && file && <S.ReferenceHeader>강의자료 </S.ReferenceHeader>}
           <S.ReferenceTitle>{title}</S.ReferenceTitle>
         </S.ReferenceTextWrapper>
         <S.RectangleContainer>
-          <Rectangle />
-          <S.RectangleText>
-            {file} ({pages})
-          </S.RectangleText>
+          {file && (
+            <>
+              <Rectangle />
+              <S.RectangleText>
+                {file} ({pages})
+              </S.RectangleText>
+            </>
+          )}
         </S.RectangleContainer>
-        <S.RectangleContainer>
-          <Rectangle />
-          <S.RectangleText>{time}</S.RectangleText>
-        </S.RectangleContainer>
+        {time && (
+          <S.RectangleContainer>
+            <Rectangle />
+            <S.RectangleText>{time}</S.RectangleText>
+          </S.RectangleContainer>
+        )}
       </S.ReferenceTextContainer>
     </S.ReferenceItem>
   );

@@ -9,4 +9,9 @@ export type {
   CourseRecommendation,
   MessageType,
 } from "./type";
-export { useChatStore, useSendChat } from "./useChat";
+export {
+  getTailQuestion,
+  useSendTailQuestion,
+  useChatStore,
+  useSendChat,
+} from "./useChat";
