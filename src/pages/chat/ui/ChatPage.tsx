@@ -40,8 +40,16 @@ function ChatPage() {
                 </S.MessageWithProfile>
 
                 {message.recommendationCourses &&
-                  message.recommendationCourses.isLoading && (
+                  message.recommendationCourses.isLoading ? (
                     <Loading />
+                  ) : (
+                    <div>
+                      {message.recommendationCourses?.courses.map(
+                        (course) => (
+                          <div key={course.name}>{course.name}</div>
+                        )
+                      )}
+                    </div>
                   )}
               </S.MessageWithUnderObjects>
             </S.MessagePosition>

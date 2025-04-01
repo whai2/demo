@@ -35,7 +35,7 @@ export const courseFunctionPrompt = (
   사용자의 이름은 ${name}이고, 직무는 ${job}이며, 연차는 ${year}입니다.
 
   [필수 사항]
-  [이전 답변]을 참고해, 다음 강의로 들으면 좋을 것 같은 강의를 추천해주세요.
+  [이전 답변]을 참고해, 다음 강의로 들으면 좋을 것 같은 강의 3개를 추천해주세요.
 `;
 
 
@@ -44,10 +44,11 @@ export const metaIntentClassificationSystemPrompt = (
 ) => {
   return `
     당신은 사용자의 입력을 분석해 intent를 분류하는 AI입니다.
-    intent는 다음 두 가지 중 하나입니다:
+    intent는 다음 세 가지 중 하나입니다:
       
     1. general_question: 강의 내용에 대한 일반 질문
     2. course_recommendation: 현재 수강 중인 강의를 기반으로 다음 강의를 추천해달라는 요청, 개인화 커리큘럼 제공
+    3. course_quiz: 현재 수강 중인 강의에 대한 퀴즈 문제를 내주세요.
 
     [현재 수강 중인 강의 목록 정보 = 내가 본 강의]
       ${currentCoursePrompt}

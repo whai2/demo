@@ -4,6 +4,7 @@ import { create } from "zustand";
 
 import alarmMessages from "@/features/alarm/constants/alarmMessages";
 
+import { useUserInfo } from "@/features/userInfo";
 import { parseDurationToSeconds, videoStore } from "@/features/video";
 
 type AlarmMessageInstanceType = {
@@ -61,6 +62,7 @@ const useAlarmStore = create<AlarmState>()((set) => ({
 export const useTriggerInterval = () => {
   const clipIdRef = useRef<string | null>(null);
   const { currentVideo, progress } = videoStore();
+  const { courseAttendanceRate } = useUserInfo();
 
   // useEffect(() => {
   //   const triggerAlarm = () => {
@@ -96,6 +98,32 @@ export const useTriggerInterval = () => {
 
   //   triggerAlarm();
   // }, []);
+
+  useEffect(() => {
+    if (courseAttendanceRate >= 0.5) {
+      useAlarmStore.setState({
+        isTriggered: true,
+        isCallToActionDoing: true,
+        data: {
+          message: `강의를 ${
+            courseAttendanceRate * 100
+          }% 수강했어요!\n강의 로드맵을 제공해 드릴까요?`,
+          type: "callToAction",
+          question: "강의 로드맵을 제공해 주세요.",
+        },
+      });
+    }
+
+    setTimeout(() => {
+      useAlarmStore.setState({
+        isTriggered: false,
+        isCallToActionDoing: false,
+        data: {
+          message: "",
+        },
+      });
+    }, 8 * 1000);
+  }, [courseAttendanceRate]);
 
   useEffect(() => {
     const triggerAlarm = (isOverHalf: boolean, isOverNinety: boolean) => {
