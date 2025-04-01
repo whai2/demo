@@ -92,7 +92,7 @@ export const referenceGeneratePrompt = (
     이전 강의 내용을 기반으로 참고했을 법한 자료 하나를 생성해주세요. 아래 기준을 따르세요:
 
 - 실존할 법한 제목
-- PDF나 PPT 등 파일 형태
+- PDF나 PPT 등 파일 형태 (제목은 반드시 한글로 작성)
 - 몇 페이지를 참고했는지
 - 영상에서 등장한 시점 (예: 12:42)
 
@@ -110,7 +110,7 @@ export const referenceQuestionPrompt = (previousAnswer: string) => {
     아래 기준을 따르세요:
 
     - 실존할 법한 제목
-    - PDF나 PPT 등 파일 형태
+    - PDF나 PPT 등 파일 형태 (제목은 반드시 한글로 작성)
     - 몇 페이지를 참고했는지
     - 영상에서 등장한 시점 (예: 12:42)
 

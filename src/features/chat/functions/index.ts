@@ -77,7 +77,7 @@ export const referenceFunctions = [
             file: {
               type: "string",
               description:
-                "자료 파일 이름 및 확장자 (예: data_science_intro.pdf)",
+                "자료 파일 이름 및 확장자 (예: 데이터 사이언스 소개.pdf)",
             },
             pages: {
               type: "string",
