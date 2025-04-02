@@ -1,17 +1,28 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useEffect, useRef } from "react";
 
+import { useBottomSheetPortal } from "@/shared/ui";
 import { Input } from "@/widgets/input";
 import { TopBar } from "@/widgets/topBar";
 
 import styled from "styled-components";
 
 function ChatPopUpLayout({ children }: PropsWithChildren) {
+  const bottomSheetPortalRef = useRef<HTMLDivElement>(null);
+  const { setPortalElement } = useBottomSheetPortal();
+
+  useEffect(() => {
+    if (bottomSheetPortalRef.current) {
+      setPortalElement(bottomSheetPortalRef.current);
+    }
+  }, [bottomSheetPortalRef.current]);
+
   return (
     <S.ChatLayout $isOpen={true} $isFirstOpen={true}>
       <S.ChatContainer>
         <TopBar />
         <S.ChatBodyContainer>{children}</S.ChatBodyContainer>
         <Input />
+        <div ref={bottomSheetPortalRef} id="bottom-sheet-portal" />
       </S.ChatContainer>
     </S.ChatLayout>
   );

@@ -2,6 +2,7 @@ import { create } from "zustand";
 
 import { functionChat, streamChat } from "./apis/chat.api";
 import {
+  courseQuizFunctions,
   followupQuestionFunctions,
   functions,
   metaFunctions,
@@ -9,6 +10,7 @@ import {
 } from "./functions";
 import {
   courseFunctionPrompt,
+  courseQuizSystemPrompt,
   courseRecommendationSystemPrompt,
   currentCoursePrompt,
   followupQuestionPrompt,
@@ -109,6 +111,27 @@ export const useSendChat = () => {
           job,
           year,
           courseAttendanceRate
+        );
+      } else if (intent === "course_quiz") {
+        // ✅ 강의 퀴즈 흐름
+        console.log("강의 퀴즈");
+        await runCourseQuizFlow(
+          currentText,
+          setMessages,
+          course as unknown as CourseInfo,
+          name,
+          job,
+          year
+        );
+      } else {
+        console.log("일반 질문", "예외 상황");
+        await runGeneralStreaming(
+          currentText,
+          setMessages,
+          course as unknown as CourseInfo,
+          name,
+          job,
+          year
         );
       }
 
@@ -265,6 +288,9 @@ const runRecommendationFlow = async (
 
     [다음 강의 목록 정보]
     ${coursesMarkdown}
+
+    [필수 사항]
+    길이를 적당히 줄여서 답해주세요 (800자 내외)
   `;
 
   const response = await streamChat(
@@ -413,6 +439,102 @@ export const getTailQuestion = async (messages: MessageType[]) => {
     console.error("Failed to generate follow-up questions:", error);
     return [];
   }
+};
+
+const runCourseQuizFlow = async (
+  userMessage: string,
+  setMessages: (
+    messages: MessageType[] | ((prevMessages: MessageType[]) => MessageType[])
+  ) => void,
+  course: CourseInfo,
+  name: string,
+  job: string,
+  year: string
+) => {
+  const prompt = currentCoursePrompt(course);
+
+  const enhancedUserMessage = `
+    [사용자 질문]
+    ${userMessage}
+    
+    [퀴즈 제공 기준]
+    특히, 퀴즈를 통해 복습 방법을 알고 싶은 경우, 퀴즈를 제공해주세요.
+    또한, 이해도를 확인하고자 하는 경우, 퀴즈를 제공해주세요.
+
+    [현재 수강 중인 강의 목록 정보]
+    ${prompt}
+  `;
+
+  const response = await functionChat(
+    enhancedUserMessage,
+    courseQuizSystemPrompt(prompt, name, job, year),
+    courseQuizFunctions
+  );
+
+  if (!response.ok || !response.body) {
+    throw new Error("네트워크 응답 실패");
+  }
+
+  const responseData = await response.json();
+  const functionCall = responseData.choices[0]?.message?.function_call;
+
+  if (!functionCall) {
+    setMessages((prevMessages) => {
+      const updated = [...prevMessages];
+      updated[updated.length - 1].quiz = {
+        isLoading: false,
+        quiz: {
+          quiz: "",
+          choices: [],
+          answerIndex: 0,
+        },
+      };
+      return updated;
+    });
+    return;
+  }
+
+  const args = JSON.parse(functionCall.arguments || "{}");
+  console.log(args);
+
+  // 먼저 isLoading을 false로 설정
+  setMessages((prevMessages) => {
+    const updated = [...prevMessages];
+    updated[updated.length - 1].isLoading = false;
+    return updated;
+  });
+
+  // introMessage가 있으면 스트리밍 효과로 표시
+  if (args.introMessage) {
+    let displayedMessage = "";
+    const introMessage = args.introMessage;
+
+    // 글자 단위로 스트리밍 효과 구현
+    for (let i = 0; i < introMessage.length; i++) {
+      displayedMessage += introMessage[i];
+
+      setMessages((prevMessages) => {
+        const updated = [...prevMessages];
+        updated[updated.length - 1].content = displayedMessage;
+        return updated;
+      });
+
+      // 타이핑 효과를 위한 딜레이 (10-30ms)
+      await new Promise((resolve) =>
+        setTimeout(resolve, Math.random() * 20 + 10)
+      );
+    }
+  }
+
+  // 퀴즈 정보 설정
+  setMessages((prevMessages) => {
+    const updated = [...prevMessages];
+    updated[updated.length - 1].quiz = {
+      ...args.question,
+      isLoading: false,
+    };
+    return updated;
+  });
 };
 
 export const useSendTailQuestion = () => {

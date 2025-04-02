@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import { ChatPage } from "@/pages/chat";
 import { HomePage } from "@/pages/home";
 import { ChatPopUpLayout } from "@/pages/layout";
@@ -5,7 +7,11 @@ import { ChatPopUpLayout } from "@/pages/layout";
 import { ROUTES, useNavigate } from "@/features/navigate";
 
 const Router = () => {
-  const { currentPage } = useNavigate();
+  const { currentPage, setCurrentPage } = useNavigate();
+
+  useEffect(() => {
+    setCurrentPage(ROUTES.HOME);
+  }, []);
 
   const renderContent = () => {
     if (ROUTES.CHAT === currentPage) {

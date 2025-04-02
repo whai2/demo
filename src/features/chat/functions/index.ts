@@ -114,3 +114,51 @@ export const followupQuestionFunctions = [
     },
   },
 ];
+
+export const courseQuizFunctions = [
+  {
+    name: "course_quiz",
+    description: "현재 수강 중인 강의에 대한 객관식 퀴즈 문제를 생성합니다.",
+    parameters: {
+      type: "object",
+      properties: {
+        question: {
+          type: "object",
+          description:
+            "하나의 퀴즈 문제와 그에 따른 보기 및 정답 정보. 문제와 답은 정확해야 하며, 출제 오류가 없어야 합니다. (잘못 된 예: 정답이 1개라고 제시했는데, 실제는 복수 정답이 가능한 경우)",
+          properties: {
+            quiz: {
+              type: "string",
+              description:
+                "퀴즈 문제. 명확하고 수강 내용을 기반으로 해야 합니다.",
+            },
+            choices: {
+              type: "array",
+              items: {
+                type: "string",
+              },
+              minItems: 5,
+              maxItems: 5,
+              description:
+                "객관식 보기 5개. 정답이 혼동되지 않도록 명확히 구분되어야 합니다.",
+            },
+            answerIndex: {
+              type: "number",
+              minimum: 0,
+              maximum: 4,
+              description:
+                "정답인 보기의 인덱스 (0~4). quiz 내용과 일치해야 합니다.",
+            },
+          },
+          required: ["quiz", "choices", "answerIndex"],
+        },
+        introMessage: {
+          type: "string",
+          description:
+            "퀴즈 시작 전 수강생을 격려하는 메시지. 수강률이나 최근 학습 내용을 반영해야 합니다.",
+        },
+      },
+      required: ["question", "introMessage"],
+    },
+  },
+];

@@ -1,7 +1,10 @@
+// import { useState } from "react";
+
 import { Loading } from "@/shared/ui";
 import ReferenceToggle from "./ReferenceToggle";
 import TailQuestions from "./TailQuestion";
 import TextEditor from "./TextEditor";
+// import QuizBottomSheet from "./quiz/QuizBottomSheet";
 
 import { useChatStore } from "@/features/chat";
 import { useAutoScroll } from "../hooks/useAutoScroll";
@@ -10,6 +13,8 @@ import styled from "styled-components";
 
 function ChatPage() {
   const { messages, isLoading } = useChatStore();
+  // const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+
   const { containerRef } = useAutoScroll({ data: messages });
 
   const lastMessage = messages[messages.length - 1];
@@ -40,17 +45,15 @@ function ChatPage() {
                 </S.MessageWithProfile>
 
                 {message.recommendationCourses &&
-                  message.recommendationCourses.isLoading ? (
-                    <Loading />
-                  ) : (
-                    <div>
-                      {message.recommendationCourses?.courses.map(
-                        (course) => (
-                          <div key={course.name}>{course.name}</div>
-                        )
-                      )}
-                    </div>
-                  )}
+                message.recommendationCourses.isLoading ? (
+                  <Loading />
+                ) : (
+                  <div>
+                    {message.recommendationCourses?.courses.map((course) => (
+                      <div key={course.name}>{course.name}</div>
+                    ))}
+                  </div>
+                )}
               </S.MessageWithUnderObjects>
             </S.MessagePosition>
           )
@@ -65,6 +68,10 @@ function ChatPage() {
       {!isLoading && lastMessage && !lastMessage.isCourseRecommendation && (
         <TailQuestions lastMessage={lastMessage} />
       )}
+
+      {/* <BottomSheet>
+        <QuizBottomSheet handleClose={() => setIsBottomSheetOpen(false)} />
+      </BottomSheet> */}
     </S.Container>
   );
 }

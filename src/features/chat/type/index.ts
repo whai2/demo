@@ -11,7 +11,17 @@ export type MessageType = {
     isLoading: boolean;
     courses: RecommendationCourse[];
   };
+  quiz?: {
+    isLoading: boolean;
+    quiz: Quiz;
+  };
 };
+
+export interface Quiz {
+  quiz: string;
+  choices: string[];
+  answerIndex: number;
+}
 
 export interface RecommendationCourse {
   name: string;
