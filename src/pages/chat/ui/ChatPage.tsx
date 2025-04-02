@@ -5,11 +5,14 @@ import ReferenceToggle from "./ReferenceToggle";
 import TailQuestions from "./TailQuestion";
 import TextEditor from "./TextEditor";
 import IntentQuestionButton from "./courseRecommend/IntentQuestionButton";
+import RecommendCourse from "./courseRecommend/RecommendCourse";
 import Quiz from "./quiz/Quiz";
 // import QuizBottomSheet from "./quiz/QuizBottomSheet";
 
 import { useChatStore } from "@/features/chat";
 import { useAutoScroll } from "../hooks/useAutoScroll";
+
+import { ReactComponent as CoxwaveLogo } from "../assets/profile.svg";
 
 import styled from "styled-components";
 
@@ -33,7 +36,7 @@ function ChatPage() {
             <S.MessagePosition key={index} $isChatbot={true}>
               <S.MessageWithUnderObjects>
                 <S.MessageWithProfile>
-                  {/* <S.Profile /> */}
+                  <S.Profile />
                   <S.MessageContainer $isChatbot={true}>
                     <TextEditor text={message.content} />
                     {message.reference && message.reference.isLoading ? (
@@ -56,30 +59,39 @@ function ChatPage() {
 
                       return null;
                     })()}
-                    {message.recommendationCourses &&
-                    message.recommendationCourses.isLoading ? (
-                      <Loading />
-                    ) : (
-                      <IntentQuestionButton
-                        contents={message.recommendationCourses?.contents}
-                      />
-                    )}
+
+                    {(() => {
+                      const data = message.recommendationCourses;
+
+                      if (!data) return null;
+
+                      if (data.isLoading) {
+                        return <Loading />;
+                      }
+
+                      if (data.courses) {
+                        return (
+                          <S.CoursesContainer>
+                            {data.courses.map((course) => (
+                              <RecommendCourse
+                                key={course.name}
+                                course={course}
+                              />
+                            ))}
+                          </S.CoursesContainer>
+                        );
+                      }
+
+                      if (data.contents) {
+                        return (
+                          <IntentQuestionButton contents={data.contents} />
+                        );
+                      }
+
+                      return null;
+                    })()}
                   </S.MessageContainer>
                 </S.MessageWithProfile>
-
-                {message.recommendationCourses &&
-                message.recommendationCourses.isLoading ? (
-                  <Loading />
-                ) : (
-                  <div>
-                    {message.recommendationCourses &&
-                    message.recommendationCourses.courses
-                      ? message.recommendationCourses.courses.map((course) => (
-                          <div key={course.name}>{course.name}</div>
-                        ))
-                      : null}
-                  </div>
-                )}
               </S.MessageWithUnderObjects>
             </S.MessagePosition>
           )
@@ -179,14 +191,41 @@ const S = {
     align-self: stretch;
   `,
 
-  // Profile: styled(CamiProfile)`
-  //   flex-shrink: 0;
-  //   width: 24px;
-  //   height: 24px;
-  // `,
+  ProfileWrapper: styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #000;
+  `,
+
+  Profile: styled(CoxwaveLogo)`
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+  `,
 
   FileContainer: styled.div`
     display: flex;
     flex-direction: column;
+  `,
+
+  CoursesContainer: styled.div`
+    display: flex;
+    flex-direction: row;
+    padding: 0px 0px 1px 8px;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+    overflow-x: auto;
+    &::-webkit-scrollbar {
+      height: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #ccc;
+      border-radius: 4px;
+    }
   `,
 };

@@ -15,6 +15,10 @@ export const functions = [
                 type: "string",
                 description: "추천 강의 이름",
               },
+              category: {
+                type: "string",
+                description: "추천 강의 카테고리",
+              },
               price: {
                 type: "string",
                 description: "추천 강의 가격",
@@ -26,6 +30,10 @@ export const functions = [
               target: {
                 type: "string",
                 description: "추천 강의 대상",
+              },
+              url: {
+                type: "string",
+                description: "추천 강의와 유사한 이미지 링크. 실제 이미지가 있는 링크",
               },
             },
           },

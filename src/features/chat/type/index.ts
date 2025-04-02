@@ -28,19 +28,20 @@ export interface Quiz {
 
 export interface RecommendationCourse {
   name: string;
-  price: string;
+  category: string;
   duration: string;
   target: string;
+  price: string;
+  url: string;
 }
 
 export interface CourseRecommendation {
-  title: string;
-  description: string;
-  level: "beginner" | "intermediate" | "advanced";
+  courses: RecommendationCourse[];
 }
 
 export interface CourseInfo {
   name: string;
+  category: string;
   price: string;
   duration: string;
   target: string;

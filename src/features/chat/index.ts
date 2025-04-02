@@ -10,6 +10,7 @@ export type {
   CourseRecommendation,
   MessageType,
   Quiz,
+  RecommendationCourse,
 } from "./type";
 export {
   getTailQuestion,

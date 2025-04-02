@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from "react";
 
 import { getTailQuestion, useSendTailQuestion } from "@/features/chat";
 import { MessageType } from "@/features/chat/type";
+
+import { ReactComponent as CoxwaveLogo } from "../assets/logo.svg";
+
 import styled from "styled-components";
 
 function TailQuestions({ lastMessage }: { lastMessage: MessageType }) {
@@ -32,7 +35,8 @@ function TailQuestions({ lastMessage }: { lastMessage: MessageType }) {
   return (
     <S.Container>
       <S.TitleContainer>
-        <S.Title>추천 질문</S.Title>
+        <S.CoxwaveLogo as={CoxwaveLogo} />
+        <S.Title>AI 추천 질문</S.Title>
       </S.TitleContainer>
       {tailQuestions.map((question) => (
         <S.TailQuestion
@@ -61,7 +65,7 @@ const S = {
     padding-left: 50px;
   `,
 
-  CamiLogoInTailQuestions: styled.svg`
+  CoxwaveLogo: styled.svg`
     display: flex;
     color: black;
     width: 16px;
@@ -73,7 +77,7 @@ const S = {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 2px;
+    gap: 10px;
   `,
 
   Title: styled.div`
@@ -91,7 +95,7 @@ const S = {
     padding: 8px 12px;
     align-items: center;
     // gap: 10px;
-    border-radius: 8px;
+    border-radius: 12px;
     border: 1px solid var(--Semantic-Color-Border-border-primary, #d9dadb);
     background: var(--Miscellaneous-Sidebar-Fill---Selected, #fff);
     cursor: pointer;
