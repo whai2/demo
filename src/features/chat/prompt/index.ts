@@ -157,6 +157,9 @@ export const userEnhancePrompt = (userMessage: string) => {
   return `
     [사용자 질문]
     ${userMessage}
+
+    [필수 사항]
+    길이를 적당히 줄여서 답해주세요 (500자 내외)
   `;
 };
 

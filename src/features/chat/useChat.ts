@@ -4,17 +4,17 @@ import { functionChat, streamChat } from "./apis/chat.api";
 import {
   courseQuizFunctions,
   followupQuestionFunctions,
-  functions,
+  // functions,
   metaFunctions,
   referenceFunctions,
 } from "./functions";
 import {
-  courseFunctionPrompt,
+  // courseFunctionPrompt,
   courseQuizSystemPrompt,
-  courseRecommendationSystemPrompt,
+  // courseRecommendationSystemPrompt,
   currentCoursePrompt,
   followupQuestionPrompt,
-  formatCoursesToMarkdown,
+  // formatCoursesToMarkdown,
   generalQuestionSystemPrompt,
   metaIntentClassificationSystemPrompt,
   quizAnswerSystemPrompt,
@@ -603,15 +603,15 @@ export const useSendTailQuestion = () => {
 
 export const useSendQuizAnswer = (quiz: Quiz) => {
   const { setMessages } = useChatStore();
-  const { courseCategory, courseName, name, job, year } = useUserInfo();
+  const { name } = useUserInfo();
 
-  const currentCourses = courses.category.find(
-    (cat) => cat.name === courseCategory
-  );
+  // const currentCourses = courses.category.find(
+  //   (cat) => cat.name === courseCategory
+  // );
 
-  const course = currentCourses?.courses.find(
-    (course) => course.name === courseName
-  );
+  // const course = currentCourses?.courses.find( 
+  //   (course) => course.name === courseName
+  // );
 
   const sendQuizAnswerCallback = async (answer: string) => {
     const userMessage = quizAnswerUserPrompt(name, answer);

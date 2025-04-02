@@ -19,9 +19,13 @@ export const userIntentClassificationSystemPrompt = (
   사용자의 질문을 바탕으로 의도를 파악하여, 다음으로 배울 내용에 대해 ""질문하세요"".
 
   [강조 사항]
-  다음으로 배울 내용 추천에 대해 ""질문 형태로 물어보세요"".
-  중요한 점은, 강의 제목을 제공해서는 안 됩니다.
   대답은 """200자 이내로 짧게""" 제공하세요.
+  
+  인트로 멘트는 현재 수강률에 대한 격려 문구로 합니다.
+
+  다음으로 배울 내용 추천에 대해 ""질문 형태로 물어보세요"".
+  
+  중요한 점은, 강의 제목을 제공해서는 안 됩니다.
 `;
 
 export const courseRecommendationSystemPrompt = (
@@ -104,7 +108,7 @@ export const courseRecommendationUserPrompt = (
     ${coursesMarkdown}
 
     [필수 사항]
-    길이를 적당히 줄여서 답해주세요 (800자 내외)
+    길이를 적당히 줄여서 답해주세요 (500자 내외)
   `;
 };
 

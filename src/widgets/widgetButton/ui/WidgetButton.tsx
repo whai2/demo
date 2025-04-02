@@ -1,6 +1,9 @@
 import Alarm from "./Alarm";
 
 import { useAlarmStore, useTriggerInterval } from "@/features/alarm";
+import { useSendChat } from "@/features/chat";
+import { usePopUpOpen } from "@/features/popUpOpen";
+import { useNavigate, ROUTES } from "@/features/navigate";
 
 import styled from "styled-components";
 
@@ -11,9 +14,14 @@ function WidgetButton({
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }) {
-  const { isTriggered, data } = useAlarmStore();
+  const { isTriggered, data, setTriggered } = useAlarmStore();
+  const { setCurrentPage } = useNavigate();
+  const { setOpen } = usePopUpOpen();
+
   const { clipIdRef } = useTriggerInterval();
   const isCallToAction = data?.type === "callToAction";
+
+  const sendChatCallback = useSendChat();
 
   const handleClick = () => {
     setIsOpen(!isOpen);
@@ -28,7 +36,15 @@ function WidgetButton({
       {isTriggered ? (
         <Alarm
           key={clipIdRef.current}
-          onClick={() => {}}
+          onClick={async () => {
+            if (data.question) {
+              setOpen();
+              setTriggered(false);
+              setCurrentPage(ROUTES.CHAT);
+              await sendChatCallback(data.question, () => {
+              });
+            }
+          }}
           isCallToAction={isCallToAction}
           title={data.message}
         />
