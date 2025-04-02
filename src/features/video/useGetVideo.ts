@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 import { useUserInfo } from "@/features/userInfo";
 
@@ -32,13 +33,14 @@ interface VideoType {
   setIsTaken: (videoId: string, isTaken: boolean) => void;
 }
 
-export const videoStore = create<VideoType>()((set) => ({
-  videos: [],
-  totalDuration: "",
-  currentVideo: null,
-  currentVideoDescription: null,
-  progress: {},
-  setVideos: (videos) => set({ videos }),
+export const videoStore = create<VideoType>()(
+  persist((set) => ({
+    videos: [],
+    totalDuration: "",
+    currentVideo: null,
+    currentVideoDescription: null,
+    progress: {},
+    setVideos: (videos) => set({ videos }),
   setTotalDuration: (totalDuration) => set({ totalDuration }),
   setCurrentVideo: (currentVideo) => set({ currentVideo }),
   setCurrentVideoDescription: (currentVideoDescription) =>
@@ -52,8 +54,13 @@ export const videoStore = create<VideoType>()((set) => ({
       videos: state.videos.map((video) =>
         video.id === videoId ? { ...video, isTaken } : video
       ),
-    })),
-}));
+      })),
+  }),
+  {
+    name: "video",
+    }
+  )
+);
 
 export const useGetVideo = () => {
   const {

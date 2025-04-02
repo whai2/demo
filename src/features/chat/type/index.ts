@@ -8,17 +8,20 @@ export type MessageType = {
   };
   isCourseRecommendation?: boolean;
   recommendationCourses?: {
-    isLoading: boolean;
-    courses: RecommendationCourse[];
+    isLoading?: boolean;
+    courses?: RecommendationCourse[];
+    contents?: {
+      content: string;
+    }[];
   };
-  quiz?: {
+  courseQuiz?: {
     isLoading: boolean;
     quiz: Quiz;
   };
 };
 
 export interface Quiz {
-  quiz: string;
+  question: string;
   choices: string[];
   answerIndex: number;
 }

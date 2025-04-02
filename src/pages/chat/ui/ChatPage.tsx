@@ -4,6 +4,8 @@ import { Loading } from "@/shared/ui";
 import ReferenceToggle from "./ReferenceToggle";
 import TailQuestions from "./TailQuestion";
 import TextEditor from "./TextEditor";
+import IntentQuestionButton from "./courseRecommend/IntentQuestionButton";
+import Quiz from "./quiz/Quiz";
 // import QuizBottomSheet from "./quiz/QuizBottomSheet";
 
 import { useChatStore } from "@/features/chat";
@@ -15,11 +17,11 @@ function ChatPage() {
   const { messages, isLoading } = useChatStore();
   // const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
+  console.log(messages);
+
   const { containerRef } = useAutoScroll({ data: messages });
 
   const lastMessage = messages[messages.length - 1];
-
-  console.log(lastMessage);
 
   return (
     <S.Container ref={containerRef}>
@@ -41,6 +43,27 @@ function ChatPage() {
                         reference={message.reference?.reference}
                       />
                     )}
+                    {(() => {
+                      if (!message.courseQuiz) return null;
+
+                      if (message.courseQuiz.isLoading) {
+                        return <Loading />;
+                      }
+
+                      if (message.courseQuiz.quiz) {
+                        return <Quiz quiz={message.courseQuiz.quiz} />;
+                      }
+
+                      return null;
+                    })()}
+                    {message.recommendationCourses &&
+                    message.recommendationCourses.isLoading ? (
+                      <Loading />
+                    ) : (
+                      <IntentQuestionButton
+                        contents={message.recommendationCourses?.contents}
+                      />
+                    )}
                   </S.MessageContainer>
                 </S.MessageWithProfile>
 
@@ -49,9 +72,12 @@ function ChatPage() {
                   <Loading />
                 ) : (
                   <div>
-                    {message.recommendationCourses?.courses.map((course) => (
-                      <div key={course.name}>{course.name}</div>
-                    ))}
+                    {message.recommendationCourses &&
+                    message.recommendationCourses.courses
+                      ? message.recommendationCourses.courses.map((course) => (
+                          <div key={course.name}>{course.name}</div>
+                        ))
+                      : null}
                   </div>
                 )}
               </S.MessageWithUnderObjects>
@@ -65,9 +91,12 @@ function ChatPage() {
           </S.MessagePosition>
         )
       )}
-      {!isLoading && lastMessage && !lastMessage.isCourseRecommendation && (
-        <TailQuestions lastMessage={lastMessage} />
-      )}
+      {!isLoading &&
+        lastMessage &&
+        lastMessage.role &&
+        lastMessage.role === "assistant" &&
+        !lastMessage.isCourseRecommendation &&
+        !lastMessage.courseQuiz && <TailQuestions lastMessage={lastMessage} />}
 
       {/* <BottomSheet>
         <QuizBottomSheet handleClose={() => setIsBottomSheetOpen(false)} />

@@ -127,7 +127,7 @@ export const courseQuizFunctions = [
           description:
             "하나의 퀴즈 문제와 그에 따른 보기 및 정답 정보. 문제와 답은 정확해야 하며, 출제 오류가 없어야 합니다. (잘못 된 예: 정답이 1개라고 제시했는데, 실제는 복수 정답이 가능한 경우)",
           properties: {
-            quiz: {
+            question: {
               type: "string",
               description:
                 "퀴즈 문제. 명확하고 수강 내용을 기반으로 해야 합니다.",

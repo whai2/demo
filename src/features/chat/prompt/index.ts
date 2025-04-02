@@ -1,4 +1,4 @@
-import { CourseCategory, CourseInfo } from "../type";
+import { CourseCategory, CourseInfo, Quiz } from "../type";
 
 export const metaIntentClassificationSystemPrompt = (
   currentCoursePrompt: string
@@ -201,3 +201,31 @@ export function formatCoursesToMarkdown(courses: CourseCategory): string {
     })
     .join("\n---\n");
 }
+
+export const quizAnswerSystemPrompt = (quiz: Quiz, answer: string) => {
+  return `
+    당신은 사용자의 퀴즈 답변을 확인하고, 정답 여부를 판단해주는 교육 어시스턴트 AI입니다.
+    답변을 확인하고, 정답 여부를 판단해주세요.
+
+    [퀴즈 정보]
+    퀴즈 문제: ${quiz.question}
+    퀴즈 정답: ${quiz.choices[quiz.answerIndex]} 또는 ${quiz.answerIndex + 1}번 문항
+
+    [답변]
+    ${answer}
+
+    [필수 답변 사항]
+    정답 여부를 판단해주세요.
+    정답이 맞다면 축하해주세요.
+    정답이 틀렸다면 """절대 답을 알려주지 마세요""" 힌트를 제공하세요.
+  `;
+};
+
+export const quizAnswerUserPrompt = (name: string, answer: string) => {
+  return `
+    사용자의 이름은 ${name}입니다.
+    퀴즈 문제를 풀고 있습니다.
+
+    퀴즈의 답을 ${answer}로 했습니다.
+  `;
+};
