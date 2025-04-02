@@ -31,7 +31,10 @@ function ChatPage() {
       {messages.map((message, index) =>
         message.role && message.role === "assistant" ? (
           message.isLoading ? (
-            <Loading />
+            <S.MessageWithProfile>
+              <S.Profile />
+              <Loading />
+            </S.MessageWithProfile>
           ) : (
             <S.MessagePosition key={index} $isChatbot={true}>
               <S.MessageWithUnderObjects>

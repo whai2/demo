@@ -1,9 +1,12 @@
 import Alarm from "./Alarm";
 
 import { useAlarmStore, useTriggerInterval } from "@/features/alarm";
-import { useSendChat } from "@/features/chat";
+import { runRecommendationFlow, useChatStore } from "@/features/chat";
+import { courses } from "@/features/chat/constants/constants";
+import { CourseCategory, CourseInfo } from "@/features/chat/type";
+import { ROUTES, useNavigate } from "@/features/navigate";
 import { usePopUpOpen } from "@/features/popUpOpen";
-import { useNavigate, ROUTES } from "@/features/navigate";
+import { useUserInfo } from "@/features/userInfo";
 
 import styled from "styled-components";
 
@@ -17,11 +20,22 @@ function WidgetButton({
   const { isTriggered, data, setTriggered } = useAlarmStore();
   const { setCurrentPage } = useNavigate();
   const { setOpen } = usePopUpOpen();
+  const { setMessages, setIsLoading } = useChatStore();
+  const { courseCategory, courseName, name, job, year, courseAttendanceRate } =
+    useUserInfo();
+
+  const currentCourses = courses.category.find(
+    (cat) => cat.name === courseCategory
+  );
+
+  const course = currentCourses?.courses.find(
+    (course) => course.name === courseName
+  );
 
   const { clipIdRef } = useTriggerInterval();
   const isCallToAction = data?.type === "callToAction";
 
-  const sendChatCallback = useSendChat();
+  // const sendChatCallback = useSendChat();
 
   const handleClick = () => {
     setIsOpen(!isOpen);
@@ -41,8 +55,35 @@ function WidgetButton({
               setOpen();
               setTriggered(false);
               setCurrentPage(ROUTES.CHAT);
-              await sendChatCallback(data.question, () => {
-              });
+
+              setMessages((prevMessages) => [
+                ...prevMessages,
+                {
+                  role: "user",
+                  content: data.question as string,
+                  isLoading: false,
+                },
+              ]);
+
+              setIsLoading(true);
+
+              setMessages((prevMessages) => [
+                ...prevMessages,
+                { role: "assistant", content: "", isLoading: true },
+              ]);
+
+              await runRecommendationFlow(
+                data.question,
+                setMessages,
+                currentCourses as unknown as CourseCategory,
+                course as unknown as CourseInfo,
+                name,
+                job,
+                year,
+                courseAttendanceRate
+              );
+
+              setIsLoading(false);
             }
           }}
           isCallToAction={isCallToAction}

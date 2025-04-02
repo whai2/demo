@@ -4,31 +4,23 @@ import { functionChat, streamChat } from "./apis/chat.api";
 import {
   courseQuizFunctions,
   followupQuestionFunctions,
-  // functions,
   metaFunctions,
-  referenceFunctions,
 } from "./functions";
 import {
-  // courseFunctionPrompt,
   courseQuizSystemPrompt,
-  // courseRecommendationSystemPrompt,
   currentCoursePrompt,
   followupQuestionPrompt,
-  // formatCoursesToMarkdown,
-  generalQuestionSystemPrompt,
   metaIntentClassificationSystemPrompt,
   quizAnswerSystemPrompt,
-  referenceGeneratePrompt,
-  referenceQuestionPrompt,
-  userEnhancePrompt,
   quizAnswerUserPrompt,
+  userEnhancePrompt,
 } from "./prompt";
 
 import { useUserInfo } from "@/features/userInfo";
 import { courses } from "./constants/constants";
 
 import { runRecommendationFlow } from "./courseRecommend/useIntentClassification";
-
+import { runGeneralStreaming } from "./generalChat/useGeneralChat";
 import {
   ChatState,
   CourseCategory,
@@ -147,278 +139,20 @@ export const useSendChat = () => {
 
       setIsLoading(false);
     } catch (error) {
-      console.error(error);
+      await runGeneralStreaming(
+        currentText,
+        setMessages,
+        course as unknown as CourseInfo,
+        name,
+        job,
+        year
+      );
       setIsLoading(false);
     }
   };
 
   return sendChatCallback;
 };
-
-const runGeneralStreaming = async (
-  userMessage: string,
-  setMessages: (
-    messages: MessageType[] | ((prevMessages: MessageType[]) => MessageType[])
-  ) => void,
-  course: CourseInfo,
-  name: string,
-  job: string,
-  year: string
-) => {
-  const prompt = currentCoursePrompt(course);
-
-  const enhancedUserMessage = userEnhancePrompt(userMessage);
-
-  const response = await streamChat(
-    enhancedUserMessage,
-    generalQuestionSystemPrompt(prompt, name, job, year)
-  );
-
-  if (!response.ok || !response.body) {
-    throw new Error("네트워크 응답 실패");
-  }
-
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder("utf-8");
-  let assistantMessage = "";
-
-  setMessages((prevMessages) => {
-    const updatedMessages = [...prevMessages];
-    updatedMessages[updatedMessages.length - 1].isLoading = false;
-    return updatedMessages;
-  });
-
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-
-    const chunk = decoder.decode(value, { stream: true });
-    const lines = chunk.split("\n").filter((line) => line.trim() !== "");
-
-    for (const line of lines) {
-      if (line === "data: [DONE]") {
-        // 스트리밍 종료
-        break;
-      }
-
-      if (line.startsWith("data: ")) {
-        const jsonStr = line.replace("data: ", "").trim();
-
-        try {
-          const parsed = JSON.parse(jsonStr);
-          const delta = parsed.choices[0].delta;
-
-          // 일반 응답 텍스트 처리
-          if (delta?.content) {
-            assistantMessage += delta.content;
-            setMessages((prevMessages) => {
-              const updated = [...prevMessages];
-              updated[updated.length - 1].content = assistantMessage;
-              return updated;
-            });
-          }
-        } catch (error) {
-          console.error("JSON 파싱 에러", error);
-        }
-      }
-    }
-  }
-
-  const previousQuestion = userMessage;
-  const previousAnswer = assistantMessage;
-
-  setMessages((prevMessages) => {
-    const updated = [...prevMessages];
-    updated[updated.length - 1].reference = {
-      isLoading: true,
-      reference: null,
-    };
-    return updated;
-  });
-
-  const referenceResponse = await functionChat(
-    referenceQuestionPrompt(previousAnswer),
-    referenceGeneratePrompt(
-      currentCoursePrompt(course),
-      previousQuestion,
-      previousAnswer
-    ),
-    referenceFunctions
-  );
-
-  const responseData = await referenceResponse.json();
-  const functionCall = responseData.choices[0]?.message?.function_call;
-
-  if (!functionCall) {
-    setMessages((prevMessages) => {
-      const updated = [...prevMessages];
-      updated[updated.length - 1].reference = {
-        isLoading: false,
-        reference: null,
-      };
-      return updated;
-    });
-    return;
-  }
-
-  const args = JSON.parse(functionCall.arguments || "{}");
-
-  setMessages((prevMessages) => {
-    const updated = [...prevMessages];
-    updated[updated.length - 1].reference = {
-      ...args,
-      isLoading: false,
-    };
-    return updated;
-  });
-};
-
-// const runRecommendationFlow = async (
-//   userMessage: string,
-//   setMessages: (
-//     messages: MessageType[] | ((prevMessages: MessageType[]) => MessageType[])
-//   ) => void,
-//   currentCourses: CourseCategory,
-//   course: CourseInfo,
-//   name: string,
-//   job: string,
-//   year: string,
-//   courseAttendanceRate: number
-// ) => {
-//   const prompt = currentCoursePrompt(course);
-
-//   const coursesMarkdown = formatCoursesToMarkdown(currentCourses);
-
-//   const enhancedUserMessage = `
-//     [사용자 질문]
-//     ${userMessage}
-
-//     [현재 수강 중인 강의 목록 정보]
-//     ${prompt}
-
-//     [다음 강의 목록 정보]
-//     ${coursesMarkdown}
-
-//     [필수 사항]
-//     길이를 적당히 줄여서 답해주세요 (800자 내외)
-//   `;
-
-//   const response = await streamChat(
-//     enhancedUserMessage,
-//     courseRecommendationSystemPrompt(name, job, year, courseAttendanceRate)
-//   );
-
-//   if (!response.ok || !response.body) {
-//     throw new Error("네트워크 응답 실패");
-//   }
-
-//   setMessages((prevMessages) => {
-//     const updatedMessages = [...prevMessages];
-//     updatedMessages[updatedMessages.length - 1].isLoading = false;
-//     updatedMessages[updatedMessages.length - 1].isCourseRecommendation = true;
-//     return updatedMessages;
-//   });
-
-//   while (true) {
-//     const reader = response.body.getReader();
-//     const decoder = new TextDecoder("utf-8");
-//     let assistantMessage = "";
-
-//     setMessages((prevMessages) => {
-//       const updatedMessages = [...prevMessages];
-//       updatedMessages[updatedMessages.length - 1].isLoading = false;
-//       return updatedMessages;
-//     });
-
-//     while (true) {
-//       const { done, value } = await reader.read();
-//       if (done) break;
-
-//       const chunk = decoder.decode(value, { stream: true });
-//       const lines = chunk.split("\n").filter((line) => line.trim() !== "");
-
-//       for (const line of lines) {
-//         if (line === "data: [DONE]") {
-//           // 스트리밍 종료
-//           break;
-//         }
-
-//         if (line.startsWith("data: ")) {
-//           const jsonStr = line.replace("data: ", "").trim();
-
-//           try {
-//             const parsed = JSON.parse(jsonStr);
-//             const delta = parsed.choices[0].delta;
-
-//             // 일반 응답 텍스트 처리
-//             if (delta?.content) {
-//               assistantMessage += delta.content;
-//               setMessages((prevMessages) => {
-//                 const updated = [...prevMessages];
-//                 updated[updated.length - 1].content = assistantMessage;
-//                 return updated;
-//               });
-//             }
-//           } catch (error) {
-//             console.error("JSON 파싱 에러", error);
-//           }
-//         }
-//       }
-//     }
-
-//     let generatedAnswer = "";
-//     setMessages((prevMessages) => {
-//       const updated = [...prevMessages];
-//       generatedAnswer = updated[updated.length - 1].content;
-//       updated[updated.length - 1].recommendationCourses = {
-//         isLoading: true,
-//         courses: [],
-//       };
-//       return updated;
-//     });
-
-//     const getRecommendationCoursesResponse = await functionChat(
-//       enhancedUserMessage,
-//       courseFunctionPrompt(name, job, year, generatedAnswer),
-//       functions
-//     );
-
-//     if (
-//       !getRecommendationCoursesResponse.ok ||
-//       !getRecommendationCoursesResponse.body
-//     ) {
-//       throw new Error("네트워크 응답 실패");
-//     }
-
-//     const getRecommendationCoursesResponseData =
-//       await getRecommendationCoursesResponse.json();
-//     const functionCall =
-//       getRecommendationCoursesResponseData.choices[0]?.message?.function_call;
-
-//     if (!functionCall) {
-//       setMessages((prevMessages) => {
-//         const updated = [...prevMessages];
-//         updated[updated.length - 1].recommendationCourses = {
-//           isLoading: false,
-//           courses: [],
-//         };
-//         return updated;
-//       });
-//       return;
-//     }
-
-//     const args = JSON.parse(functionCall.arguments || "{}");
-
-//     setMessages((prevMessages) => {
-//       const updated = [...prevMessages];
-//       updated[updated.length - 1].recommendationCourses = {
-//         isLoading: false,
-//         courses: args.courses || [],
-//       };
-//       return updated;
-//     });
-//   }
-// };
 
 export const getTailQuestion = async (messages: MessageType[]) => {
   const lastAssistantMessage = [...messages]
@@ -609,7 +343,7 @@ export const useSendQuizAnswer = (quiz: Quiz) => {
   //   (cat) => cat.name === courseCategory
   // );
 
-  // const course = currentCourses?.courses.find( 
+  // const course = currentCourses?.courses.find(
   //   (course) => course.name === courseName
   // );
 

@@ -4,6 +4,8 @@ export {
   productivityCourses,
 } from "./constants/constants";
 export { useCourseRecommendChat } from "./courseRecommend/useCourseRecommendChat";
+export { runGeneralStreaming } from "./generalChat/useGeneralChat";
+export { runRecommendationFlow } from "./courseRecommend/useIntentClassification";
 export type {
   Course,
   CourseInfo,
