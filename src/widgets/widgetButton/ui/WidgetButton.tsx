@@ -1,12 +1,19 @@
 import Alarm from "./Alarm";
 
 import { useAlarmStore, useTriggerInterval } from "@/features/alarm";
-import { runRecommendationFlow, useChatStore } from "@/features/chat";
+import {
+  runCourseQuizFlow,
+  runRecommendationFlow,
+  useChatStore,
+} from "@/features/chat";
 import { courses } from "@/features/chat/constants/constants";
 import { CourseCategory, CourseInfo } from "@/features/chat/type";
 import { ROUTES, useNavigate } from "@/features/navigate";
 import { usePopUpOpen } from "@/features/popUpOpen";
 import { useUserInfo } from "@/features/userInfo";
+
+import { ReactComponent as CloseIcon } from "../assets/close.svg";
+import { ReactComponent as ChatIcon } from "../assets/logo.svg";
 
 import styled from "styled-components";
 
@@ -17,10 +24,10 @@ function WidgetButton({
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }) {
-  const { isTriggered, data, setTriggered } = useAlarmStore();
+  const { isTriggered, data, setTriggered, isQuiz } = useAlarmStore();
   const { setCurrentPage } = useNavigate();
   const { setOpen } = usePopUpOpen();
-  const { setMessages, setIsLoading } = useChatStore();
+  const { setMessages, setIsLoading, setIsQuiz, setLastQuiz } = useChatStore();
   const { courseCategory, courseName, name, job, year, courseAttendanceRate } =
     useUserInfo();
 
@@ -44,7 +51,17 @@ function WidgetButton({
   return (
     <S.ChatContainer>
       <S.ChatButton onClick={handleClick} $isOpen={isOpen}>
-        <S.Text $isOpen={isOpen}>AI 챗봇</S.Text>
+        {isOpen ? (
+          <>
+            <S.Text $isOpen={isOpen}>닫기</S.Text>
+            <CloseIcon />
+          </>
+        ) : (
+          <>
+            <S.ChatIcon />
+            <S.Text $isOpen={isOpen}>AI 챗봇</S.Text>
+          </>
+        )}
       </S.ChatButton>
 
       {isTriggered ? (
@@ -71,6 +88,22 @@ function WidgetButton({
                 ...prevMessages,
                 { role: "assistant", content: "", isLoading: true },
               ]);
+
+              if (isQuiz) {
+                await runCourseQuizFlow(
+                  data.question,
+                  setMessages,
+                  setIsQuiz,
+                  setLastQuiz,
+                  course as unknown as CourseInfo,
+                  name,
+                  job,
+                  year,
+                  courseAttendanceRate
+                );
+
+                return;
+              }
 
               await runRecommendationFlow(
                 data.question,
@@ -114,13 +147,13 @@ const S = {
     justify-content: center;
 
     padding: ${({ $isOpen }) =>
-      $isOpen ? "10px 12px 10px 18px;" : "10px 12px 10px 10px"};
-    gap: ${({ $isOpen }) => ($isOpen ? "10px" : "2px")};
+      $isOpen ? "10px 12px 10px 22px;" : "10px 12px 10px 10px"};
+    gap: ${({ $isOpen }) => ($isOpen ? "10px" : "10px")};
 
     background-color: ${({ theme, $isOpen }) =>
       $isOpen
         ? theme.floatingButton?.openChat?.backgroundColor ?? "#000"
-        : theme.floatingButton?.closeChat?.backgroundColor ?? "#51A1CA"};
+        : theme.floatingButton?.closeChat?.backgroundColor ?? "#1A2A9C"};
 
     @supports (-webkit-touch-callout: none) {
       width: 100px;
@@ -141,5 +174,10 @@ const S = {
     font-style: normal;
     font-weight: 700;
     line-height: 24px;
+  `,
+
+  ChatIcon: styled(ChatIcon)`
+    width: 24px;
+    height: 24px;
   `,
 };

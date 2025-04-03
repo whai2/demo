@@ -15,7 +15,7 @@ function IntentQuestionButton({
     <S.Container>
       {contents.map((content, index) => (
         <S.Button key={index} onClick={() => callback(content.content)}>
-          {content.content}
+          <S.ButtonText>{content.content}</S.ButtonText>
         </S.Button>
       ))}
     </S.Container>
@@ -43,10 +43,17 @@ const S = {
     border: 1px solid #d9dadb;
     background: #fff;
     cursor: pointer;
-    font-size: 12px;
 
     &:hover {
       background: #f5f5f5;
     }
+  `,
+
+  ButtonText: styled.span`
+    font-size: 12px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: left;
   `,
 };

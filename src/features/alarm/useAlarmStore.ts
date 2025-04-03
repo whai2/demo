@@ -21,6 +21,7 @@ interface AlarmState {
   isCallToActionDoing: boolean;
   isOverHalf: boolean;
   isOverNinety: boolean;
+  isQuiz?: boolean;
   setTriggered: (value: boolean) => void;
   setData: (data: AlarmMessageInstanceType) => void;
   setLastDefaultDataNumber: (number: number) => void;
@@ -141,6 +142,7 @@ export const useTriggerInterval = () => {
       useAlarmStore.setState({
         isTriggered: true,
         isCallToActionDoing: true,
+        isQuiz: true,
         isOverHalf: isOverHalf ?? false,
         isOverNinety: isOverNinety ?? false,
         data: { ...selectedItem },

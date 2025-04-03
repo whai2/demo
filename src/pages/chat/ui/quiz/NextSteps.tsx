@@ -16,7 +16,7 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
             await nextQuizCallback(nextSteps.nextQuiz);
           }}
         >
-          {nextSteps.nextQuiz}
+          <S.ButtonText>{nextSteps.nextQuiz}</S.ButtonText>
         </S.Button>
       )}
       {nextSteps.referenceNeeded && (
@@ -25,7 +25,7 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
             await quizReferenceCallback(nextSteps.referenceNeeded);
           }}
         >
-          {nextSteps.referenceNeeded}
+          <S.ButtonText>{nextSteps.referenceNeeded}</S.ButtonText>
         </S.Button>
       )}
       {nextSteps.nextCourse && (
@@ -34,7 +34,7 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
             console.log("nextCourse");
           }}
         >
-          {nextSteps.nextCourse}
+          <S.ButtonText>{nextSteps.nextCourse}</S.ButtonText>
         </S.Button>
       )}
     </S.Container>
@@ -62,10 +62,17 @@ const S = {
     border: 1px solid #d9dadb;
     background: #fff;
     cursor: pointer;
-    font-size: 12px;
 
     &:hover {
       background: #f5f5f5;
     }
+  `,
+
+  ButtonText: styled.span`
+    font-size: 12px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: left;
   `,
 };

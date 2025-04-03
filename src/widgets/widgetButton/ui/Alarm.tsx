@@ -79,7 +79,7 @@ const S = {
     align-items: center;
     gap: 10px;
     border-radius: var(--Radius-radiusSM, 8px);
-    background: ${(props) => (props.$isCallToAction ? "#4072FF" : "#171B1F")};
+    background: ${(props) => (props.$isCallToAction ? "#51A1CA" : "#171B1F")};
     max-width: 300px;
   `,
 
@@ -105,7 +105,7 @@ const S = {
 
   AlarmCorner: styled(AlarmCorner)<{ $isCallToAction: boolean }>`
     path {
-      color: ${(props) => (props.$isCallToAction ? "#4072FF" : "#171B1F")};
+      color: ${(props) => (props.$isCallToAction ? "#51A1CA" : "#171B1F")};
     }
   `,
 };

@@ -1,17 +1,46 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import YouTube from "react-youtube";
 
 import { useAlarmStore } from "@/features/alarm";
+import { courses } from "@/features/chat";
 import { useUserInfo } from "@/features/userInfo";
-import { parseDuration, useGetVideo, videoStore } from "@/features/video";
+import { parseDuration, parseDurationToSeconds, useGetVideo, videoStore } from "@/features/video";
+
+import { ReactComponent as Bar } from "../assets/bar.svg";
 
 import styled from "styled-components";
 
 const YoutubePlaylist = () => {
-  const { currentVideo, videos, totalDuration, setCurrentVideo } =
+  const { currentVideo, videos, setCurrentVideo } =
     useGetVideo();
-  const { setIsTaken } = videoStore();
-  const { setCourseAttendanceRate } = useUserInfo();
+  const { setIsTaken, progress } = videoStore();
+  const {
+    setCourseAttendanceRate,
+    courseCategory,
+    courseName,
+    courseAttendanceRate,
+    reset,
+  } = useUserInfo();
+
+  const currentCourses = courses.category.find(
+    (cat) => cat.name === courseCategory
+  );
+
+  const course = currentCourses?.courses.find(
+    (course) => course.name === courseName
+  );
+
+  const currentVideoDuration = parseDurationToSeconds(
+    currentVideo?.duration ?? ""
+  );
+
+  const currentVideoId = currentVideo?.id;
+  const currentVideoProgress = progress[currentVideoId ?? ""];
+
+  const progressPercentage = currentVideoDuration
+    ? (currentVideoProgress / currentVideoDuration) * 100
+    : 0;
+
 
   useEffect(() => {
     setIsTaken(videos[0]?.id, true);
@@ -23,14 +52,26 @@ const YoutubePlaylist = () => {
     setCourseAttendanceRate(takenVideos.length / videos.length);
   }, [videos, currentVideo]);
 
+  // console.log(progress);
+
   return (
     <S.Container>
       <S.Content>
         {currentVideo && currentVideo.id && (
           <>
             <S.TopBar>
-              <div>{currentVideo.snippet.title}</div>
-              <div>{totalDuration}</div>
+              <S.UserInfoButton onClick={reset}>
+                <S.ButtonText>강의 정보 변경</S.ButtonText>
+              </S.UserInfoButton>
+              <S.TopBarInner>
+                <S.TopBarCategory>{courseCategory}</S.TopBarCategory>
+                <Bar />
+                <S.TopBarTitle>{course?.name}</S.TopBarTitle>
+              </S.TopBarInner>
+              <S.AttendanceRate>
+                <div>전체 수강률 {courseAttendanceRate * 100}%</div>
+                <div>차시 수강률 {progressPercentage ? progressPercentage.toFixed(0) : 0}%</div>
+              </S.AttendanceRate>
             </S.TopBar>
             <S.VideoContainer>
               <InteractiveYouTubePlayer videoId={currentVideo.id} />
@@ -43,21 +84,42 @@ const YoutubePlaylist = () => {
         </S.BottomBar>
       </S.Content>
       <S.SideBar>
-        <S.SideBarHeader>강의 목차</S.SideBarHeader>
-        {videos.map((video: any, index: number) => (
-          <S.SideBarItem
-            key={video.id}
-            active={currentVideo?.id === video.id}
-            onClick={() => {
-              useAlarmStore.getState().reset();
-              setCurrentVideo(video);
-              setIsTaken(video.id, true);
-            }}
-          >
-            {index + 1}. {video.snippet.title}
-            <S.Duration>{parseDuration(video.duration)}</S.Duration>
-          </S.SideBarItem>
-        ))}
+        <S.SideBarHeader>
+          <S.SideBarHeaderInner>
+            <S.SideBarHeaderInnerInner>
+              <S.SideBarHeaderText>강의 목차</S.SideBarHeaderText>
+            </S.SideBarHeaderInnerInner>
+          </S.SideBarHeaderInner>
+        </S.SideBarHeader>
+
+        <S.SideBarUnderBar />
+
+        <S.SideBarContent>
+          {course &&
+            course.content &&
+            videos.map((video: any, index: number) => {
+              const item = course.content[index];
+              const sessionTitle = item && Object.keys(item)[0];
+              const contentTitle =
+                item && item[sessionTitle as keyof typeof item];
+
+              return (
+                <S.SideBarItem
+                  key={video.id}
+                  active={currentVideo?.id === video.id}
+                  onClick={() => {
+                    useAlarmStore.getState().reset();
+                    setCurrentVideo(video);
+                    setIsTaken(video.id, true);
+                  }}
+                >
+                  <S.Number>[{sessionTitle}]</S.Number>
+                  {contentTitle}
+                  <S.Duration>{parseDuration(video.duration)}</S.Duration>
+                </S.SideBarItem>
+              );
+            })}
+        </S.SideBarContent>
       </S.SideBar>
     </S.Container>
   );
@@ -67,57 +129,56 @@ export default YoutubePlaylist;
 
 const InteractiveYouTubePlayer = ({ videoId }: { videoId: string }) => {
   const { progress, setProgress } = videoStore();
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const hasSeeked = useRef(false);
 
-  // const onReady = (event: any) => {
-  //   const savedTime = progress[videoId];
 
-  //   if (savedTime) {
-  //     event.target.seekTo(savedTime);
-  //   }
+  const onReady = (event: any) => {
+    const savedTime = progress[videoId];
 
-  //   setInterval(() => {
-  //     const currentTime = event.target.getCurrentTime();
+    if (savedTime) {
+      event.target.seekTo(savedTime);
+    }
 
-  //     if (currentTime) {
-  //       setProgress(videoId, currentTime);
-  //     }
-  //   }, 500);
-  // };
+    setInterval(() => {
+      const currentTime = event.target.getCurrentTime();
+
+      if (currentTime) {
+        setProgress(videoId, currentTime);
+      }
+    }, 500);
+  };
 
   const onStateChange = (event: any) => {
-    const player = event.target;
+    // const player = event.target;
     const playerState = event.data;
 
-    if (playerState === 1) {
-      // ✅ PLAYING일 때: 처음 한 번만 seekTo
-      if (!hasSeeked.current) {
-        const savedTime = progress[videoId];
-        if (savedTime) {
-          player.seekTo(savedTime, true);
-        }
-        hasSeeked.current = true;
-      }
+    // if (playerState === 1) {
+    //   // ✅ PLAYING일 때: 처음 한 번만 seekTo
+    //   if (!hasSeeked.current) {
+    //     const savedTime = progress[videoId];
+    //     if (savedTime) {
+    //       player.seekTo(savedTime, true);
+    //     }
+    //     hasSeeked.current = true;
+    //   }
 
-      // 감지 시작
-      if (intervalRef.current) clearInterval(intervalRef.current);
+    //   // 감지 시작
+    //   if (intervalRef.current) clearInterval(intervalRef.current);
 
-      intervalRef.current = setInterval(() => {
-        const currentTime = player.getCurrentTime();
+    //   intervalRef.current = setInterval(() => {
+    //     const currentTime = player.getCurrentTime();
 
-        if (currentTime) {
-          console.log("currentTime", currentTime);
-          setProgress(videoId, currentTime);
-        }
-      }, 500);
-    } else {
-      // 정지/종료 시 감지 멈추기
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    }
+    //     if (currentTime) {
+    //       console.log("currentTime", currentTime);
+    //       setProgress(videoId, currentTime);
+    //     }
+    //   }, 500);
+    // } else {
+    //   // 정지/종료 시 감지 멈추기
+    //   if (intervalRef.current) {
+    //     clearInterval(intervalRef.current);
+    //     intervalRef.current = null;
+    //   }
+    // }
 
     // 영상이 일시정지 되었을 때
     if (playerState === 2) {
@@ -132,7 +193,7 @@ const InteractiveYouTubePlayer = ({ videoId }: { videoId: string }) => {
       <YouTube
         videoId={videoId}
         opts={{ width: "100%", height: "100%" }}
-        // onReady={onReady}
+        onReady={onReady}
         onStateChange={onStateChange}
       />
     </S.PlayerWrapper>
@@ -150,17 +211,23 @@ const S = {
     width: 400px;
     height: 100%;
     background-color: #f4f4f4;
-    padding: 20px;
+    // padding: 20px;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
   `,
 
   SideBarItem: styled.div<{ active: boolean }>`
-    padding: 10px;
+    padding: 16px 24px;
     margin-bottom: 8px;
     cursor: pointer;
     border-radius: 5px;
-    background-color: ${({ active }) => (active ? "#ddd" : "transparent")};
+    display: flex;
+    width: 343px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    background-color: ${({ active }) => (active ? "#eaeaea" : "#fff")};
+    border-radius: 4px;
 
     &:hover {
       background-color: #eaeaea;
@@ -186,10 +253,66 @@ const S = {
   `,
 
   SideBarHeader: styled.div`
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #51a1ca;
+    display: flex;
+    align-items: center;
+    flex: 1 0 0;
+    align-self: stretch;
+    padding: 0 0 20px 0;
+  `,
+
+  SideBarHeaderInner: styled.div`
+    display: flex;
+    width: 277px;
+    padding: 0px 24px;
+    align-items: flex-start;
+    align-self: stretch;
+  `,
+
+  SideBarHeaderInnerInner: styled.div`
+    display: flex;
+    width: 253px;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    align-self: stretch;
+  `,
+
+  SideBarHeaderText: styled.div`
+    padding-top: 30px;
+    display: flex;
+    width: 49px;
+    flex-direction: column;
+    justify-content: center;
+    align-self: stretch;
+    color: #1a2a9c;
+    font-feature-settings: "liga" off, "clig" off;
+
+    /* Body2_bold_14 */
+    font-family: Pretendard;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 24px; /* 171.429% */
+    white-space: nowrap;
+  `,
+
+  SideBarUnderBar: styled.div`
+    margin-left: 15px;
+    width: 80px;
+    height: 4px;
+    align-self: stretch;
+    background: #1a2a9c;
+  `,
+
+  SideBarContent: styled.div`
+    display: flex;
+    width: 391px;
+    height: 791px;
+    padding: 24px 24px 0px 24px;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
   `,
 
   Duration: styled.div`
@@ -214,14 +337,62 @@ const S = {
     }
   `,
 
+  UserInfoButton: styled.button`
+    display: inline-flex;
+    padding: 8px 12px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    border-radius: 4px;
+    background: #1a2a9c;
+  `,
+
+  ButtonText: styled.span`
+    color: #fff;
+    font-family: Pretendard;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 28px; /* 200% */
+  `,
+
   TopBar: styled.div`
     width: 100%;
-    height: 60px;
+    height: 100px;
     border-bottom: 1px solid #ddd;
     display: flex;
     align-items: center;
     padding: 0 40px;
     justify-content: space-between;
+  `,
+
+  TopBarInner: styled.div`
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+  `,
+
+  TopBarTitle: styled.span`
+    color: var(--GrayBlackColor_13, #212121);
+    font-feature-settings: "liga" off, "clig" off;
+
+    /* Body1_bold_16 */
+    font-family: Pretendard;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 28px; /* 175% */
+  `,
+
+  TopBarCategory: styled.span`
+    color: #6e6e73;
+    font-feature-settings: "liga" off, "clig" off;
+    font-family: Pretendard;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 28px; /* 175% */
   `,
 
   BottomBar: styled.div`
@@ -262,5 +433,21 @@ const S = {
     &:hover {
       background-color: #0056b3;
     }
+  `,
+
+  Number: styled.div`
+    align-self: stretch;
+    color: #97999b;
+    font-family: Pretendard;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px; /* 160% */
+  `,
+
+  AttendanceRate: styled.div`
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
   `,
 };

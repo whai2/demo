@@ -16,6 +16,7 @@ interface UserInfoType {
   setCourseName: (name: string) => void;
   setIsLogin: (isLogin: boolean) => void;
   setCourseAttendanceRate: (rate: number) => void;
+  reset: () => void;
 }
 
 export const useUserInfo = create<UserInfoType>()((set) => ({
@@ -34,4 +35,14 @@ export const useUserInfo = create<UserInfoType>()((set) => ({
   setCourseName: (name) => set({ courseName: name }),
   setIsLogin: (isLogin) => set({ isLogin }),
   setCourseAttendanceRate: (rate) => set({ courseAttendanceRate: rate }),
+  reset: () =>
+    set({
+      name: "",
+      job: "",
+      year: "",
+      courseCategory: "",
+      courseName: "",
+      isLogin: false,
+      courseAttendanceRate: 0,
+    }),
 }));

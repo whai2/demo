@@ -247,10 +247,18 @@ const S = {
     overflow-x: auto;
     &::-webkit-scrollbar {
       height: 6px;
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
     }
+
     &::-webkit-scrollbar-thumb {
       background-color: #ccc;
       border-radius: 4px;
+    }
+
+    /* 호버 시에만 스크롤바 표시 */
+    &:hover::-webkit-scrollbar {
+      opacity: 1;
     }
   `,
 };

@@ -34,8 +34,15 @@ const S = {
     gap: 10px;
     width: 100%;
     flex-shrink: 0;
+    display: flex;
+    padding: 8px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
     border-radius: 3px;
-    border: 0.5px solid #f5f5f5;
+    background: #edf5f9;
+    cursor: pointer;
   `,
 
   Wrapper: styled.div`
