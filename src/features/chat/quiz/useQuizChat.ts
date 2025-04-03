@@ -36,8 +36,9 @@ export const runCourseQuizFlow = async (
 ) => {
   const prompt = currentCoursePrompt(course);
 
-  const types = ["객관식"];
+  const types = ["단답형"];
   const randomType = types[Math.floor(Math.random() * types.length)];
+  console.log(types, randomType)
 
   const enhancedUserMessage = `
     [사용자 질문]
@@ -142,7 +143,7 @@ export const runCourseQuizFlow = async (
   setIsQuiz(true);
 };
 
-export const useSendQuizAnswer = (quiz: Quiz) => {
+export const useSendQuizAnswer = (quiz: Quiz | Quiz2) => {
   const { setMessages, setIsQuiz } = useChatStore();
   const { name } = useUserInfo();
 
@@ -423,7 +424,7 @@ export const useNextQuiz = () => {
 
   const prompt = currentCoursePrompt(course as unknown as CourseInfo);
 
-  const types = ["객관식"];
+  const types = ["객관식", "단답형"];
   const randomType = types[Math.floor(Math.random() * types.length)];
 
   const nextQuizCallback = async (nextQuiz: string) => {

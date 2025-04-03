@@ -6,8 +6,9 @@ import TailQuestions from "./TailQuestion";
 import TextEditor from "./TextEditor";
 import IntentQuestionButton from "./courseRecommend/IntentQuestionButton";
 import RecommendCourse from "./courseRecommend/RecommendCourse";
-import Quiz from "./quiz/Quiz";
 import NextSteps from "./quiz/NextSteps";
+import Quiz from "./quiz/Quiz";
+import Quiz2 from "./quiz/Quiz2";
 // import QuizBottomSheet from "./quiz/QuizBottomSheet";
 
 import { useChatStore } from "@/features/chat";
@@ -58,7 +59,13 @@ function ChatPage() {
                       }
 
                       if (message.courseQuiz.quiz) {
-                        return <Quiz quiz={message.courseQuiz.quiz} />;
+                        if ("choices" in message.courseQuiz.quiz) {
+                          return <Quiz quiz={message.courseQuiz.quiz} />;
+                        } else if ("answerText" in message.courseQuiz.quiz) {
+                          return (
+                            <Quiz2 quiz={message.courseQuiz.quiz as Quiz2} />
+                          );
+                        }
                       }
 
                       return null;

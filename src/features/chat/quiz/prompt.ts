@@ -61,11 +61,11 @@ export const quizAnswerSystemPrompt = (quiz: Quiz | Quiz2, answer: string) => {
 
     [필수 답변 사항]
     정답 여부를 판단해주세요.
+    오답의 경우, 답을 알려주지 마세요.
     
     [필수 사항]
     퀴즈 풀이 이후, 다음 의사를 물어 봅니다.
-    오답인 경우, 관련 자료를 받을 지, 더 쉬운 문제를 풀지 물어봅니다.
-    정답인 경우, 다음 강의를 들을지, 더 쉬운 문제를 풀지 물어봅니다.
+    오답의 경우, 답을 알려주지 마세요.
   `;
 };
 
@@ -98,6 +98,7 @@ export const quizAnswerUserPrompt = (name: string, answer: string) => {
 
     퀴즈의 답을 ${answer}로 했습니다.
 
+    [필수 사항]
     오답의 경우, 답을 알려주지 말고, 참고 자료를 제시할 지 의사를 물어주세요.
   `;
 };
