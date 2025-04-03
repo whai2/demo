@@ -139,6 +139,8 @@ export const useSendChat = () => {
           year
         );
       }
+      
+      setIsLoading(false);
     } catch (error) {
       console.error("Failed to generate follow-up questions:", error);
       // await runGeneralStreaming(
