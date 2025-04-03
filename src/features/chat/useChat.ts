@@ -126,7 +126,8 @@ export const useSendChat = () => {
           course as unknown as CourseInfo,
           name,
           job,
-          year
+          year,
+          courseAttendanceRate
         );
       } else {
         await runGeneralStreaming(

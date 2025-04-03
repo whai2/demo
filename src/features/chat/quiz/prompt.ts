@@ -5,7 +5,8 @@ export const courseQuizSystemPrompt = (
   currentCoursePrompt: string,
   name: string,
   job: string,
-  year: string
+  year: string,
+  courseAttendanceRate?: number
 ) => {
   return `
     당신은 현재 수강 중인 강의에 대한 퀴즈 문제를 생성해주는 교육 어시스턴트 AI입니다.
@@ -17,6 +18,10 @@ export const courseQuizSystemPrompt = (
 
     [필수 사항]
     사용자의 이름은 ${name}이고, 직무는 ${job}이며, 연차는 ${year}입니다.
+    또한, 현재 수강률은 ${
+      courseAttendanceRate ? `${courseAttendanceRate * 100}%` : "0%"
+    }입니다.
+  
     해당 직무와 연차로 수준을 고려하세요.
     그리고 수강중인 강의에 맞게 퀴즈 문제를 생성해주세요.
   `;
@@ -59,14 +64,8 @@ export const quizAnswerSystemPrompt = (quiz: Quiz | Quiz2, answer: string) => {
     
     [필수 사항]
     퀴즈 풀이 이후, 다음 의사를 물어 봅니다.
-    
-    정답인 경우:
-    예시1. 조금 더 어려운 문제를 풀어볼래요.
-    예시2. 다음 강의를 듣고 싶어요.
-
-    오답인 경우:
-    예시1. 조금 쉬운 문제를 풀어볼래요.
-    예시2. 관련 자료를 받고 싶어요.
+    오답인 경우, 관련 자료를 받을 지, 더 쉬운 문제를 풀지 물어봅니다.
+    정답인 경우, 다음 강의를 들을지, 더 쉬운 문제를 풀지 물어봅니다.
   `;
 };
 
@@ -98,6 +97,8 @@ export const quizAnswerUserPrompt = (name: string, answer: string) => {
     퀴즈 문제를 풀고 있습니다.
 
     퀴즈의 답을 ${answer}로 했습니다.
+
+    오답의 경우, 답을 알려주지 말고, 참고 자료를 제시할 지 의사를 물어주세요.
   `;
 };
 

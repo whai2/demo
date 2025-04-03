@@ -158,7 +158,7 @@ export const useTriggerInterval = () => {
       }, 8 * 1000);
     };
 
-    const { isOverHalf, isOverNinety } = useAlarmStore.getState();
+    const { isOverHalf } = useAlarmStore.getState();
 
     const currentVideoDuration = parseDurationToSeconds(
       currentVideo?.duration ?? ""
@@ -171,15 +171,10 @@ export const useTriggerInterval = () => {
       ? (currentVideoProgress / currentVideoDuration) * 100
       : 0;
 
-    const hasPassed50Percent = progressPercentage >= 50;
-    const hasPassed90Percent = progressPercentage >= 90;
+    const hasPassed50Percent = progressPercentage >= 80;
 
     if (hasPassed50Percent && !isOverHalf) {
       triggerAlarm(true, false);
-    }
-
-    if (hasPassed90Percent && !isOverNinety) {
-      triggerAlarm(true, true);
     }
   }, [currentVideo, progress]);
 

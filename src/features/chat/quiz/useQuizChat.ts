@@ -31,7 +31,8 @@ export const runCourseQuizFlow = async (
   course: CourseInfo,
   name: string,
   job: string,
-  year: string
+  year: string,
+  courseAttendanceRate?: number
 ) => {
   const prompt = currentCoursePrompt(course);
 
@@ -55,7 +56,7 @@ export const runCourseQuizFlow = async (
 
   const response = await functionChat(
     enhancedUserMessage,
-    courseQuizSystemPrompt(prompt, name, job, year),
+    courseQuizSystemPrompt(prompt, name, job, year, courseAttendanceRate),
     courseQuizFunctions
   );
 
@@ -547,9 +548,9 @@ export const useNextQuiz = () => {
 };
 
 export const useQuizReference = () => {
-  const { setMessages, setIsLoading, setIsQuiz, setLastQuiz, lastQuiz } =
+  const { setMessages, lastQuiz } =
     useChatStore();
-  const { courseCategory, courseName, name, job, year, courseAttendanceRate } =
+  const { courseCategory, courseName } =
     useUserInfo();
 
   const currentCourses = courses.category.find(
@@ -574,7 +575,7 @@ export const useQuizReference = () => {
     const previousQuestion = question;
     // const previousAnswer = assistantMessage;
     const introMessage =
-      "퀴즈에 대한 참고 자료를 생성하고 있습니다.\n 아래의 참고 자료로 돌아가 복습해보는 것도 좋을 것 같아요!";
+      "퀴즈에 대한 참고 자료를 보여드릴게요!\n 아래의 참고 자료로 돌아가 복습해보는 것도 좋을 것 같아요!";
 
     let displayedMessage = "";
 
