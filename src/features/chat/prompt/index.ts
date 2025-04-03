@@ -1,4 +1,4 @@
-import { CourseInfo, Quiz } from "../type";
+import { CourseInfo, Quiz, Quiz2 } from "../type";
 
 export const metaIntentClassificationSystemPrompt = (
   currentCoursePrompt: string
@@ -18,24 +18,24 @@ export const metaIntentClassificationSystemPrompt = (
   `;
 };
 
-export const courseQuizSystemPrompt = (
-  currentCoursePrompt: string,
-  name: string,
-  job: string,
-  year: string
+export const quizIntentClassificationSystemPrompt = (
+  answer: string,
+  quiz: Quiz | Quiz2
 ) => {
   return `
-    당신은 현재 수강 중인 강의에 대한 퀴즈 문제를 생성해주는 교육 어시스턴트 AI입니다.
+    당신은 사용자의 입력을 분석해 intent를 분류하는 AI입니다.
+    intent는 다음 두 가지 중 하나입니다:
+    
+    1. quiz_answer: 사용자가 퀴즈 정답을 확인하고자 할 때
+    2. others: 퀴즈 정답 확인 외의 다른 의도
 
-    현재 수강 중인 강의에 대한 퀴즈 문제를 생성해주세요.
+    사용자의 입력:
+    ${answer}
 
-    [현재 수강 중인 강의 목록 정보]
-    ${currentCoursePrompt}
+    퀴즈 문제:
+    ${quizMarkdownPrompt(quiz)}
 
-    [필수 사항]
-    사용자의 이름은 ${name}이고, 직무는 ${job}이며, 연차는 ${year}입니다.
-    해당 직무와 연차로 수준을 고려하세요.
-    그리고 수강중인 강의에 맞게 퀴즈 문제를 생성해주세요.
+    이를 통해, intent를 분석하세요.
   `;
 };
 
@@ -64,6 +64,16 @@ export const userEnhancePrompt = (userMessage: string) => {
   `;
 };
 
+export const userEnhanceQuizPrompt = (userMessage: string) => {
+  return `
+    [사용자 질문]
+    ${userMessage}
+
+    [필수 사항]
+    이 질문을 토대로, 사용자의 의도를 분석해 주세요.
+  `;
+};
+
 export const currentCoursePrompt = (currentCourse: CourseInfo) => {
   return `
   ### 📘 ${currentCourse.name}
@@ -81,32 +91,25 @@ export const currentCoursePrompt = (currentCourse: CourseInfo) => {
   `;
 };
 
-export const quizAnswerSystemPrompt = (quiz: Quiz, answer: string) => {
+export const quizMarkdownPrompt = (quiz: Quiz | Quiz2) => {
+  if ("choices" in quiz) {
+    return `
+    ### 📌 현재 퀴즈 문제
+
+    **문제:** ${quiz.question}
+
+    **보기:**
+    ${quiz.choices.map((choice, idx) => `- ${idx + 1}. ${choice}`).join("\n")}
+
+    **정답 인덱스:** ${quiz.answerIndex + 1}
+    `;
+  }
+
   return `
-    당신은 사용자의 퀴즈 답변을 확인하고, 정답 여부를 판단해주는 교육 어시스턴트 AI입니다.
-    답변을 확인하고, 정답 여부를 판단해주세요.
+    ### 📌 현재 퀴즈 문제
 
-    [퀴즈 정보]
-    퀴즈 문제: ${quiz.question}
-    퀴즈 정답: ${quiz.choices[quiz.answerIndex]} 또는 ${
-    quiz.answerIndex + 1
-  }번 문항
+    **문제:** ${quiz.question}
 
-    [답변]
-    ${answer}
-
-    [필수 답변 사항]
-    정답 여부를 판단해주세요.
-    정답이 맞다면 축하해주세요.
-    정답이 틀렸다면 """절대 답을 알려주지 마세요""" 힌트를 제공하세요.
-  `;
-};
-
-export const quizAnswerUserPrompt = (name: string, answer: string) => {
-  return `
-    사용자의 이름은 ${name}입니다.
-    퀴즈 문제를 풀고 있습니다.
-
-    퀴즈의 답을 ${answer}로 했습니다.
+    **정답:** ${quiz.answerText}
   `;
 };

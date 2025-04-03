@@ -7,7 +7,7 @@ import { BackDrop } from "@/shared/ui";
 import { useHandleAnswerStyle } from "../hooks/useHandleAnswerStyle";
 import { useHandleInputSize } from "../hooks/useHandleInputSize";
 
-import { useSendChat } from "@/features/chat";
+import { useChatStore, useSendChat } from "@/features/chat";
 import { usePopUpOpen } from "@/features/popUpOpen";
 
 import { ReactComponent as SendIcon } from "../assets/send.svg";
@@ -20,7 +20,8 @@ function Input() {
   const { isOpen } = usePopUpOpen();
   const { setCurrentPage } = useNavigate();
 
-  const sendChatCallback = useSendChat();
+  const { sendChatCallback, sendQuizAnswer } = useSendChat();
+  const { isQuiz, lastQuiz } = useChatStore();
 
   const {
     answerStyleTitle,
@@ -47,7 +48,11 @@ function Input() {
 
       if (text.trim() !== "") {
         setCurrentPage(ROUTES.CHAT);
-        await sendChatCallback(text, setText);
+        if (isQuiz && lastQuiz) {
+          await sendQuizAnswer(text, lastQuiz, setText);
+        } else {
+          await sendChatCallback(text, setText);
+        }
       }
     }
   };

@@ -1,11 +1,11 @@
-import { streamChat, functionChat } from "../apis/chat.api";
+import { functionChat, streamChat } from "../apis/chat.api";
+import { referenceFunctions } from "./functionCall";
 import {
   courseGeneralChatUserPrompt,
   generalQuestionSystemPrompt,
   referenceGenerateSystemPrompt,
   referenceGenerateUserPrompt,
 } from "./prompt";
-import { referenceFunctions } from "./functionCall";
 
 import { CourseInfo, MessageType } from "../type";
 

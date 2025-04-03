@@ -5,11 +5,10 @@ import styled from "styled-components";
 
 function Quiz({ quiz }: { quiz: Quiz }) {
   const sendQuizAnswerCallback = useSendQuizAnswer(quiz);
-  console.log("quiz", quiz);
   return (
     <S.Container>
       <div>{quiz.question}</div>
-      {quiz.choices.map((choice, index) => (
+      {quiz.choices && quiz.choices.map((choice, index) => (
         <QuizItem
           key={index}
           choice={choice}

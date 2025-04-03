@@ -18,12 +18,21 @@ export type MessageType = {
     isLoading: boolean;
     quiz: Quiz;
   };
+  userResult?: {
+    isLoading: boolean;
+    nextSteps?: string[];
+  };
 };
 
 export interface Quiz {
   question: string;
   choices: string[];
   answerIndex: number;
+}
+
+export interface Quiz2 {
+  question: string;
+  answerText: string;
 }
 
 export interface RecommendationCourse {
@@ -64,9 +73,13 @@ export interface ChatState {
   messages: MessageType[];
   isLoading: boolean;
   recommendations: CourseRecommendation[];
+  isQuiz: boolean;
+  lastQuiz: Quiz | null;
   setMessages: (
     messages: MessageType[] | ((prevMessages: MessageType[]) => MessageType[])
   ) => void;
   setIsLoading: (isLoading: boolean) => void;
   setRecommendations: (recommendations: CourseRecommendation[]) => void;
+  setIsQuiz: (isQuiz: boolean) => void;
+  setLastQuiz: (lastQuiz: Quiz | null) => void;
 }

@@ -7,6 +7,7 @@ import TextEditor from "./TextEditor";
 import IntentQuestionButton from "./courseRecommend/IntentQuestionButton";
 import RecommendCourse from "./courseRecommend/RecommendCourse";
 import Quiz from "./quiz/Quiz";
+import NextSteps from "./quiz/NextSteps";
 // import QuizBottomSheet from "./quiz/QuizBottomSheet";
 
 import { useChatStore } from "@/features/chat";
@@ -20,11 +21,11 @@ function ChatPage() {
   const { messages, isLoading } = useChatStore();
   // const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
-  console.log(messages);
-
   const { containerRef } = useAutoScroll({ data: messages });
 
   const lastMessage = messages[messages.length - 1];
+
+  // console.log("lastMessage", lastMessage);
 
   return (
     <S.Container ref={containerRef}>
@@ -89,6 +90,20 @@ function ChatPage() {
                         return (
                           <IntentQuestionButton contents={data.contents} />
                         );
+                      }
+
+                      return null;
+                    })()}
+
+                    {(() => {
+                      if (!message.userResult) return null;
+
+                      if (message.userResult.isLoading) {
+                        return <Loading />;
+                      }
+
+                      if (message.userResult) {
+                        return <NextSteps nextSteps={message.userResult} />;
                       }
 
                       return null;
