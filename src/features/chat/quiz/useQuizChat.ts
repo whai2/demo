@@ -36,7 +36,7 @@ export const runCourseQuizFlow = async (
 ) => {
   const prompt = currentCoursePrompt(course);
 
-  const types = ["단답형"];
+  const types = ["객관식", "단답형"];
   const randomType = types[Math.floor(Math.random() * types.length)];
   console.log(types, randomType)
 
