@@ -163,8 +163,6 @@ export const currentCoursePrompt = (currentCourse: CourseInfo) => {
   ### 📘 ${currentCourse.name}
 
     - **강의 개요**: ${currentCourse.description}
-    - **⏱ 총 강의 시간**: ${currentCourse.duration}
-    - **🎯 수강 대상**: ${currentCourse.target}
 
     #### 📚 커리큘럼
     1. ${currentCourse.content[0]["1차시"]}
