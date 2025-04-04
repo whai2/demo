@@ -23,7 +23,7 @@ export const courseQuizFunctions = [
               minItems: 4,
               maxItems: 4,
               description:
-                "객관식 보기 4개. 정답이 혼동되지 않도록 명확히 구분되어야 합니다.",
+                "객관식 보기 4개. 정답이 혼동되지 않도록 명확히 구분되어야 합니다. 넘버링은 금지이며, 문제 문장만 제시해야 합니다.",
             },
             answerIndex: {
               type: "number",

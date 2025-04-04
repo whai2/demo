@@ -100,7 +100,7 @@ export const courseGeneralChatUserPrompt = (
     [사용자 질문]
     ${userMessage}
 
-    [현재 수강 중인 강의 목록 정보]
+    [현재 수강 중인 강의 차시 정보]
     ${currentCoursePrompt2(currentCourse)}
   `;
 };
@@ -140,7 +140,7 @@ const currentCoursePrompt2 = (currentCourse: CourseInfo) => {
   return `
 
     ### 사용자가 보고 있는 차시
-    [1차시]
+    1. ${currentCourse.content[0]["1차시"]}
 
     ### 📚 커리큘럼
     1. ${currentCourse.content[0]["1차시"]}
