@@ -10,6 +10,7 @@ import { useHandleInputSize } from "../hooks/useHandleInputSize";
 import { useChatStore, useSendChat } from "@/features/chat";
 import { usePopUpOpen } from "@/features/popUpOpen";
 
+import { ReactComponent as LogoIcon } from "../assets/logo.svg";
 import { ReactComponent as SendIcon } from "../assets/send.svg";
 
 import styled from "styled-components";
@@ -77,18 +78,21 @@ function Input() {
         />
 
         <S.ChatSendContainer>
-          <S.AnswerStylesBox
-            $disabled={false}
-            onClick={handleAnswerStyleToggle}
-          >
-            <S.Text
-              $isTextInput={text !== ""}
-              $isAnswerStylesOpen={isAnswerStylesOpen}
+          <S.LogoContainer>
+            <S.LogoIcon />
+            <S.AnswerStylesBox
               $disabled={false}
+              onClick={handleAnswerStyleToggle}
             >
-              {answerStyleTitle}
-            </S.Text>
-          </S.AnswerStylesBox>
+              <S.Text
+                $isTextInput={text !== ""}
+                $isAnswerStylesOpen={isAnswerStylesOpen}
+                $disabled={false}
+              >
+                {answerStyleTitle}
+              </S.Text>
+            </S.AnswerStylesBox>
+          </S.LogoContainer>
           <S.SendIcon
             $isTextInput={text !== ""}
             $disabled={false}
@@ -244,5 +248,17 @@ const S = {
     cursor: ${({ $disabled }) => ($disabled ? "not-allowed" : "pointer")};
 
     flex-shrink: 0;
+  `,
+
+  LogoContainer: styled.div`
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  `,
+
+  LogoIcon: styled(LogoIcon)`
+    width: 16px;
+    height: 16px;
+    transform: translate(0, 1.2px);
   `,
 };

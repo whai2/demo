@@ -13,7 +13,7 @@ const alarmMessages = {
     },
     {
       message: "맞춤 복습 퀴즈 준비했어요!\n지금까지 배운 내용 복습하고 갈까요?",
-      question: "배운 내용을 복습하고 싶어.",
+      question: "배운 내용을 복습하고 싶어요.",
     },
   ],
 };

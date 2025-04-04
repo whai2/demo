@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 
 import { courses } from "@/features/chat";
 import { COURSE_CATEGORY, JOBS, useUserInfo, YEARS } from "@/features/userInfo";
+import { usePopUpOpen } from "@/features/popUpOpen";
+
 import { ReactComponent as CoxwaveLogo } from "@/shared/assets/coxwave.svg";
 import { ReactComponent as Arrow } from "../assets/arrow.svg";
 
 import styled from "styled-components";
 
 function LoginPage() {
+  const { setOpen, setFirstModalOpen } = usePopUpOpen();
   const [isJobOpen, setIsJobOpen] = useState(false);
   const [isYearOpen, setIsYearOpen] = useState(false);
   const [isCourseCategoryOpen, setIsCourseCategoryOpen] = useState(false);
@@ -93,6 +96,8 @@ function LoginPage() {
     if (!isLoginActive) return;
 
     setIsLogin(true);
+    setOpen();
+    setFirstModalOpen();
   };
 
   return (

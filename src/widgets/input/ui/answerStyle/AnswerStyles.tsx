@@ -2,6 +2,8 @@ import AnswerStyle from "./AnswerStyle";
 
 import answerStyleList from "../../constant/constant";
 
+import { ReactComponent as LogoIcon } from "../../assets/logo.svg";
+
 import styled from "styled-components";
 
 type AnswerStylesProps = {
@@ -16,6 +18,7 @@ function AnswerStyles({
   return (
     <S.Container>
       <S.Header>
+        <S.LogoContainer />
         <S.HeaderTitle>답변스타일</S.HeaderTitle>
       </S.Header>
       {answerStyleList.map((item) => (
@@ -73,5 +76,10 @@ const S = {
     font-style: normal;
     font-weight: 600;
     line-height: 18px; /* 150% */
+  `,
+
+  LogoContainer: styled(LogoIcon)`
+    width: 16px;
+    height: 16px;
   `,
 };
