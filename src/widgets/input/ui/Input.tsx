@@ -97,6 +97,8 @@ function Input() {
             $isTextInput={text !== ""}
             $disabled={false}
             onClick={async () => {
+              if (text.trim() === "") return;
+
               setCurrentPage(ROUTES.CHAT);
               await sendChatCallback(text, setText);
             }}
