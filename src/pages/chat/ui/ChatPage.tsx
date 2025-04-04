@@ -135,7 +135,8 @@ function ChatPage() {
         lastMessage.role &&
         lastMessage.role === "assistant" &&
         !lastMessage.isCourseRecommendation &&
-        !lastMessage.courseQuiz && <TailQuestions lastMessage={lastMessage} />}
+        !lastMessage.courseQuiz &&
+        !lastMessage.userResult && <TailQuestions lastMessage={lastMessage} />}
 
       {/* <BottomSheet>
         <QuizBottomSheet handleClose={() => setIsBottomSheetOpen(false)} />
@@ -247,21 +248,6 @@ const S = {
     gap: 8px;
     width: 100%;
     overflow-x: auto;
-    &::-webkit-scrollbar {
-      height: 6px;
-      opacity: 0;
-      transition: opacity 0.2s ease-in-out;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: #ccc;
-      border-radius: 4px;
-    }
-
-    /* 호버 시에만 스크롤바 표시 */
-    &:hover::-webkit-scrollbar {
-      opacity: 1;
-    }
   `,
 
   ContinuedMessageList: styled.div`
