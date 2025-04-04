@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { Quiz2 } from "@/features/chat";
 import { useSendQuizAnswer } from "@/features/chat";
@@ -10,6 +10,11 @@ import styled from "styled-components";
 function Quiz2({ quiz }: { quiz: Quiz2 }) {
   const [text, setText] = useState("");
   const sendQuizAnswerCallback = useSendQuizAnswer(quiz);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    textareaRef.current?.focus();
+  }, []);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(event.target.value);
@@ -19,6 +24,7 @@ function Quiz2({ quiz }: { quiz: Quiz2 }) {
     <S.Container>
       <S.Question>Q. {quiz.question}</S.Question>
       <S.TextArea
+        ref={textareaRef}
         placeholder="답변을 작성하고 'Ctrl + Enter'를 눌러주세요."
         value={text}
         onChange={handleInputChange}
