@@ -43,6 +43,7 @@ const S = {
     border-radius: 3px;
     background: #edf5f9;
     cursor: pointer;
+    height: 150px;
   `,
 
   Wrapper: styled.div`
@@ -64,7 +65,7 @@ const S = {
   Category: styled.span`
     color: var(--Color-11, #979fad);
     font-family: Pretendard;
-    font-size: 14px;
+    font-size: 12px;
     font-style: normal;
     font-weight: 400;
     line-height: 132%; /* 6.316px */
@@ -74,7 +75,7 @@ const S = {
   Title: styled.span`
     color: var(--Color-2, #000);
     font-family: Pretendard;
-    font-size: 14px;
+    font-size: 12px;
     font-style: normal;
     font-weight: 700;
     line-height: 136%; /* 8.459px */
@@ -92,7 +93,7 @@ const S = {
   Year: styled.span`
     color: var(--Color-10, #979fad);
     font-family: Pretendard;
-    font-size: 14px;
+    font-size: 11px;
     font-style: normal;
     font-weight: 300;
     line-height: 132%; /* 6.316px */
@@ -103,7 +104,7 @@ const S = {
   Price: styled.span`
     color: var(--Black, #000);
     font-family: Pretendard;
-    font-size: 14px;
+    font-size: 12px;
     font-style: normal;
     font-weight: 700;
     line-height: 132%; /* 6.316px */
