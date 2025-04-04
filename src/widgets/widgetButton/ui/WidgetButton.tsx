@@ -95,6 +95,7 @@ function WidgetButton({
                   setMessages,
                   setIsQuiz,
                   setLastQuiz,
+                  setIsLoading,
                   course as unknown as CourseInfo,
                   name,
                   job,
