@@ -48,10 +48,14 @@ export const nextQuizSystemPrompt = (
   `;
 };
 
-export const quizAnswerSystemPrompt = (quiz: Quiz | Quiz2, answer: string) => {
+export const quizAnswerSystemPrompt = (
+  quiz: Quiz | Quiz2,
+  answer: string,
+  name: string
+) => {
   return `
     당신은 질문자의 퀴즈 답변을 확인하고, 정답 여부를 판단해주는 교육 어시스턴트 AI입니다.
-    답변을 확인하고, 정답 여부를 판단해주세요.
+    ${name}님의 답변을 확인하고, 정답 여부를 판단해주세요.
 
     # 퀴즈 정보
     ${quizMarkdownPrompt(quiz)}
@@ -94,16 +98,15 @@ export const referenceGenerateSystemPrompt = (
 // user prompt
 export const quizAnswerUserPrompt = (name: string, answer: string) => {
   return `
-    사용자의 이름은 ${name}입니다.
-    퀴즈 문제를 풀고 있습니다.
+    저는 ${name}입니다. 퀴즈 문제를 풀고 있습니다.
 
-    퀴즈의 답을 ${answer}로 했습니다.
+    퀴즈의 답을 ${answer}로 했습니다. 퀴즈의 정답을 알려주세요.
 
     ## 필수 사항
     오답의 경우, 답을 알려주지 말세요.
     참고 자료를 제시할 지 의사를 물어주세요.
     
-    ## 세부 규칙: 마크다운
+    ## 세부 규칙
     다음 텍스트의 내용을 의미 단위로 나눠서 문단을 구성해 주세요.
 
     [답변 예시]

@@ -83,7 +83,7 @@ export const courseQuizAnswerFunctions = [
   {
     name: "quiz_correct",
     description:
-      "퀴즈 정답 확인합니다. 정답인 경우, 이후 사용자의 다음 의사를 묻습니다.",
+      "퀴즈 정답 확인합니다. 정답인 경우, 이후 사용자의 다음 의사를 평서문으로 묻습니다.",
     parameters: {
       type: "object",
       properties: {
@@ -113,7 +113,7 @@ export const courseQuizAnswerFunctions = [
   {
     name: "quiz_incorrect",
     description:
-      "퀴즈 정답 확인합니다. 오답인 경우, 이후 사용자의 다음 의사를 묻습니다.",
+      "퀴즈 정답 확인합니다. 오답인 경우, 이후 사용자의 다음 의사를 평서문으로 묻습니다.",
     parameters: {
       type: "object",
       properties: {

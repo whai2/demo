@@ -7,24 +7,26 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
   const quizReferenceCallback = useQuizReference();
   const { setMessages, setIsLoading } = useChatStore();
 
+  console.log(nextSteps);
+
   return (
     <S.Container>
       {nextSteps.nextQuiz && (
         <S.Button
           onClick={async () => {
-            await nextQuizCallback(nextSteps.nextQuiz);
+            await nextQuizCallback(nextSteps.isCorrect ? "좀 더 어려운 문제를 풀고 싶어요.": "좀 더 쉬운 문제를 풀고 싶어요.");
           }}
         >
-          <S.ButtonText>{nextSteps.nextQuiz}</S.ButtonText>
+          <S.ButtonText>{nextSteps.isCorrect ? "좀 더 어려운 문제를 풀고 싶어요.": "좀 더 쉬운 문제를 풀고 싶어요."}</S.ButtonText>
         </S.Button>
       )}
       {nextSteps.referenceNeeded && (
         <S.Button
           onClick={async () => {
-            await quizReferenceCallback(nextSteps.referenceNeeded);
+            await quizReferenceCallback("관련 자료를 받고 싶어요.");
           }}
         >
-          <S.ButtonText>{nextSteps.referenceNeeded}</S.ButtonText>
+          <S.ButtonText>관련 자료를 받고 싶어요.</S.ButtonText>
         </S.Button>
       )}
       {nextSteps.nextCourse && (
@@ -80,7 +82,7 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
             }
           }}
         >
-          <S.ButtonText>{nextSteps.nextCourse}</S.ButtonText>
+          <S.ButtonText>다음 강의로 넘어가고 싶어요.</S.ButtonText>
         </S.Button>
       )}
     </S.Container>

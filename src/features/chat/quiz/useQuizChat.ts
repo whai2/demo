@@ -179,7 +179,7 @@ export const useSendQuizAnswer = (quiz: Quiz | Quiz2) => {
 
     const response = await streamChat(
       userMessage,
-      quizAnswerSystemPrompt(quiz, answer)
+      quizAnswerSystemPrompt(quiz, answer, name)
     );
 
     setMessages((prevMessages) => {
@@ -252,7 +252,7 @@ export const useSendQuizAnswer = (quiz: Quiz | Quiz2) => {
 
     const answerResponse = await functionChat(
       userMessage,
-      quizAnswerSystemPrompt(quiz, answer),
+      quizAnswerSystemPrompt(quiz, answer, name),
       courseQuizAnswerFunctions
     );
 
@@ -325,7 +325,7 @@ export const runCourseQuizAnswerFlow = async (
 
   const response = await streamChat(
     userMessage,
-    quizAnswerSystemPrompt(quiz, currentText)
+    quizAnswerSystemPrompt(quiz, currentText, name)
   );
 
   setMessages((prevMessages) => {
@@ -395,7 +395,7 @@ export const runCourseQuizAnswerFlow = async (
 
   const answerResponse = await functionChat(
     userMessage,
-    quizAnswerSystemPrompt(quiz, userMessage),
+    quizAnswerSystemPrompt(quiz, userMessage, name),
     courseQuizAnswerFunctions
   );
 
