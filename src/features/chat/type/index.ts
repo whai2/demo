@@ -75,6 +75,7 @@ export interface ChatState {
   recommendations: CourseRecommendation[];
   isQuiz: boolean;
   lastQuiz: Quiz | null;
+  answerStyle: string;
   setMessages: (
     messages: MessageType[] | ((prevMessages: MessageType[]) => MessageType[])
   ) => void;
@@ -82,4 +83,5 @@ export interface ChatState {
   setRecommendations: (recommendations: CourseRecommendation[]) => void;
   setIsQuiz: (isQuiz: boolean) => void;
   setLastQuiz: (lastQuiz: Quiz | null) => void;
+  setAnswerStyle: (answerStyle: string) => void;
 }

@@ -17,13 +17,14 @@ export const runGeneralStreaming = async (
   course: CourseInfo,
   name: string,
   job: string,
-  year: string
+  year: string,
+  answerStyle: string
 ) => {
   const enhancedUserMessage = courseGeneralChatUserPrompt(userMessage, course);
 
   const response = await streamChat(
     enhancedUserMessage,
-    generalQuestionSystemPrompt(name, job, year)
+    generalQuestionSystemPrompt(name, job, year, answerStyle)
   );
 
   if (!response.ok || !response.body) {

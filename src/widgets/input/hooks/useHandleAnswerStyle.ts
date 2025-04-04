@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 
+import { useChatStore } from "@/features/chat";
 import answerStyleList from "../constant/constant";
 
 export const useHandleAnswerStyle = () => {
+  const { setAnswerStyle, answerStyle } = useChatStore();
   const [isFirst, setIsFirst] = useState(true);
   const [isAnswerStylesOpen, setIsAnswerStylesOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(1);
@@ -38,6 +40,10 @@ export const useHandleAnswerStyle = () => {
 
   useEffect(() => {
     setAnswerStyleRequestParams(
+      answerStyleList.find((item) => item.id === selectedOption)
+        ?.requestParams || ""
+    );
+    setAnswerStyle(
       answerStyleList.find((item) => item.id === selectedOption)
         ?.requestParams || ""
     );

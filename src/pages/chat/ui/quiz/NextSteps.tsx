@@ -6,7 +6,6 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
   const nextQuizCallback = useNextQuiz();
   const quizReferenceCallback = useQuizReference();
   const { setMessages, setIsLoading } = useChatStore();
-  console.log("nextSteps", nextSteps);
 
   return (
     <S.Container>
@@ -31,7 +30,6 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
       {nextSteps.nextCourse && (
         <S.Button
           onClick={async () => {
-            console.log("nextCourse");
             setMessages((prevMessages) => [
               ...prevMessages,
               { role: "user", content: nextSteps.nextCourse, isLoading: false },

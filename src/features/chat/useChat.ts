@@ -31,6 +31,7 @@ export const useChatStore = create<ChatState>((set) => ({
   recommendations: [],
   isQuiz: false,
   lastQuiz: null,
+  answerStyle: "",
   setMessages: (messages) =>
     set((state) => ({
       messages:
@@ -41,10 +42,11 @@ export const useChatStore = create<ChatState>((set) => ({
   setRecommendations: (recommendations) => set({ recommendations }),
   setIsQuiz: (isQuiz) => set({ isQuiz }),
   setLastQuiz: (lastQuiz) => set({ lastQuiz }),
+  setAnswerStyle: (answerStyle) => set({ answerStyle }),
 }));
 
 export const useSendChat = () => {
-  const { setMessages, setIsLoading, setIsQuiz, setLastQuiz } = useChatStore();
+  const { setMessages, setIsLoading, setIsQuiz, setLastQuiz, answerStyle } = useChatStore();
   const { courseCategory, courseName, name, job, year, courseAttendanceRate } =
     useUserInfo();
 
@@ -100,7 +102,8 @@ export const useSendChat = () => {
           course as unknown as CourseInfo,
           name,
           job,
-          year
+          year,
+          answerStyle
         );
       } else if (intent === "course_recommendation") {
         // ✅ 강의 추천 흐름 (2단계)
@@ -139,7 +142,7 @@ export const useSendChat = () => {
           year
         );
       }
-      
+
       setIsLoading(false);
     } catch (error) {
       console.error("Failed to generate follow-up questions:", error);
