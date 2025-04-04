@@ -28,7 +28,8 @@ export const useCourseRecommendChat = () => {
     const enhancedUserMessage = courseRecommendationUserPrompt(
       course as unknown as CourseInfo,
       currentCourses as unknown as CourseCategory,
-      userMessage
+      userMessage,
+      courseCategory
     );
 
     setMessages((prevMessages) => [
@@ -45,9 +46,16 @@ export const useCourseRecommendChat = () => {
 
     const response = await streamChat(
       enhancedUserMessage,
-      courseRecommendationSystemPrompt(name, job, year, courseAttendanceRate)
+      courseRecommendationSystemPrompt(
+        name,
+        job,
+        year,
+        courseAttendanceRate,
+        course as unknown as CourseInfo,
+        currentCourses as unknown as CourseCategory,
+        courseCategory
+      )
     );
-
     if (!response.ok || !response.body) {
       throw new Error("네트워크 응답 실패");
     }
@@ -119,7 +127,13 @@ export const useCourseRecommendChat = () => {
 
       const getRecommendationCoursesResponse = await functionChat(
         enhancedUserMessage,
-        courseFunctionSystemPrompt(name, job, year, generatedAnswer),
+        courseFunctionSystemPrompt(
+          name,
+          job,
+          year,
+          generatedAnswer,
+          courseCategory
+        ),
         functions
       );
 

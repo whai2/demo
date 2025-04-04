@@ -32,14 +32,14 @@ export const courseRecommendationSystemPrompt = (
   name: string,
   job: string,
   year: string,
-  courseAttendanceRate: number | undefined
+  courseAttendanceRate: number | undefined,
+  currentCourse: CourseInfo,
+  currentCourses: CourseCategory,
+  courseCategory: string
 ) => `
   당신은 강의를 추천해주는 교육 어시스턴트 AI 에디 입니다.
 
-  사용자가 어떤 강의를 수강 중인지, 어떤 개발자 경력을 가지고 있는지를 바탕으로
-  맞춤형 설명과 다음 로드맵을 제공해주세요.
-
-  [필수 사항]
+  # 필수 사항
   사용자의 이름은 ${name}이고, 직무는 ${job}이며, 연차는 ${year}입니다.
   또한, 현재 수강률은 ${
     courseAttendanceRate ? `${courseAttendanceRate * 100}%` : "0%"
@@ -47,6 +47,14 @@ export const courseRecommendationSystemPrompt = (
   
   수강률에 따라 격려의 말을 해주세요. 개인화된 조언을 제공해주세요. (수강률은 마크다운으로 강조)
   추천 강의는 마크다운으로 강조해주세요.
+
+  [현재 수강 중인 강의 목록 정보]
+    ${currentCoursePrompt(currentCourse, courseCategory)}
+
+  [다음 강의 목록 정보]
+  ${formatCoursesToMarkdown(currentCourses, courseCategory)}
+
+  사용자가 어떤 강의를 수강 중인지, 어떤 개발자 경력을 가지고 있는지를 바탕으로 맞춤형 설명과 다음 로드맵을 제공해주세요.
   
   추가 궁금한 점이 있는지도 여쭤주세요.
 
@@ -77,7 +85,8 @@ export const courseFunctionSystemPrompt = (
   name: string,
   job: string,
   year: string,
-  generatedAnswer: string
+  generatedAnswer: string,
+  courseCategory: string,
 ) => `
   [이전 답변]
   ${generatedAnswer}
@@ -85,18 +94,20 @@ export const courseFunctionSystemPrompt = (
   사용자의 이름은 ${name}이고, 직무는 ${job}이며, 연차는 ${year}입니다.
 
   [필수 사항]
-  [이전 답변]을 참고해, 다음 강의로 들으면 좋을 것 같은 강의 3개를 추천해주세요.
+  [이전 답변]을 참고해, 다음 강의로 들으면 좋을 것 같은 강의 3개를 추천해주세요. 무조건 같은 카테고리의 강의를 추천해주세요.
+  - **카테고리**: ${courseCategory}
 `;
 
 // user prompt
 export const courseRecommendationUserPrompt = (
   currentCourse: CourseInfo,
   currentCourses: CourseCategory,
-  userMessage: string
+  userMessage: string,
+  courseCategory: string,
 ) => {
-  const prompt = currentCoursePrompt(currentCourse);
+  const prompt = currentCoursePrompt(currentCourse, courseCategory);
 
-  const coursesMarkdown = formatCoursesToMarkdown(currentCourses);
+  const coursesMarkdown = formatCoursesToMarkdown(currentCourses, courseCategory);
 
   return `
     [사용자 질문]
@@ -113,10 +124,11 @@ export const courseRecommendationUserPrompt = (
   `;
 };
 
-const currentCoursePrompt = (currentCourse: CourseInfo) => {
+const currentCoursePrompt = (currentCourse: CourseInfo, courseCategory: string) => {
   return `
   ### 📘 ${currentCourse.name}
 
+    - **카테고리**: ${courseCategory}
     - **강의 개요**: ${currentCourse.description}
     - **⏱ 총 강의 시간**: ${currentCourse.duration}
     - **🎯 수강 대상**: ${currentCourse.target}
@@ -130,7 +142,7 @@ const currentCoursePrompt = (currentCourse: CourseInfo) => {
   `;
 };
 
-function formatCoursesToMarkdown(courses: CourseCategory): string {
+function formatCoursesToMarkdown(courses: CourseCategory, courseCategory: string): string {
   return courses.courses
     .map((course, index) => {
       const courseName = course.name;
@@ -139,6 +151,7 @@ function formatCoursesToMarkdown(courses: CourseCategory): string {
       return `
   ### ${index + 1}. 📘 ${courseName}
 
+  - **카테고리**: ${courseCategory}
   - **강의 개요**: ${info.description}
   - **💰 가격**: ${info.price}
   - **⏱ 총 강의 시간**: ${info.duration}
