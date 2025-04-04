@@ -14,6 +14,7 @@ export const runRecommendationFlow = async (
   ) => void,
   currentCourses: CourseCategory,
   course: CourseInfo,
+  courseCategory: string,
   name: string,
   job: string,
   year: string,
@@ -22,7 +23,8 @@ export const runRecommendationFlow = async (
   const enhancedUserMessage = courseRecommendationUserPrompt(
     course,
     currentCourses,
-    userMessage
+    userMessage,
+    courseCategory
   );
 
   const response = await streamChat(

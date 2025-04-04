@@ -113,6 +113,7 @@ export const useSendChat = () => {
           setMessages,
           currentCourses as unknown as CourseCategory,
           course as unknown as CourseInfo,
+          courseCategory,
           name,
           job,
           year,
