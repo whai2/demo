@@ -126,6 +126,7 @@ export const useSendChat = () => {
           setMessages,
           setIsQuiz,
           setLastQuiz,
+          setIsLoading,
           course as unknown as CourseInfo,
           name,
           job,
@@ -192,7 +193,7 @@ export const useSendChat = () => {
 
       if (intent === "quiz_answer") {
         console.log("퀴즈 정답 확인");
-        await runCourseQuizAnswerFlow(quiz, currentText, setMessages, name, true);
+        await runCourseQuizAnswerFlow(quiz, currentText, setMessages, setIsLoading, name, true);
       } else if (intent === "others") {
         // ✅ 강의 추천 흐름 (2단계)
         console.log("일반 질문");

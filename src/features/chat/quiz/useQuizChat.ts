@@ -28,6 +28,7 @@ export const runCourseQuizFlow = async (
   ) => void,
   setIsQuiz: (isQuiz: boolean) => void,
   setLastQuiz: (lastQuiz: Quiz | null) => void,
+  setIsLoading: (isLoading: boolean) => void,
   course: CourseInfo,
   name: string,
   job: string,
@@ -62,6 +63,12 @@ export const runCourseQuizFlow = async (
   );
 
   if (!response.ok || !response.body) {
+    setMessages((prevMessages) => {
+      const updated = [...prevMessages];
+      updated[updated.length - 1].isLoading = false;
+      return updated;
+    });
+    setIsLoading(false);
     throw new Error("네트워크 응답 실패");
   }
 
@@ -144,7 +151,7 @@ export const runCourseQuizFlow = async (
 };
 
 export const useSendQuizAnswer = (quiz: Quiz | Quiz2) => {
-  const { setMessages, setIsQuiz } = useChatStore();
+  const { setMessages, setIsQuiz, setIsLoading } = useChatStore();
   const { name } = useUserInfo();
 
   // const currentCourses = courses.category.find(
@@ -163,6 +170,8 @@ export const useSendQuizAnswer = (quiz: Quiz | Quiz2) => {
       { role: "user", content: answer, isLoading: false },
     ]);
 
+    setIsLoading(true);
+
     setMessages((prevMessages) => [
       ...prevMessages,
       { role: "assistant", content: "", isLoading: true },
@@ -180,6 +189,12 @@ export const useSendQuizAnswer = (quiz: Quiz | Quiz2) => {
     });
 
     if (!response.ok || !response.body) {
+      setMessages((prevMessages) => {
+        const updated = [...prevMessages];
+        updated[updated.length - 1].isLoading = false;
+        return updated;
+      });
+      setIsLoading(false);
       throw new Error("네트워크 응답 실패");
     }
 
@@ -221,6 +236,7 @@ export const useSendQuizAnswer = (quiz: Quiz | Quiz2) => {
           } catch (error) {
             console.error("JSON 파싱 에러", error);
             setIsQuiz(false);
+            setIsLoading(false);
           }
         }
       }
@@ -248,6 +264,7 @@ export const useSendQuizAnswer = (quiz: Quiz | Quiz2) => {
         };
         return updated;
       });
+      setIsLoading(false);
       throw new Error("네트워크 응답 실패");
     }
 
@@ -275,6 +292,8 @@ export const useSendQuizAnswer = (quiz: Quiz | Quiz2) => {
       };
       return updated;
     });
+
+    setIsLoading(false);
   };
 
   return sendQuizAnswerCallback;
@@ -286,8 +305,9 @@ export const runCourseQuizAnswerFlow = async (
   setMessages: (
     messages: MessageType[] | ((prevMessages: MessageType[]) => MessageType[])
   ) => void,
+  setIsLoading: (isLoading: boolean) => void,
   name: string,
-  isInput?: boolean
+  isInput?: boolean,
 ) => {
   const userMessage = quizAnswerUserPrompt(name, currentText);
 
@@ -315,6 +335,12 @@ export const runCourseQuizAnswerFlow = async (
   });
 
   if (!response.ok || !response.body) {
+    setMessages((prevMessages) => {
+      const updated = [...prevMessages];
+      updated[updated.length - 1].isLoading = false;
+      return updated;
+    });
+    setIsLoading(false);
     throw new Error("네트워크 응답 실패");
   }
 
@@ -381,6 +407,7 @@ export const runCourseQuizAnswerFlow = async (
       };
       return updated;
     });
+    setIsLoading(false);
     throw new Error("네트워크 응답 실패");
   }
 
@@ -411,7 +438,7 @@ export const runCourseQuizAnswerFlow = async (
 };
 
 export const useNextQuiz = () => {
-  const { setMessages, setLastQuiz, setIsQuiz, lastQuiz } = useChatStore();
+  const { setMessages, setLastQuiz, setIsQuiz, lastQuiz, setIsLoading } = useChatStore();
   const { courseCategory, courseName, name, job, year } = useUserInfo();
 
   const currentCourses = courses.category.find(
@@ -452,6 +479,8 @@ export const useNextQuiz = () => {
       { role: "user", content: nextQuiz, isLoading: false },
     ]);
 
+    setIsLoading(true);
+
     setMessages((prevMessages) => [
       ...prevMessages,
       { role: "assistant", content: "", isLoading: true },
@@ -464,6 +493,12 @@ export const useNextQuiz = () => {
     );
 
     if (!response.ok || !response.body) {
+      setMessages((prevMessages) => {
+        const updated = [...prevMessages];
+        updated[updated.length - 1].isLoading = false;
+        return updated;
+      });
+      setIsLoading(false);
       throw new Error("네트워크 응답 실패");
     }
 
@@ -543,13 +578,14 @@ export const useNextQuiz = () => {
     });
     setLastQuiz(args.question);
     setIsQuiz(true);
+    setIsLoading(false);
   };
 
   return nextQuizCallback;
 };
 
 export const useQuizReference = () => {
-  const { setMessages, lastQuiz } =
+  const { setMessages, lastQuiz, setIsLoading } =
     useChatStore();
   const { courseCategory, courseName } =
     useUserInfo();
@@ -567,6 +603,8 @@ export const useQuizReference = () => {
       ...prevMessages,
       { role: "user", content: question, isLoading: false },
     ]);
+
+    setIsLoading(true);
 
     setMessages((prevMessages) => [
       ...prevMessages,
@@ -654,6 +692,8 @@ export const useQuizReference = () => {
       };
       return updated;
     });
+
+    setIsLoading(false);
   };
 
   return quizReferenceCallback;
