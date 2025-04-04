@@ -139,7 +139,8 @@ export const useSendChat = () => {
           course as unknown as CourseInfo,
           name,
           job,
-          year
+          year,
+          answerStyle
         );
       }
 
@@ -201,7 +202,8 @@ export const useSendChat = () => {
           course as unknown as CourseInfo,
           name,
           job,
-          year
+          year,
+          answerStyle
         );
       } else {
         await runGeneralStreaming(
@@ -210,7 +212,8 @@ export const useSendChat = () => {
           course as unknown as CourseInfo,
           name,
           job,
-          year
+          year,
+          answerStyle
         );
       }
 
@@ -266,7 +269,7 @@ export const getTailQuestion = async (messages: MessageType[]) => {
 };
 
 export const useSendTailQuestion = () => {
-  const { setMessages, setIsLoading } = useChatStore();
+  const { setMessages, setIsLoading, answerStyle } = useChatStore();
   const { courseCategory, courseName, name, job, year } = useUserInfo();
 
   const currentCourses = courses.category.find(
@@ -296,7 +299,8 @@ export const useSendTailQuestion = () => {
       course as unknown as CourseInfo,
       name,
       job,
-      year
+      year,
+      answerStyle
     );
 
     setIsLoading(false);
