@@ -4,7 +4,7 @@ import { useChatStore } from "@/features/chat";
 import answerStyleList from "../constant/constant";
 
 export const useHandleAnswerStyle = () => {
-  const { setAnswerStyle, answerStyle } = useChatStore();
+  const { setAnswerStyle } = useChatStore();
   const [isFirst, setIsFirst] = useState(true);
   const [isAnswerStylesOpen, setIsAnswerStylesOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(1);
