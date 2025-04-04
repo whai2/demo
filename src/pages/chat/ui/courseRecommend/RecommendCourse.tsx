@@ -32,7 +32,7 @@ const S = {
     justify-content: center;
     align-items: center;
     gap: 10px;
-    width: 100%;
+    width: 150px;
     flex-shrink: 0;
     display: flex;
     padding: 8px;

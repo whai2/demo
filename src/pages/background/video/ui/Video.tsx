@@ -13,7 +13,7 @@ import styled from "styled-components";
 const YoutubePlaylist = () => {
   const { currentVideo, videos, setCurrentVideo } =
     useGetVideo();
-  const { setIsTaken, progress } = videoStore();
+  const { setIsTaken, progress, setClassName } = videoStore();
   const {
     setCourseAttendanceRate,
     courseCategory,
@@ -111,6 +111,7 @@ const YoutubePlaylist = () => {
                     useAlarmStore.getState().reset();
                     setCurrentVideo(video);
                     setIsTaken(video.id, true);
+                    setClassName(sessionTitle);
                   }}
                 >
                   <S.Number>[{sessionTitle}]</S.Number>

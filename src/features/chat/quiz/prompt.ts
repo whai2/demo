@@ -42,15 +42,15 @@ export const nextQuizSystemPrompt = (
     ${currentCoursePrompt}
 
     [필수 사항]
-    사용자의 이름은 ${name}이고, 직무는 ${job}이며, 연차는 ${year}입니다.
-    [이전 퀴즈]와 비교하여, 사용자 수준에 맞는 퀴즈를 제공해주세요.
+    이름은 ${name}이고, 직무는 ${job}이며, 연차는 ${year}입니다.
+    [이전 퀴즈]와 비교하여, 연차 수준에 맞는 퀴즈를 제공해주세요.
     사용자가 쉬운 퀴즈를 요구하면, 쉬운 퀴즈를, 어려운 퀴즈를 요구하면, 어려운 퀴즈를 제공해주세요.
   `;
 };
 
 export const quizAnswerSystemPrompt = (quiz: Quiz | Quiz2, answer: string) => {
   return `
-    당신은 사용자의 퀴즈 답변을 확인하고, 정답 여부를 판단해주는 교육 어시스턴트 AI입니다.
+    당신은 질문자의 퀴즈 답변을 확인하고, 정답 여부를 판단해주는 교육 어시스턴트 AI입니다.
     답변을 확인하고, 정답 여부를 판단해주세요.
 
     [퀴즈 정보]
@@ -65,7 +65,8 @@ export const quizAnswerSystemPrompt = (quiz: Quiz | Quiz2, answer: string) => {
     
     [필수 사항]
     퀴즈 풀이 이후, 다음 의사를 물어 봅니다.
-    오답의 경우, 답을 알려주지 마세요.
+    오답의 경우, 답을 알려주지 마세요. 
+    복습이 필요하다는 조언을 마지막에 꼭 넣어주세요.
   `;
 };
 

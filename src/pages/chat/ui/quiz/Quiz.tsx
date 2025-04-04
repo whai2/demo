@@ -7,15 +7,16 @@ function Quiz({ quiz }: { quiz: Quiz }) {
   const sendQuizAnswerCallback = useSendQuizAnswer(quiz);
   return (
     <S.Container>
-      <div>{quiz.question}</div>
-      {quiz.choices && quiz.choices.map((choice, index) => (
-        <QuizItem
-          key={index}
-          choice={choice}
-          index={index}
-          sendQuizAnswerCallback={sendQuizAnswerCallback}
-        />
-      ))}
+      <S.Question>Q. {quiz.question}</S.Question>
+      {quiz.choices &&
+        quiz.choices.map((choice, index) => (
+          <QuizItem
+            key={index}
+            choice={choice}
+            index={index}
+            sendQuizAnswerCallback={sendQuizAnswerCallback}
+          />
+        ))}
     </S.Container>
   );
 }
@@ -58,5 +59,15 @@ const S = {
     &:hover {
       background: var(--Miscellaneous-_Kit-Section-Fill, #e0e0e0);
     }
+  `,
+
+  Question: styled.span`
+    color: #1A2A9C;
+    font-family: Pretendard;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px;
+
   `,
 };

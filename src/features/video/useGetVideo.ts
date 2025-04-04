@@ -25,39 +25,44 @@ interface VideoType {
   currentVideo: Video | null;
   currentVideoDescription: string | null;
   progress: Record<string, number>;
+  className: string;
   setVideos: (videos: Video[]) => void;
   setTotalDuration: (totalDuration: string) => void;
   setCurrentVideo: (currentVideo: Video | null) => void;
   setCurrentVideoDescription: (currentVideoDescription: string | null) => void;
   setProgress: (videoId: string, currentTime: number) => void;
   setIsTaken: (videoId: string, isTaken: boolean) => void;
+  setClassName: (className: string) => void;
 }
 
 export const videoStore = create<VideoType>()(
-  persist((set) => ({
-    videos: [],
-    totalDuration: "",
-    currentVideo: null,
-    currentVideoDescription: null,
-    progress: {},
-    setVideos: (videos) => set({ videos }),
-  setTotalDuration: (totalDuration) => set({ totalDuration }),
-  setCurrentVideo: (currentVideo) => set({ currentVideo }),
-  setCurrentVideoDescription: (currentVideoDescription) =>
-    set({ currentVideoDescription }),
-  setProgress: (videoId, currentTime) =>
-    set((state) => ({
-      progress: { ...state.progress, [videoId]: currentTime },
-    })),
-  setIsTaken: (videoId, isTaken) =>
-    set((state) => ({
-      videos: state.videos.map((video) =>
-        video.id === videoId ? { ...video, isTaken } : video
-      ),
-      })),
-  }),
-  {
-    name: "video",
+  persist(
+    (set) => ({
+      videos: [],
+      totalDuration: "",
+      currentVideo: null,
+      currentVideoDescription: null,
+      progress: {},
+      className: "",
+      setVideos: (videos) => set({ videos }),
+      setTotalDuration: (totalDuration) => set({ totalDuration }),
+      setCurrentVideo: (currentVideo) => set({ currentVideo }),
+      setCurrentVideoDescription: (currentVideoDescription) =>
+        set({ currentVideoDescription }),
+      setProgress: (videoId, currentTime) =>
+        set((state) => ({
+          progress: { ...state.progress, [videoId]: currentTime },
+        })),
+      setIsTaken: (videoId, isTaken) =>
+        set((state) => ({
+          videos: state.videos.map((video) =>
+            video.id === videoId ? { ...video, isTaken } : video
+          ),
+        })),
+      setClassName: (className) => set({ className }),
+    }),
+    {
+      name: "video",
     }
   )
 );

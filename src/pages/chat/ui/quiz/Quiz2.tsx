@@ -17,13 +17,21 @@ function Quiz2({ quiz }: { quiz: Quiz2 }) {
 
   return (
     <S.Container>
-      <div>{quiz.question}</div>
+      <S.Question>Q. {quiz.question}</S.Question>
       <S.InputContainer>
         <S.Input
           type="text"
-          placeholder="답을 입력해주세요."
+          placeholder="컨트롤+엔터를 눌러, 답을 제출하세요"
           value={text}
           onChange={handleInputChange}
+          onKeyDown={async (e) => {
+            if (e.key === "Enter" && e.ctrlKey && !e.nativeEvent.isComposing) {
+              e.preventDefault(); // 엔터의 기본 제출 방지
+              if (text === "") return;
+              setText("");
+              await sendQuizAnswerCallback(text);
+            }
+          }}
         />
         <S.SendIcon onClick={async () => {
           if (text === "") return;
@@ -89,5 +97,23 @@ const S = {
     ${({ $isTextInput }) => $isTextInput && `
       color: var(--Miscellaneous-_Kit-Section-Fill, #999);
     `}
+  `,
+
+  Question: styled.span`
+    color: #1A2A9C;
+    font-family: Pretendard;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px;
+
+  `,
+
+  ControlEnter: styled.span`
+    color: #f5f5f5;
+    font-family: Pretendard;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 200;
   `,
 };

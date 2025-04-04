@@ -62,7 +62,7 @@ const useAlarmStore = create<AlarmState>()((set) => ({
 
 export const useTriggerInterval = () => {
   const clipIdRef = useRef<string | null>(null);
-  const { currentVideo, progress } = videoStore();
+  const { currentVideo, progress, className } = videoStore();
   const { courseAttendanceRate } = useUserInfo();
 
   // useEffect(() => {
@@ -103,10 +103,8 @@ export const useTriggerInterval = () => {
   useEffect(() => {
     const randomAlram = [
       "이제 거의 완강이신데, 앞으로 어떻게 학습하면 좋을지 안내해 드릴까요?",
-      `강의를 ${
-          courseAttendanceRate * 100
-        }% 수강했어요!\n강의 로드맵을 제공해 드릴까요?`,
-      "수강 완료가 다가오고 있어요. 다음에는 어떤 것을 배우고 싶나요?",
+      `${className} 학습 수고하셨습니다.\n강의 로드맵을 제공해 드릴까요?`,
+      "수강 완료가 다가오고 있어요.\n다음에는 어떤 것을 배우고 싶나요?",
     ];
 
     const randomIndex = Math.floor(Math.random() * randomAlram.length);
@@ -115,6 +113,7 @@ export const useTriggerInterval = () => {
     if (courseAttendanceRate >= 0.5) {
       useAlarmStore.setState({
         isTriggered: true,
+        isQuiz: false,
         isCallToActionDoing: true,
         data: {
           message: randomMessage,

@@ -42,80 +42,82 @@ function ChatPage() {
               <S.MessageWithUnderObjects>
                 <S.MessageWithProfile>
                   <S.Profile />
-                  <S.MessageContainer $isChatbot={true}>
-                    <TextEditor text={message.content} />
-                    {message.reference && message.reference.isLoading ? (
-                      <Loading />
-                    ) : (
-                      <ReferenceToggle
-                        reference={message.reference?.reference}
-                      />
-                    )}
-                    {(() => {
-                      if (!message.courseQuiz) return null;
+                  <S.ContinuedMessageList>
+                    <S.MessageContainer $isChatbot={true}>
+                      <TextEditor text={message.content} />
+                      {message.reference && message.reference.isLoading ? (
+                        <Loading />
+                      ) : (
+                        <ReferenceToggle
+                          reference={message.reference?.reference}
+                        />
+                      )}
+                      {(() => {
+                        if (!message.courseQuiz) return null;
 
-                      if (message.courseQuiz.isLoading) {
-                        return <Loading />;
-                      }
+                        if (message.courseQuiz.isLoading) {
+                          return <Loading />;
+                        }
 
-                      if (message.courseQuiz.quiz) {
-                        if ("choices" in message.courseQuiz.quiz) {
-                          return <Quiz quiz={message.courseQuiz.quiz} />;
-                        } else if ("answerText" in message.courseQuiz.quiz) {
+                        if (message.courseQuiz.quiz) {
+                          if ("choices" in message.courseQuiz.quiz) {
+                            return <Quiz quiz={message.courseQuiz.quiz} />;
+                          } else if ("answerText" in message.courseQuiz.quiz) {
+                            return (
+                              <Quiz2 quiz={message.courseQuiz.quiz as Quiz2} />
+                            );
+                          }
+                        }
+
+                        return null;
+                      })()}
+
+                      {(() => {
+                        const data = message.recommendationCourses;
+
+                        if (!data) return null;
+
+                        if (data.isLoading) {
+                          return <Loading />;
+                        }
+
+                        if (data.contents) {
                           return (
-                            <Quiz2 quiz={message.courseQuiz.quiz as Quiz2} />
+                            <IntentQuestionButton contents={data.contents} />
                           );
                         }
-                      }
 
-                      return null;
-                    })()}
+                        if (data.courses) {
+                          return (
+                            <S.CoursesContainer>
+                              {data.courses.map((course) => (
+                                <RecommendCourse
+                                  key={course.name}
+                                  course={course}
+                                />
+                              ))}
+                            </S.CoursesContainer>
+                          );
+                        }
 
-                    {(() => {
-                      const data = message.recommendationCourses;
+                        return null;
+                      })()}
 
-                      if (!data) return null;
+                      {(() => {
+                        if (!message.userResult) return null;
 
-                      if (data.isLoading) {
-                        return <Loading />;
-                      }
+                        if (message.userResult.isLoading) {
+                          return <Loading />;
+                        }
 
-                      if (data.courses) {
-                        return (
-                          <S.CoursesContainer>
-                            {data.courses.map((course) => (
-                              <RecommendCourse
-                                key={course.name}
-                                course={course}
-                              />
-                            ))}
-                          </S.CoursesContainer>
-                        );
-                      }
+                        if (message.userResult) {
+                          return <NextSteps nextSteps={message.userResult} />;
+                        }
 
-                      if (data.contents) {
-                        return (
-                          <IntentQuestionButton contents={data.contents} />
-                        );
-                      }
-
-                      return null;
-                    })()}
-
-                    {(() => {
-                      if (!message.userResult) return null;
-
-                      if (message.userResult.isLoading) {
-                        return <Loading />;
-                      }
-
-                      if (message.userResult) {
-                        return <NextSteps nextSteps={message.userResult} />;
-                      }
-
-                      return null;
-                    })()}
-                  </S.MessageContainer>
+                        return null;
+                      })()}
+                    </S.MessageContainer>
+                  </S.ContinuedMessageList>
                 </S.MessageWithProfile>
               </S.MessageWithUnderObjects>
             </S.MessagePosition>
@@ -260,5 +262,13 @@ const S = {
     &:hover::-webkit-scrollbar {
       opacity: 1;
     }
+  `,
+
+  ContinuedMessageList: styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    overflow-y: hidden;
   `,
 };

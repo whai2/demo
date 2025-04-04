@@ -94,12 +94,12 @@ export const courseQuizAnswerFunctions = [
         nextQuiz: {
           type: "string",
           description:
-            "더 어려운 퀴즈를 풀지 의사를 물어봅니다.  (예시: 조금 더 어려운 문제를 풀어볼래요.)",
+            "더 어려운 퀴즈를 풀지 평서문으로 의사를 물어봅니다.  (예시: 조금 더 어려운 문제를 풀어볼래요.)",
         },
         nextCourse: {
           type: "string",
           description:
-            "다음 강의를 들을지 의사를 물어봅니다.  (예시: 다음 강의를 들어볼래요.)",
+            "다음 강의를 들을지 평서문으로 의사를 물어봅니다.  (예시: 다음 강의를 들어볼래요.)",
         },
         // introMessage: {
         //   type: "string",
@@ -124,12 +124,12 @@ export const courseQuizAnswerFunctions = [
         nextQuiz: {
           type: "string",
           description:
-            "더 쉬운 퀴즈를 풀지 의사를 물어봅니다.  (예시: 조금 더 쉬운 문제를 풀어볼래요.)",
+            "더 쉬운 퀴즈를 풀지 평서문으로 의사를 물어봅니다. (예시: 조금 더 쉬운 문제를 풀어볼래요.)",
         },
         referenceNeeded: {
           type: "string",
           description:
-            "관련 자료를 제공받고 싶은지 물어봅니다.  (예시: 관련 자료를 받고 싶어요.)",
+            "관련 자료를 제공받고 싶은지 평서문으로 의사를 물어봅니다.  (예시: 관련 자료를 받고 싶어요.)",
         },
 
         // introMessage: {
