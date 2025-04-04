@@ -11,35 +11,26 @@ function Quiz2({ quiz }: { quiz: Quiz2 }) {
   const [text, setText] = useState("");
   const sendQuizAnswerCallback = useSendQuizAnswer(quiz);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(event.target.value);
   };
 
   return (
     <S.Container>
       <S.Question>Q. {quiz.question}</S.Question>
-      <S.InputContainer>
-        <S.Input
-          type="text"
-          placeholder="컨트롤+엔터를 눌러, 답을 제출하세요"
-          value={text}
-          onChange={handleInputChange}
-          onKeyDown={async (e) => {
-            if (e.key === "Enter" && e.ctrlKey && !e.nativeEvent.isComposing) {
-              e.preventDefault(); // 엔터의 기본 제출 방지
-              if (text === "") return;
-              setText("");
-              await sendQuizAnswerCallback(text);
-            }
-          }}
-        />
-        <S.SendIcon onClick={async () => {
-          if (text === "") return;
-
-          setText("");
-          await sendQuizAnswerCallback(text);
-        }} $isTextInput={text !== ""}/>
-      </S.InputContainer>
+      <S.TextArea
+        placeholder="답변을 작성하고 'Ctrl + Enter'를 눌러주세요."
+        value={text}
+        onChange={handleInputChange}
+        onKeyDown={async (e) => {
+          if (e.key === "Enter" && e.ctrlKey && !e.nativeEvent.isComposing) {
+            e.preventDefault();
+            if (text === "") return;
+            setText("");
+            await sendQuizAnswerCallback(text);
+          }
+        }}
+      />
     </S.Container>
   );
 }
@@ -94,19 +85,20 @@ const S = {
       color: #999; /* 호버 시 색상 변경 */
     }
 
-    ${({ $isTextInput }) => $isTextInput && `
+    ${({ $isTextInput }) =>
+      $isTextInput &&
+      `
       color: var(--Miscellaneous-_Kit-Section-Fill, #999);
     `}
   `,
 
   Question: styled.span`
-    color: #1A2A9C;
+    color: #1a2a9c;
     font-family: Pretendard;
     font-size: 14px;
     font-style: normal;
     font-weight: 700;
     line-height: 20px;
-
   `,
 
   ControlEnter: styled.span`
@@ -115,5 +107,36 @@ const S = {
     font-size: 12px;
     font-style: normal;
     font-weight: 200;
+  `,
+
+  TextArea: styled.textarea`
+    display: flex;
+    height: 80px;
+    padding: 8px;
+    align-items: flex-start;
+    gap: 10px;
+    flex-shrink: 0;
+    align-self: stretch;
+    border-radius: 8px;
+    border: 1px solid #f5f5f5;
+    background: #f5f5f5;
+
+    resize: none;
+
+    cursor: ${({ disabled }) => (disabled ? "not-allowed" : "text")};
+
+    &:focus {
+      outline: none;
+    }
+
+    &::placeholder {
+      color: #a1abba;
+
+      font-family: Pretendard;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 20px; /* 166.667% */
+    }
   `,
 };

@@ -14,7 +14,7 @@ function App() {
   const { isLogin } = useUserInfo();
   const { isOpen, setToggle } = usePopUpOpen();
   const { setCurrentPage } = useNavigate();
-  
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "/") {
@@ -32,7 +32,7 @@ function App() {
 
   useEffect(() => {
     setCurrentPage(ROUTES.HOME);
-  }, []);
+  }, [isLogin]);
 
   return (
     <>

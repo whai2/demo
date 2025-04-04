@@ -57,7 +57,7 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
                   </S.ModalPriceText>
                 </S.ModalCategoryAndTitle>
 
-                <S.DescriptionText>{course?.description}</S.DescriptionText>
+                <ModalDescription description={course?.description} />
 
                 <S.StartText>이제 강의를 시작해볼까요?</S.StartText>
 
@@ -79,6 +79,12 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
 }
 
 export default ChatPopUpLayout;
+
+function ModalDescription({ description }: { description: string | undefined }) {
+  if (!description) return null;
+
+  return <S.DescriptionText>{description}</S.DescriptionText>;
+}
 
 const S = {
   ChatLayout: styled.div<{ $isOpen: boolean; $isFirstOpen: boolean }>`
@@ -160,6 +166,7 @@ const S = {
   `,
 
   ModalContainer: styled.div`
+    margin: 15px;
     position: absolute;
     display: flex;
     padding: 36px;
@@ -191,10 +198,11 @@ const S = {
     color: #6e6e73;
     text-align: center;
     font-family: Pretendard;
-    font-size: 12px;
+    font-size: 15px;
     font-style: normal;
     font-weight: 600;
     line-height: normal;
+    padding-bottom: 7px;
   `,
 
   ModalCourseNameText: styled.div`
@@ -202,12 +210,13 @@ const S = {
     color: #000;
     text-align: center;
     font-family: Pretendard;
-    font-size: 24px;
+    font-size: 18px;
     font-style: normal;
     font-weight: 700;
-    line-height: 36px;
+    line-height: 24px;
     word-break: keep-all;
     white-space: normal;
+    padding-bottom: 7px;
   `,
 
   ModalPriceText: styled.span`
@@ -215,7 +224,7 @@ const S = {
     color: #a1abba;
     text-align: center;
     font-family: Pretendard;
-    font-size: 10px;
+    font-size: 13px;
     font-style: normal;
     font-weight: 400;
     line-height: 132%; /* 13.2px */
@@ -246,7 +255,7 @@ const S = {
     color: #000;
     text-align: center;
     font-family: Pretendard;
-    font-size: 11px;
+    font-size: 13px;
     font-style: normal;
     font-weight: 400;
     line-height: 15px; /* 136.364% */
@@ -257,7 +266,7 @@ const S = {
     color: #6e6e73;
     text-align: center;
     font-family: Pretendard;
-    font-size: 13px;
+    font-size: 15px;
     font-style: normal;
     font-weight: 600;
     line-height: 20px; /* 153.846% */
