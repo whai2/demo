@@ -3,14 +3,15 @@ export {
   courses,
   productivityCourses,
 } from "./constants/constants";
+export { useContentChat } from "./content/useContentChat";
 export { useCourseRecommendChat } from "./courseRecommend/useCourseRecommendChat";
 export { runRecommendationFlow } from "./courseRecommend/useIntentClassification";
 export { runGeneralStreaming } from "./generalChat/useGeneralChat";
 export {
   runCourseQuizFlow,
   useNextQuiz,
-  useSendQuizAnswer,
   useQuizReference,
+  useSendQuizAnswer,
 } from "./quiz/useQuizChat";
 export type {
   Course,

@@ -5,6 +5,12 @@ export type QuickTapsType = {
   items: QuickTapItemType[];
 };
 
+export type QuickTapsType2 = {
+  title: string;
+  items: QuickTapItemType[];
+  handleClickTapQuestion: (text: string) => void;
+};
+
 type QuickTapItemType = {
   icon: React.ComponentType;
   text: string;
@@ -16,6 +22,14 @@ export const oftenQuestionsTaps = {
     {
       icon: Document,
       text: "좀 더 쉽게 이해될 수 있도록 설명해 주세요",
+    },
+    {
+      icon: Document,
+      text: "지금 보고 있는 부분 잘 모르겠어요.",
+    },
+    {
+      icon: Document,
+      text: "강의 내용을 요약해주세요.",
     },
     {
       icon: Document,

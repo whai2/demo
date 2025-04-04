@@ -1,5 +1,6 @@
 import QuickTaps from "./QuickTaps";
-
+import QuickTaps2 from "./QuickTaps2";
+import { useContentChat } from "@/features/chat";
 import { useUserInfo } from "@/features/userInfo";
 
 import {
@@ -14,6 +15,7 @@ import styled from "styled-components";
 
 function HomePage() {
   const { name } = useUserInfo();
+  const { sendChatCallback } = useContentChat();
 
   return (
     <S.Container>
@@ -25,7 +27,7 @@ function HomePage() {
           무엇을 도와드릴까요?
         </S.Title>
       </S.Header>
-      <QuickTaps {...oftenQuestionsTaps} />
+      <QuickTaps2 {...oftenQuestionsTaps} handleClickTapQuestion={sendChatCallback} />
       <QuickTaps {...othersQuestionsTaps} />
       <QuickTaps {...courseLoadMaps} />
     </S.Container>

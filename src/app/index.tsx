@@ -5,15 +5,18 @@ import { Video } from "@/pages/background/video";
 import { LoginPage } from "@/pages/login";
 import { WidgetButton } from "@/widgets/widgetButton";
 
+import { useChatStore } from "@/features/chat";
+import { ROUTES, useNavigate } from "@/features/navigate";
 import { usePopUpOpen } from "@/features/popUpOpen";
 import { useUserInfo } from "@/features/userInfo";
-import { useNavigate, ROUTES } from "@/features/navigate";
+
 import styled from "styled-components";
 
 function App() {
-  const { isLogin } = useUserInfo();
+  const { isLogin, courseCategory, courseName } = useUserInfo();
   const { isOpen, setToggle } = usePopUpOpen();
   const { setCurrentPage } = useNavigate();
+  const { setMessages } = useChatStore();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -33,6 +36,10 @@ function App() {
   useEffect(() => {
     setCurrentPage(ROUTES.HOME);
   }, [isLogin]);
+
+  useEffect(() => {
+    setMessages([]);
+  }, [courseCategory, courseName]);
 
   return (
     <>
