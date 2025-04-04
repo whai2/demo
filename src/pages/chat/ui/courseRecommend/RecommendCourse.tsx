@@ -4,7 +4,9 @@ import styled from "styled-components";
 
 function RecommendCourse({ course }: { course: RecommendationCourse }) {
   return (
-    <S.Container>
+    <S.Container onClick={() => {
+      window.open("https://coxwave.com");
+    }}>
       <S.Wrapper>
         <S.TitleContainer>
           <S.Category>{course.category} &gt; </S.Category>
@@ -44,6 +46,10 @@ const S = {
     background: #edf5f9;
     cursor: pointer;
     height: 150px;
+
+    &:hover {
+      background: #e0f2f7;
+    }
   `,
 
   Wrapper: styled.div`
