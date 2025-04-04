@@ -12,7 +12,7 @@ export const referenceFunctions = [
             time: {
               type: "string",
               description:
-                "강의 영상에서 해당 참고 자료가 언급되는 시간 (예: 5:15)",
+                "강의 영상에서 해당 참고 자료가 언급되는 시간. 반드시 구간으로 나타날 것 (예: 5:15~6:30)",
             },
             title: {
               type: "string",
@@ -21,7 +21,7 @@ export const referenceFunctions = [
             file: {
               type: "string",
               description:
-                "자료 파일 이름 및 확장자 (예: 데이터 사이언스 소개.pdf)",
+                "자료 파일 이름 및 확장자. 반드시 10자 내외 제공. (예: 데이터 사이언스 소개.pdf)",
             },
             pages: {
               type: "string",

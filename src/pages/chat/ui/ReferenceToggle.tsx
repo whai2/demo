@@ -193,7 +193,6 @@ const S = {
   `,
 
   RectangleText: styled.div`
-    max-width: 91px;
     color: var(--Semantic-Color-Fill-fill-secondary, #6c6d6f);
     font-family: Pretendard;
     font-size: 12px;
