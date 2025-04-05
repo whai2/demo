@@ -1,6 +1,6 @@
 export const JOBS = ["기획자", "개발자", "마케터", "디자이너"];
 
-export const YEARS = ["1년 이하", "1~3년 차", "3년 차 이상", "5년 차 이상"];
+export const YEARS = ["신입", "1년", "2년", "3년", "4년", "5년"];
 
 export const COURSE_CATEGORY = [
   "인공지능",
