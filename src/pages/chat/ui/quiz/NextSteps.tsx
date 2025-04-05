@@ -7,8 +7,6 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
   const quizReferenceCallback = useQuizReference();
   const { setMessages, setIsLoading, isLoading, lastQuiz } = useChatStore();
 
-  console.log(lastQuiz);
-
   return (
     <S.Container>
       {!nextSteps.isCorrect && lastQuiz && (
