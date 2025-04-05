@@ -1,10 +1,16 @@
-import { Fragment, PropsWithChildren, useEffect, useRef } from "react";
+import {
+  Fragment,
+  PropsWithChildren,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
-import { TransparentBackDrop, useBottomSheetPortal } from "@/shared/ui";
+import { TransparentBackDrop, useBottomSheetPortal, Loading } from "@/shared/ui";
 import { Input } from "@/widgets/input";
 import { TopBar } from "@/widgets/topBar";
 
-import { courses } from "@/features/chat";
+import { courses, handleCourseSummation } from "@/features/chat";
 import { usePopUpOpen } from "@/features/popUpOpen";
 import { useUserInfo } from "@/features/userInfo";
 
@@ -17,6 +23,9 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
   const { setPortalElement } = useBottomSheetPortal();
   const { courseCategory, courseName } = useUserInfo();
   const { isFristModalOpen, setFirstModalClose } = usePopUpOpen();
+
+  const [courseSummation, setCourseSummation] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory
@@ -31,6 +40,24 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
       setPortalElement(bottomSheetPortalRef.current);
     }
   }, [bottomSheetPortalRef.current]);
+
+  useEffect(() => {
+    if (course) {
+      setIsLoading(true);
+      handleCourseSummation(course.description)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setCourseSummation(data.choices?.[0]?.message?.content ?? "");
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [course]);
 
   return (
     <S.ChatLayout $isOpen={true} $isFirstOpen={true}>
@@ -57,7 +84,11 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
                   </S.ModalPriceText>
                 </S.ModalCategoryAndTitle>
 
-                <ModalDescription description={course?.description} />
+                {isLoading ? (
+                  <Loading />
+                ) : (
+                  <ModalDescription description={courseSummation} />
+                )}
 
                 <S.StartText>이제 강의를 시작해볼까요?</S.StartText>
 
@@ -80,7 +111,11 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
 
 export default ChatPopUpLayout;
 
-function ModalDescription({ description }: { description: string | undefined }) {
+function ModalDescription({
+  description,
+}: {
+  description: string | undefined;
+}) {
   if (!description) return null;
 
   return <S.DescriptionText>{description}</S.DescriptionText>;
