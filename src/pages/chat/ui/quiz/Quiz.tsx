@@ -1,10 +1,11 @@
 import type { Quiz } from "@/features/chat";
-import { useSendQuizAnswer } from "@/features/chat";
+import { useChatStore, useSendQuizAnswer } from "@/features/chat";
 
 import styled from "styled-components";
 
 function Quiz({ quiz }: { quiz: Quiz }) {
   const sendQuizAnswerCallback = useSendQuizAnswer(quiz);
+
   return (
     <S.Container>
       <S.Question>Q. {quiz.question}</S.Question>
@@ -32,8 +33,16 @@ function QuizItem({
   index: number;
   sendQuizAnswerCallback: (answer: string) => Promise<void>;
 }) {
+  const { isLoading } = useChatStore();
+
   return (
-    <S.Item onClick={() => sendQuizAnswerCallback(choice)}>
+    <S.Item
+      $disabled={isLoading}
+      onClick={() => {
+        if (isLoading) return;
+        sendQuizAnswerCallback(choice);
+      }}
+    >
       {index + 1}) {choice}
     </S.Item>
   );
@@ -46,7 +55,7 @@ const S = {
     gap: 7px;
   `,
 
-  Item: styled.div`
+  Item: styled.div<{ $disabled?: boolean }>`
     display: flex;
     padding: 8px;
     align-items: center;
@@ -55,19 +64,18 @@ const S = {
     border-radius: 8px;
     background: var(--Miscellaneous-_Kit-Section-Fill, #f5f5f5);
     font-size: 13px;
-    cursor: pointer;
+    cursor: ${({ $disabled }) => ($disabled ? "not-allowed" : "pointer")};
     &:hover {
-      background: var(--Miscellaneous-_Kit-Section-Fill, #e0e0e0);
+      background: ${({ $disabled }) => ($disabled ? "#f5f5f5" : "#e0e0e0")};
     }
   `,
 
   Question: styled.span`
-    color: #1A2A9C;
+    color: #1a2a9c;
     font-family: Pretendard;
     font-size: 14px;
     font-style: normal;
     font-weight: 700;
     line-height: 20px;
-
   `,
 };

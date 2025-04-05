@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import type { Quiz2 } from "@/features/chat";
-import { useSendQuizAnswer } from "@/features/chat";
+import { useChatStore, useSendQuizAnswer } from "@/features/chat";
 
 import { ReactComponent as SendIcon } from "../../assets/sendIcon.svg";
 
@@ -11,7 +11,7 @@ function Quiz2({ quiz }: { quiz: Quiz2 }) {
   const [text, setText] = useState("");
   const sendQuizAnswerCallback = useSendQuizAnswer(quiz);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
+  const { isLoading } = useChatStore();
   useEffect(() => {
     textareaRef.current?.focus();
   }, []);
@@ -28,7 +28,9 @@ function Quiz2({ quiz }: { quiz: Quiz2 }) {
         placeholder="답변을 작성하고 'Ctrl + Enter'를 눌러주세요."
         value={text}
         onChange={handleInputChange}
+        $disabled={isLoading}
         onKeyDown={async (e) => {
+          if (isLoading) return;
           if (e.key === "Enter" && e.ctrlKey && !e.nativeEvent.isComposing) {
             e.preventDefault();
             if (text === "") return;
@@ -115,7 +117,7 @@ const S = {
     font-weight: 200;
   `,
 
-  TextArea: styled.textarea`
+  TextArea: styled.textarea<{ $disabled?: boolean }>`
     display: flex;
     height: 80px;
     padding: 8px;

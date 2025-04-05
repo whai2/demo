@@ -1,4 +1,4 @@
-import { useCourseRecommendChat } from "@/features/chat";
+import { useCourseRecommendChat, useChatStore } from "@/features/chat";
 
 import styled from "styled-components";
 
@@ -8,13 +8,20 @@ function IntentQuestionButton({
   contents?: { content: string }[];
 }) {
   const { callback } = useCourseRecommendChat();
-
+  const { isLoading } = useChatStore();
   if (!contents) return null;
 
   return (
     <S.Container>
       {contents.map((content, index) => (
-        <S.Button key={index} onClick={() => callback(content.content)}>
+        <S.Button
+          key={index}
+          $disabled={isLoading}
+          onClick={() => {
+            if (isLoading) return;
+            callback(content.content);
+          }}
+        >
           <S.ButtonText>{content.content}</S.ButtonText>
         </S.Button>
       ))}
@@ -32,7 +39,7 @@ const S = {
     gap: 8px;
   `,
 
-  Button: styled.button`
+  Button: styled.button<{ $disabled?: boolean }>`
     display: flex;
     padding: 8px;
     justify-content: center;
@@ -42,10 +49,10 @@ const S = {
     border-radius: 8px;
     border: 1px solid #d9dadb;
     background: #fff;
-    cursor: pointer;
+    cursor: ${({ $disabled }) => ($disabled ? "not-allowed" : "pointer")};
 
     &:hover {
-      background: #f5f5f5;
+      background: ${({ $disabled }) => ($disabled ? "#fff" : "#f5f5f5")}  ;
     }
   `,
 

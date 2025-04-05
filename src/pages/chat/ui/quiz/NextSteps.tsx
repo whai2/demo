@@ -5,7 +5,7 @@ import styled from "styled-components";
 function NextSteps({ nextSteps }: { nextSteps: any }) {
   const nextQuizCallback = useNextQuiz();
   const quizReferenceCallback = useQuizReference();
-  const { setMessages, setIsLoading } = useChatStore();
+  const { setMessages, setIsLoading, isLoading } = useChatStore();
 
   console.log(nextSteps);
 
@@ -13,8 +13,14 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
     <S.Container>
       {nextSteps.nextQuiz && (
         <S.Button
+          $disabled={isLoading}
           onClick={async () => {
-            await nextQuizCallback(nextSteps.isCorrect ? "좀 더 어려운 문제를 풀고 싶어요.": "좀 더 쉬운 문제를 풀고 싶어요.");
+            if (isLoading) return;
+            await nextQuizCallback(
+              nextSteps.isCorrect
+                ? "좀 더 어려운 문제를 풀고 싶어요."
+                : "좀 더 쉬운 문제를 풀고 싶어요."
+            );
           }}
         >
           <S.ButtonText>{nextSteps.isCorrect ? "좀 더 어려운 문제를 풀고 싶어요.": "좀 더 쉬운 문제를 풀고 싶어요."}</S.ButtonText>
@@ -22,7 +28,9 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
       )}
       {nextSteps.referenceNeeded && (
         <S.Button
+          $disabled={isLoading}
           onClick={async () => {
+            if (isLoading) return;
             await quizReferenceCallback("관련 자료를 받고 싶어요.");
           }}
         >
@@ -31,7 +39,9 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
       )}
       {nextSteps.nextCourse && (
         <S.Button
+          $disabled={isLoading}
           onClick={async () => {
+            if (isLoading) return;
             setMessages((prevMessages) => [
               ...prevMessages,
               { role: "user", content: nextSteps.nextCourse, isLoading: false },
@@ -99,7 +109,7 @@ const S = {
     gap: 8px;
   `,
 
-  Button: styled.button`
+  Button: styled.button<{ $disabled?: boolean }>`
     display: flex;
     padding: 8px;
     justify-content: center;
@@ -109,10 +119,10 @@ const S = {
     border-radius: 8px;
     border: 1px solid #d9dadb;
     background: #fff;
-    cursor: pointer;
+    cursor: ${({ $disabled }) => ($disabled ? "not-allowed" : "pointer")};
 
     &:hover {
-      background: #f5f5f5;
+      background: ${({ $disabled }) => ($disabled ? "#fff" : "#f5f5f5")};
     }
   `,
 

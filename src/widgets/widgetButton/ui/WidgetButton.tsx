@@ -27,7 +27,8 @@ function WidgetButton({
   const { isTriggered, data, setTriggered, isQuiz } = useAlarmStore();
   const { setCurrentPage } = useNavigate();
   const { setOpen } = usePopUpOpen();
-  const { setMessages, setIsLoading, setIsQuiz, setLastQuiz } = useChatStore();
+  const { setMessages, setIsLoading, setIsQuiz, setLastQuiz, isLoading } =
+    useChatStore();
   const { courseCategory, courseName, name, job, year, courseAttendanceRate } =
     useUserInfo();
 
@@ -50,7 +51,10 @@ function WidgetButton({
 
   return (
     <S.ChatContainer>
-      <S.ChatButton onClick={handleClick} $isOpen={isOpen}>
+      <S.ChatButton
+        onClick={handleClick}
+        $isOpen={isOpen}
+      >
         {isOpen ? (
           <>
             <S.Text $isOpen={isOpen}>닫기</S.Text>
@@ -68,6 +72,8 @@ function WidgetButton({
         <Alarm
           key={clipIdRef.current}
           onClick={async () => {
+            if (isLoading) return;
+            
             if (data.question) {
               setOpen();
               setTriggered(false);
