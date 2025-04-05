@@ -5,12 +5,98 @@ import styled from "styled-components";
 function NextSteps({ nextSteps }: { nextSteps: any }) {
   const nextQuizCallback = useNextQuiz();
   const quizReferenceCallback = useQuizReference();
-  const { setMessages, setIsLoading, isLoading } = useChatStore();
+  const { setMessages, setIsLoading, isLoading, lastQuiz } = useChatStore();
 
-  console.log(nextSteps);
+  console.log(lastQuiz);
 
   return (
     <S.Container>
+      {!nextSteps.isCorrect && lastQuiz && (
+        <S.Button
+          $disabled={isLoading}
+          onClick={async () => {
+            if (isLoading) return;
+            setMessages((prevMessages) => [
+              ...prevMessages,
+              {
+                role: "user",
+                content: "문제를 다시 풀어볼래요.",
+                isLoading: false,
+              },
+            ]);
+
+            setIsLoading(true);
+
+            setMessages((prevMessages) => [
+              ...prevMessages,
+              { role: "assistant", content: "", isLoading: true },
+            ]);
+
+            await new Promise((resolve) =>
+              setTimeout(resolve, Math.random() * 20 + 10)
+            );
+
+            setMessages((prevMessages) => {
+              const updated = [...prevMessages];
+              updated[updated.length - 1].isLoading = false;
+              return updated;
+            });
+
+            const introMessage = lastQuiz?.question;
+
+            let displayedMessage = "";
+
+            for (let i = 0; i < introMessage.length; i++) {
+              setMessages((prevMessages) => {
+                const updatedMessages = [...prevMessages];
+                updatedMessages[updatedMessages.length - 1].isLoading = false;
+                return updatedMessages;
+              });
+
+              displayedMessage += introMessage[i];
+
+              setMessages((prevMessages) => {
+                const updated = [...prevMessages];
+                updated[updated.length - 1].content = displayedMessage;
+                return updated;
+              });
+
+              // 타이핑 효과를 위한 딜레이 (10-30ms)
+              await new Promise((resolve) =>
+                setTimeout(resolve, Math.random() * 20 + 10)
+              );
+            }
+
+            setMessages((prevMessages) => {
+              const updated = [...prevMessages];
+              updated[updated.length - 1].courseQuiz = {
+                isLoading: true,
+                quiz: {
+                  question: "",
+                  choices: [],
+                  answerIndex: 0,
+                },
+              };
+              return updated;
+            });
+
+            await new Promise((resolve) => setTimeout(resolve, 500));
+
+            setMessages((prevMessages) => {
+              const updated = [...prevMessages];
+              updated[updated.length - 1].courseQuiz = {
+                quiz: lastQuiz,
+                isLoading: false,
+              };
+              return updated;
+            });
+
+            setIsLoading(false);
+          }}
+        >
+          <S.ButtonText>문제를 다시 풀어볼래요.</S.ButtonText>
+        </S.Button>
+      )}
       {nextSteps.nextQuiz && (
         <S.Button
           $disabled={isLoading}
@@ -23,7 +109,11 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
             );
           }}
         >
-          <S.ButtonText>{nextSteps.isCorrect ? "좀 더 어려운 문제를 풀고 싶어요.": "좀 더 쉬운 문제를 풀고 싶어요."}</S.ButtonText>
+          <S.ButtonText>
+            {nextSteps.isCorrect
+              ? "좀 더 어려운 문제를 풀고 싶어요."
+              : "좀 더 쉬운 문제를 풀고 싶어요."}
+          </S.ButtonText>
         </S.Button>
       )}
       {nextSteps.referenceNeeded && (
@@ -31,10 +121,11 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
           $disabled={isLoading}
           onClick={async () => {
             if (isLoading) return;
-            await quizReferenceCallback("관련 자료를 받고 싶어요.");
+
+            await quizReferenceCallback("복습할 수 있는 자료를 받고 싶어요.");
           }}
         >
-          <S.ButtonText>관련 자료를 받고 싶어요.</S.ButtonText>
+          <S.ButtonText>복습할 수 있는 자료를 받고 싶어요.</S.ButtonText>
         </S.Button>
       )}
       {nextSteps.nextCourse && (
