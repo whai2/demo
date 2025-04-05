@@ -6,7 +6,11 @@ import {
   useState,
 } from "react";
 
-import { TransparentBackDrop, useBottomSheetPortal, Loading } from "@/shared/ui";
+import {
+  Loading,
+  TransparentBackDrop,
+  useBottomSheetPortal,
+} from "@/shared/ui";
 import { Input } from "@/widgets/input";
 import { TopBar } from "@/widgets/topBar";
 
@@ -47,7 +51,6 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
       handleCourseSummation(course.description)
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
           setCourseSummation(data.choices?.[0]?.message?.content ?? "");
         })
         .catch((error) => {

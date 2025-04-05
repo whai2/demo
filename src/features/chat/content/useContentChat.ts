@@ -127,7 +127,6 @@ export const runGeneralStreaming = async (
 export const useContentChat = () => {
   const { setMessages, setIsLoading } = useChatStore();
   const { courseCategory, courseName, name, job, year } = useUserInfo();
-  console.log("hi")
 
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory

@@ -52,8 +52,6 @@ const YoutubePlaylist = () => {
     setCourseAttendanceRate(takenVideos.length / videos.length);
   }, [videos, currentVideo]);
 
-  // console.log(progress);
-
   return (
     <S.Container>
       <S.Content>
@@ -169,7 +167,6 @@ const InteractiveYouTubePlayer = ({ videoId }: { videoId: string }) => {
     //     const currentTime = player.getCurrentTime();
 
     //     if (currentTime) {
-    //       console.log("currentTime", currentTime);
     //       setProgress(videoId, currentTime);
     //     }
     //   }, 500);

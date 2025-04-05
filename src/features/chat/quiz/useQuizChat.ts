@@ -39,7 +39,6 @@ export const runCourseQuizFlow = async (
 
   const types = ["객관식", "단답형"];
   const randomType = types[Math.floor(Math.random() * types.length)];
-  console.log(types, randomType)
 
   const enhancedUserMessage = `
     [사용자 질문]

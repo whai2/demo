@@ -21,8 +21,6 @@ function ReferenceToggle({
 
   const [isOpen, setIsOpen] = useState(isQuizReference ? true : false);
 
-  console.log("isQuizReference", isQuizReference);
-
   const toggleOpen = () => {
     setIsOpen(!isOpen);
   };

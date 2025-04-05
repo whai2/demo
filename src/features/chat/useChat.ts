@@ -95,7 +95,6 @@ export const useSendChat = () => {
 
       if (intent === "general_question") {
         // ✅ 일반 스트리밍 LLM 응답
-        console.log("일반 질문");
         await runGeneralStreaming(
           currentText,
           setMessages,
@@ -107,7 +106,6 @@ export const useSendChat = () => {
         );
       } else if (intent === "course_recommendation") {
         // ✅ 강의 추천 흐름 (2단계)
-        console.log("강의 추천");
         await runRecommendationFlow(
           currentText,
           setMessages,
@@ -121,7 +119,6 @@ export const useSendChat = () => {
         );
       } else if (intent === "course_quiz") {
         // ✅ 강의 퀴즈 흐름
-        console.log("강의 퀴즈");
         await runCourseQuizFlow(
           currentText,
           setMessages,
@@ -193,11 +190,9 @@ export const useSendChat = () => {
       ).intent;
 
       if (intent === "quiz_answer") {
-        console.log("퀴즈 정답 확인");
         await runCourseQuizAnswerFlow(quiz, currentText, setMessages, setIsLoading, name, true);
       } else if (intent === "others") {
         // ✅ 강의 추천 흐름 (2단계)
-        console.log("일반 질문");
         await runGeneralStreaming(
           currentText,
           setMessages,
