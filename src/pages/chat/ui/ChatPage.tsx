@@ -133,6 +133,7 @@ function ChatPage() {
         lastMessage.role === "assistant" &&
         !lastMessage.isCourseRecommendation &&
         !lastMessage.courseQuiz &&
+        !lastMessage.reference?.isQuizReference &&
         !lastMessage.userResult && <TailQuestions lastMessage={lastMessage} />}
 
       {/* <BottomSheet>

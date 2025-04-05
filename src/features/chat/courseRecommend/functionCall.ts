@@ -60,7 +60,7 @@ export const userIntentClassificationFunctions = [
               content: {
                 type: "string",
                 description:
-                  "다음으로 배우면 좋을 내용을 10~30자 이내로 제공해주세요. (예시: '기획부터 UI 흐름까지 배우고 싶어요')",
+                  `다음으로 배우면 좋을 내용을 10~30자 이내로 제공해주세요. (# 데이터 예시: '기획부터 UI 흐름까지 배우고 싶어요.')`,
               },
             },
           },
