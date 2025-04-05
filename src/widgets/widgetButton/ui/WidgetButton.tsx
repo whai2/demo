@@ -109,12 +109,15 @@ function WidgetButton({
                   courseAttendanceRate
                 );
 
+                setIsLoading(false);
+
                 return;
               }
 
               await runRecommendationFlow(
                 data.question,
                 setMessages,
+                setIsLoading,
                 currentCourses as unknown as CourseCategory,
                 course as unknown as CourseInfo,
                 courseCategory,

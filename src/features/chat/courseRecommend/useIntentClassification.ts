@@ -12,6 +12,7 @@ export const runRecommendationFlow = async (
   setMessages: (
     messages: MessageType[] | ((prevMessages: MessageType[]) => MessageType[])
   ) => void,
+  setIsLoading: (isLoading: boolean) => void,
   currentCourses: CourseCategory,
   course: CourseInfo,
   courseCategory: string,
@@ -26,6 +27,8 @@ export const runRecommendationFlow = async (
     userMessage,
     courseCategory
   );
+
+  setIsLoading(true);
 
   const response = await streamChat(
     enhancedUserMessage,
@@ -111,6 +114,8 @@ export const runRecommendationFlow = async (
       !getRecommendationCoursesResponse.ok ||
       !getRecommendationCoursesResponse.body
     ) {
+
+      setIsLoading(false);
       throw new Error("네트워크 응답 실패");
     }
 
@@ -141,5 +146,7 @@ export const runRecommendationFlow = async (
       };
       return updated;
     });
+
+    setIsLoading(false);
   }
 };

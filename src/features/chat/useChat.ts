@@ -109,6 +109,7 @@ export const useSendChat = () => {
         await runRecommendationFlow(
           currentText,
           setMessages,
+          setIsLoading,
           currentCourses as unknown as CourseCategory,
           course as unknown as CourseInfo,
           courseCategory,
