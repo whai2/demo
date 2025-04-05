@@ -160,6 +160,7 @@ export const useContentChat = () => {
       job,
       year
     );
+    setIsLoading(false);
   };
 
   return { sendChatCallback };

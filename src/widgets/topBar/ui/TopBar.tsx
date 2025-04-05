@@ -1,16 +1,18 @@
-import { ROUTES, useNavigate } from "@/features/navigate";
-import { useChatStore } from "@/features/chat";
+import ToolTip from "@/shared/ui/toolTip/ToolTip";
 
+import { useChatStore } from "@/features/chat";
+import { ROUTES, useNavigate } from "@/features/navigate";
+
+import styled from "styled-components";
 import { ReactComponent as ChatHistoryIcon } from "../assets/chatHistory.svg";
 import { ReactComponent as CustomerCentorIcon } from "../assets/customerCentor.svg";
 import { ReactComponent as InfoIcon } from "../assets/info.svg";
 import { ReactComponent as BackIcon } from "../assets/leftChervron.svg";
-
-import styled from "styled-components";
+import { ReactComponent as NewChatIcon } from "../assets/newChat.svg";
 
 function TopBar() {
   const { currentPage, goBack, setCurrentPage } = useNavigate();
-  const { isLoading } = useChatStore();
+  const { isLoading, setMessages } = useChatStore();
   return (
     <S.Container>
       <S.TitleContainer>
@@ -28,6 +30,22 @@ function TopBar() {
       </S.TitleContainer>
 
       <S.NavContainer>
+        <S.ToolTipContainer>
+          <S.StyledIcon
+            as={NewChatIcon}
+            onClick={() => {
+              if (!isLoading) {
+                setCurrentPage(ROUTES.HOME);
+                setMessages([]);
+              }
+            }}
+            disabled={isLoading}
+          />
+          <ToolTipLayout>
+            <ToolTip>새채팅</ToolTip>
+          </ToolTipLayout>
+        </S.ToolTipContainer>
+
         <S.ChatHistoryIcon
           disabled={isLoading}
           onClick={() => {
