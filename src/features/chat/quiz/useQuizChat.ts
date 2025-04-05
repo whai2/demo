@@ -689,6 +689,7 @@ export const useQuizReference = () => {
       updated[updated.length - 1].reference = {
         ...args,
         isLoading: false,
+        isQuizReference: true,
       };
       return updated;
     });

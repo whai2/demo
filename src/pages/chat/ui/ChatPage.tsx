@@ -49,6 +49,7 @@ function ChatPage() {
                     ) : (
                       <ReferenceToggle
                         reference={message.reference?.reference}
+                        isQuizReference={message.reference?.isQuizReference}
                       />
                     )}
                     {(() => {

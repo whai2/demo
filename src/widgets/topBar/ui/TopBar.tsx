@@ -1,4 +1,5 @@
 import { ROUTES, useNavigate } from "@/features/navigate";
+import { useChatStore } from "@/features/chat";
 
 import { ReactComponent as ChatHistoryIcon } from "../assets/chatHistory.svg";
 import { ReactComponent as CustomerCentorIcon } from "../assets/customerCentor.svg";
@@ -9,16 +10,31 @@ import styled from "styled-components";
 
 function TopBar() {
   const { currentPage, goBack, setCurrentPage } = useNavigate();
-
+  const { isLoading } = useChatStore();
   return (
     <S.Container>
       <S.TitleContainer>
         {/* <S.Title>AI 챗봇</S.Title> */}
-        {currentPage !== ROUTES.HOME && <S.BackIcon onClick={goBack} />}
+        {currentPage !== ROUTES.HOME && (
+          <S.BackIcon
+            disabled={isLoading}
+            onClick={() => {
+              if (isLoading) return;
+
+              goBack();
+            }}
+          />
+        )}
       </S.TitleContainer>
 
       <S.NavContainer>
-        <S.ChatHistoryIcon onClick={() => setCurrentPage(ROUTES.CHAT)} />
+        <S.ChatHistoryIcon
+          disabled={isLoading}
+          onClick={() => {
+            if (isLoading) return;
+            setCurrentPage(ROUTES.CHAT);
+          }}
+        />
         <S.CustomerCentorIcon />
       </S.NavContainer>
     </S.Container>
@@ -45,13 +61,13 @@ const S = {
     align-items: center;
   `,
 
-  BackIcon: styled(BackIcon)`
+  BackIcon: styled(BackIcon)<{ disabled?: boolean }>`
     width: 20px;
     height: 20px;
     color: #97999b;
-    cursor: pointer;
+    cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
     &:hover {
-      color: #000;
+      color: ${({ disabled }) => (disabled ? "#97999b" : "#000")};
     }
   `,
 
@@ -108,11 +124,14 @@ const S = {
     }
   `,
 
-  ChatHistoryIcon: styled(ChatHistoryIcon)`
+  ChatHistoryIcon: styled(ChatHistoryIcon)<{ disabled?: boolean }>`
     width: 20px;
     height: 20px;
     color: #97999b;
-    cursor: pointer;
+    cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+    &:hover {
+      color: ${({ disabled }) => (disabled ? "#97999b" : "#000")};
+    }
   `,
 
   InfoIcon: styled(InfoIcon)`

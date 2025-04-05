@@ -22,7 +22,7 @@ function Input() {
   const { setCurrentPage } = useNavigate();
 
   const { sendChatCallback, sendQuizAnswer } = useSendChat();
-  const { isQuiz, lastQuiz } = useChatStore();
+  const { isQuiz, lastQuiz, isLoading } = useChatStore();
 
   const {
     answerStyleTitle,
@@ -40,6 +40,7 @@ function Input() {
   const handleKeyDown = async (
     event: React.KeyboardEvent<HTMLTextAreaElement>
   ) => {
+    if (isLoading) return;
     if (
       event.key === "Enter" &&
       !event.shiftKey &&
@@ -81,13 +82,13 @@ function Input() {
           <S.LogoContainer>
             <S.LogoIcon />
             <S.AnswerStylesBox
-              $disabled={false}
+              $disabled={isLoading}
               onClick={handleAnswerStyleToggle}
             >
               <S.Text
                 $isTextInput={text !== ""}
                 $isAnswerStylesOpen={isAnswerStylesOpen}
-                $disabled={false}
+                $disabled={isLoading}
               >
                 {answerStyleTitle}
               </S.Text>
@@ -95,9 +96,10 @@ function Input() {
           </S.LogoContainer>
           <S.SendIcon
             $isTextInput={text !== ""}
-            $disabled={false}
+            $disabled={isLoading}
             onClick={async () => {
               if (text.trim() === "") return;
+              if (isLoading) return;
 
               setCurrentPage(ROUTES.CHAT);
               await sendChatCallback(text, setText);

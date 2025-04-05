@@ -4,6 +4,7 @@ export type MessageType = {
   isLoading: boolean;
   reference?: {
     isLoading: boolean;
+    isQuizReference?: boolean;
     reference: any;
   };
   isCourseRecommendation?: boolean;
