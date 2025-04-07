@@ -73,6 +73,7 @@ function LoginPage() {
   const handleCourseCategoryClick = (courseCategory: string) => {
     setCourseCategory(courseCategory);
     setIsCourseCategoryOpen(false);
+    setCourseName("");
   };
 
   const handleYearClick = (year: string) => {
@@ -219,7 +220,7 @@ function LoginPage() {
       </S.Container>
 
       <S.Button $isActive={isLoginActive} onClick={handleLogin}>
-        다음
+        확인
       </S.Button>
     </S.LoginLayout>
   );
@@ -375,7 +376,7 @@ const S = {
     align-self: stretch;
     background-color: white;
     border-radius: 8px;
-    height: 164px;
+    max-height: 164px;
     overflow-y: auto;
     border: 1px solid var(--gray-300-border, #d1d5db);
 
