@@ -29,17 +29,17 @@ export const oftenQuestionsTaps = {
       text: "좀 더 쉽게 이해될 수 있도록 설명해 주세요",
     },
     {
-      text: "지금 보고 있는 부분 잘 모르겠어요.",
+      text: "지금 보고 있는 부분 잘 모르겠어요",
     },
   ],
 };
 
 export const courseSummationTaps = {
-  title: "강의 요약",
+  title: "강의 개요 요약",
   icon: Document,
   items: [
     {
-      text: "강의 내용을 요약해주세요.",
+      text: "강의 내용을 요약해주세요",
     },
     {
       text: "강의 핵심 키워드와 설명을 표로 제공해 주세요",

@@ -58,7 +58,8 @@ export const courseRecommendationSystemPrompt = (
   [다음 강의 목록 정보]
   ${formatCoursesToMarkdown(currentCourses, courseCategory)}
 
-  사용자가 어떤 강의를 수강 중인지, 어떤 개발자 경력을 가지고 있는지를 바탕으로 맞춤형 설명과 다음 로드맵을 제공해주세요.
+  사용자가 어떤 강의를 수강 중인지, 어떤 개발자 경력을 가지고 있는지를 바탕으로 맞춤형 설명과 다음 추천 강의를 제공해주세요.
+  **반드시 [다음 강의 목록 정보]에 있는 강의** 추천** 하세요.
   
   추가 궁금한 점이 있는지도 여쭤주세요.
 
