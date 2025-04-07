@@ -18,13 +18,20 @@ export const runGeneralStreaming = async (
   name: string,
   job: string,
   year: string,
-  answerStyle: string
+  answerStyle: string,
+  currentLanguage: string
 ) => {
-  const enhancedUserMessage = courseGeneralChatUserPrompt(userMessage, course);
+  const enhancedUserMessage = courseGeneralChatUserPrompt(userMessage, course, currentLanguage === "English");
 
   const response = await streamChat(
     enhancedUserMessage,
-    generalQuestionSystemPrompt(name, job, year, answerStyle)
+    generalQuestionSystemPrompt(
+      name,
+      job,
+      year,
+      currentLanguage === "English",
+      answerStyle,
+    )
   );
 
   if (!response.ok || !response.body) {
@@ -90,9 +97,14 @@ export const runGeneralStreaming = async (
   });
 
   const referenceResponse = await functionChat(
-    referenceGenerateUserPrompt(previousAnswer),
-    referenceGenerateSystemPrompt(course, previousQuestion, previousAnswer),
-    referenceFunctions
+    referenceGenerateUserPrompt(previousAnswer, currentLanguage === "English"),
+    referenceGenerateSystemPrompt(
+      course,
+      previousQuestion,
+      previousAnswer,
+      currentLanguage === "English"
+    ),
+    referenceFunctions(currentLanguage)
   );
 
   const responseData = await referenceResponse.json();

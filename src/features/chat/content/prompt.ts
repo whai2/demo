@@ -3,9 +3,11 @@ import { CourseInfo } from "../type";
 export const generalQuestionSystemPrompt = (
   name: string,
   job: string,
-  year: string
+  year: string,
+  isEnglish: boolean
 ) => {
   return `
+    ${isEnglish ? "you must say english\n" : ""}
     당신은 현재 강의에 대한 정보를 기반으로 사용자의 질문에 대한 답변을 제공하는 교육 어시스턴트 AI 에디 입니다.
 
     현재 수강 중인 강의 목록 정보를 토대로, 사용자의 질문에 대한 답변을 제공하세요.
@@ -45,15 +47,19 @@ export const generalQuestionSystemPrompt = (
 
     [추가 사항]
     추가 궁금한 점이 있는지도 여쭤주세요.
+
+    ${isEnglish ? "you must say english\n" : ""}
   `;
 };
 
 export const referenceGenerateSystemPrompt = (
   currentCourse: CourseInfo,
   previousQuestion: string,
-  previousAnswer: string
+  previousAnswer: string,
+  isEnglish: boolean
 ) => {
   return `
+    ${isEnglish ? "you must say english\n" : ""}
     이전 강의 내용을 기반으로 참고했을 법한 자료 하나를 생성해주세요. 아래 기준을 따르세요:
 
 - 실존할 법한 제목
@@ -65,13 +71,16 @@ export const referenceGenerateSystemPrompt = (
     답변: ${previousAnswer}
 
     [현재 수강 중인 강의 목록 정보]
-    ${currentCoursePrompt(currentCourse)}
+    ${currentCoursePrompt(currentCourse, isEnglish)}
+
+    ${isEnglish ? "you must say english\n" : ""}
   `;
 };
 
-const currentCoursePrompt = (currentCourse: CourseInfo) => {
+const currentCoursePrompt = (currentCourse: CourseInfo, isEnglish: boolean) => {
   return `
   ### 📘 ${currentCourse.name}
+  ${isEnglish ? "강의 이름은 반드시 영어로 작성해주세요." : ""}
 
     - **강의 개요**: ${currentCourse.description}
     - **⏱ 총 강의 시간**: ${currentCourse.duration}
@@ -89,19 +98,27 @@ const currentCoursePrompt = (currentCourse: CourseInfo) => {
 // user prompt
 export const courseGeneralChatUserPrompt = (
   userMessage: string,
-  currentCourse: CourseInfo
+  currentCourse: CourseInfo,
+  isEnglish: boolean
 ) => {
   return `
+    ${isEnglish ? "you must say english\n" : ""}
     [사용자 질문]
     ${userMessage}
 
     [현재 수강 중인 강의 차시 정보]
     ${currentCoursePrompt2(currentCourse)}
+
+    ${isEnglish ? "you must say english\n" : ""}
   `;
 };
 
-export const referenceGenerateUserPrompt = (previousAnswer: string) => {
+export const referenceGenerateUserPrompt = (
+  previousAnswer: string,
+  isEnglish: boolean
+) => {
   return `
+    ${isEnglish ? "you must say english\n" : ""}
     아래의 답변이 어떤 내용을 참고했을지를 추측해서, 참고 자료를 생성해주세요.
     아래 기준을 따르세요:
 
@@ -111,6 +128,8 @@ export const referenceGenerateUserPrompt = (previousAnswer: string) => {
     - 영상에서 등장한 시점 (예: 12:42~13:00)
 
     답변: ${previousAnswer}
+
+    ${isEnglish ? "you must say english\n" : ""}
   `;
 };
 

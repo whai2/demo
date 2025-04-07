@@ -1,4 +1,5 @@
 import { useChatStore, useNextQuiz, useQuizReference } from "@/features/chat";
+import { useUserInfo } from "@/features/userInfo";
 
 import styled from "styled-components";
 
@@ -6,6 +7,7 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
   const nextQuizCallback = useNextQuiz();
   const quizReferenceCallback = useQuizReference();
   const { setMessages, setIsLoading, isLoading, lastQuiz } = useChatStore();
+  const { currentLanguage } = useUserInfo();
 
   return (
     <S.Container>
@@ -18,7 +20,10 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
               ...prevMessages,
               {
                 role: "user",
-                content: "문제를 다시 풀어볼래요.",
+                content:
+                  currentLanguage === "English"
+                    ? "I want to try the question again."
+                    : "문제를 다시 풀어볼래요.",
                 isLoading: false,
               },
             ]);
@@ -92,7 +97,11 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
             setIsLoading(false);
           }}
         >
-          <S.ButtonText>문제를 다시 풀어볼래요.</S.ButtonText>
+          <S.ButtonText>
+            {currentLanguage === "English"
+              ? "I want to try the question again."
+              : "문제를 다시 풀어볼래요."}
+          </S.ButtonText>
         </S.Button>
       )}
       {nextSteps.nextQuiz && (
@@ -102,14 +111,22 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
             if (isLoading) return;
             await nextQuizCallback(
               nextSteps.isCorrect
-                ? "좀 더 어려운 문제를 풀고 싶어요."
+                ? currentLanguage === "English"
+                  ? "I want a more difficult question."
+                  : "좀 더 어려운 문제를 풀고 싶어요."
+                : currentLanguage === "English"
+                ? "I want an easier question."
                 : "좀 더 쉬운 문제를 풀고 싶어요."
             );
           }}
         >
           <S.ButtonText>
             {nextSteps.isCorrect
-              ? "좀 더 어려운 문제를 풀고 싶어요."
+              ? currentLanguage === "English"
+                ? "I want a more difficult question."
+                : "좀 더 어려운 문제를 풀고 싶어요."
+              : currentLanguage === "English"
+              ? "I want an easier question."
               : "좀 더 쉬운 문제를 풀고 싶어요."}
           </S.ButtonText>
         </S.Button>
@@ -120,20 +137,37 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
           onClick={async () => {
             if (isLoading) return;
 
-            await quizReferenceCallback("복습할 수 있는 자료를 받고 싶어요.");
+            await quizReferenceCallback(
+              currentLanguage === "English"
+                ? "I want materials to review."
+                : "복습할 수 있는 자료를 받고 싶어요."
+            );
           }}
         >
-          <S.ButtonText>복습할 수 있는 자료를 받고 싶어요.</S.ButtonText>
+          <S.ButtonText>
+            {currentLanguage === "English"
+              ? "I want materials to review."
+              : "복습할 수 있는 자료를 받고 싶어요."}
+          </S.ButtonText>
         </S.Button>
       )}
+
       {nextSteps.nextCourse && (
         <S.Button
           $disabled={isLoading}
           onClick={async () => {
             if (isLoading) return;
+
             setMessages((prevMessages) => [
               ...prevMessages,
-              { role: "user", content: nextSteps.nextCourse, isLoading: false },
+              {
+                role: "user",
+                content:
+                  currentLanguage === "English"
+                    ? "I want to move on to the next course."
+                    : nextSteps.nextCourse,
+                isLoading: false,
+              },
             ]);
 
             setIsLoading(true);
@@ -150,7 +184,15 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
             });
 
             const introMessage =
-              "네 다음 강의로 넘어갈게요!\n\n조금씩 쌓이는 노력은 결국 큰 성과로 돌아옵니다.\n\n잠깐 숨 고르고, 다시 한 발짝 나아가볼까요?\n\n**당신의 성장을 응원해요!** 💪🌱";
+              currentLanguage === "English"
+                ? `Alright, let's move on to the next course! 📚✨
+
+Every small step you take adds up to something big.
+
+Take a deep breath—and let's take one more step forward.
+
+**We’re cheering for your growth!** 💪🌱`
+                : `네 다음 강의로 넘어갈게요!\n\n조금씩 쌓이는 노력은 결국 큰 성과로 돌아옵니다.\n\n잠깐 숨 고르고, 다시 한 발짝 나아가볼까요?\n\n**당신의 성장을 응원해요!** 💪🌱`;
 
             let displayedMessage = "";
 
@@ -158,7 +200,6 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
               setTimeout(resolve, Math.random() * 20 + 100)
             );
 
-            // 글자 단위로 스트리밍 효과 구현
             for (let i = 0; i < introMessage.length; i++) {
               setMessages((prevMessages) => {
                 const updatedMessages = [...prevMessages];
@@ -174,14 +215,17 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
                 return updated;
               });
 
-              // 타이핑 효과를 위한 딜레이 (10-30ms)
               await new Promise((resolve) =>
                 setTimeout(resolve, Math.random() * 20 + 10)
               );
             }
           }}
         >
-          <S.ButtonText>다음 강의로 넘어가고 싶어요.</S.ButtonText>
+          <S.ButtonText>
+            {currentLanguage === "English"
+              ? "I want to move on to the next course."
+              : "다음 강의로 넘어가고 싶어요."}
+          </S.ButtonText>
         </S.Button>
       )}
     </S.Container>

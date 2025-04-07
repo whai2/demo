@@ -9,7 +9,7 @@ const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
 export const videoCategory = [
   {
     name: "인공지능",
-    playListId: "PLPTV0NXA_ZSgsLAr8YCgCwhPIJNNtexWu",
+    playListId: "PLz-ep5RbHosU2hnz5ejezwaYpdMutMVB0",
   },
   {
     name: "프로그래밍",
@@ -158,88 +158,6 @@ export const useGetVideo = () => {
       })
       .catch((err) => console.error(err));
   }, [courseCategory, courseName]);
-
-  // useEffect(() => {
-  //   if (!courseCategory || !courseName) return;
-
-  //   fetch(
-  //     `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=5&q=${encodeURIComponent(
-  //       courseName
-  //     )}&key=${API_KEY}`
-  //   )
-  //     .then((res) => res.json())
-  //     .then(async (data) => {
-  //       const videos = data.items;
-
-  //       const videoIds = videos.map((video: any) => video.id.videoId).join(",");
-
-  //       // 2. duration 정보 가져오기
-  //       const videoDetailsRes = await fetch(
-  //         `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoIds}&key=${API_KEY}`
-  //       );
-  //       const videoDetailsData = await videoDetailsRes.json();
-
-  //       // 3. duration 포함한 데이터 만들기
-  //       const enrichedVideos = videos.map((video: any, idx: number) => ({
-  //         ...video,
-  //         id: video.id.videoId,
-  //         duration: videoDetailsData.items[idx].contentDetails.duration,
-  //       }));
-
-  //       setVideos(enrichedVideos);
-  //       setCurrentVideo(enrichedVideos[0]);
-
-  //       // 4. 총 시간 계산
-  //       const totalSeconds = enrichedVideos.reduce(
-  //         (total: number, video: any) => {
-  //           const match = video.duration.match(/PT((\d+)H)?((\d+)M)?((\d+)S)?/);
-  //           const hours = parseInt(match[2] || "0") * 3600;
-  //           const minutes = parseInt(match[4] || "0") * 60;
-  //           const seconds = parseInt(match[6] || "0");
-  //           return total + hours + minutes + seconds;
-  //         },
-  //         0
-  //       );
-
-  //       const totalHrs = Math.floor(totalSeconds / 3600);
-  //       const totalMins = Math.floor((totalSeconds % 3600) / 60);
-  //       const totalSecs = totalSeconds % 60;
-
-  //       setTotalDuration(
-  //         `${
-  //           totalHrs > 0 ? `${totalHrs}시간 ` : ""
-  //         }${totalMins}분 ${totalSecs}초`
-  //       );
-  //     })
-  //     .catch((err) => console.error("유튜브 검색 실패", err));
-  // }, [courseCategory, courseName]);
-
-  // useEffect(() => {
-  //   const fetchCaptions = async (videoId: string) => {
-  //     const res = await fetch(
-  //       `https://video.google.com/timedtext?lang=en&v=${videoId}`
-  //     );
-  //     const xmlText = await res.text();
-
-  //     // XML 파싱
-  //     const parser = new DOMParser();
-  //     const xml = parser.parseFromString(xmlText, "text/xml");
-  //     const texts = Array.from(xml.getElementsByTagName("text")).map(
-  //       (node) => node.textContent
-  //     );
-
-  //     const fullTranscript = texts.join(" ");
-  //     return fullTranscript;
-  //   };
-
-  //   if (currentVideo) {
-  //     fetchCaptions(currentVideo?.snippet.resourceId.videoId).then(
-  //       (transcript) => {
-  //         setCurrentVideoDescription(transcript);
-  //       }
-  //     );
-  //   }
-  // }, [currentVideo]);
 
   return {
     videos,

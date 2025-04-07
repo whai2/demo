@@ -1,14 +1,23 @@
-export const courseQuizFunctions = [
+export const courseQuizFunctions = (currentLanguage: string) => [
   {
     name: "course_quiz",
-    description: "현재 수강 중인 강의에 대한 객관식 퀴즈 문제를 생성합니다.",
+    description: `${
+      currentLanguage === "English" ? "you must say english\n" : ""
+    }
+      현재 수강 중인 강의에 대한 객관식 퀴즈 문제를 생성합니다.
+      ${currentLanguage === "English" ? "you must say english\n" : ""}
+      `,
     parameters: {
       type: "object",
       properties: {
         question: {
           type: "object",
-          description:
-            "하나의 퀴즈 문제와 그에 따른 보기 및 정답 정보. 문제와 답은 정확해야 하며, 출제 오류가 없어야 합니다. (잘못 된 예: 정답이 1개라고 제시했는데, 실제는 복수 정답이 가능한 경우)",
+          description: `${
+            currentLanguage === "English" ? "you must say english\n" : ""
+          }
+            하나의 퀴즈 문제와 그에 따른 보기 및 정답 정보. 문제와 답은 정확해야 하며, 출제 오류가 없어야 합니다. (잘못 된 예: 정답이 1개라고 제시했는데, 실제는 복수 정답이 가능한 경우)
+            ${currentLanguage === "English" ? "you must say english\n" : ""}
+            `,
           properties: {
             question: {
               type: "string",
@@ -46,14 +55,23 @@ export const courseQuizFunctions = [
   },
   {
     name: "course_quiz",
-    description: "현재 수강 중인 강의에 대한 단답형 퀴즈 문제를 생성합니다.",
+    description: `${
+      currentLanguage === "English" ? "you must say english\n" : ""
+    }
+      현재 수강 중인 강의에 대한 단답형 퀴즈 문제를 생성합니다.
+      ${currentLanguage === "English" ? "you must say english\n" : ""}
+      `,
     parameters: {
       type: "object",
       properties: {
         question: {
           type: "object",
-          description:
-            "하나의 퀴즈 문제와 그에 따른 보기 및 정답 정보. 문제와 답은 정확해야 하며, 출제 오류가 없어야 합니다.",
+          description: `${
+            currentLanguage === "English" ? "you must say english\n" : ""
+          }
+            하나의 퀴즈 문제와 그에 따른 보기 및 정답 정보. 문제와 답은 정확해야 하며, 출제 오류가 없어야 합니다.
+            ${currentLanguage === "English" ? "you must say english\n" : ""}
+            `,
           properties: {
             question: {
               type: "string",
@@ -79,11 +97,15 @@ export const courseQuizFunctions = [
   },
 ];
 
-export const courseQuizAnswerFunctions = [
+export const courseQuizAnswerFunctions = (currentLanguage: string) => [
   {
     name: "quiz_correct",
-    description:
-      "퀴즈 정답 확인합니다. 정답인 경우, 이후 사용자의 다음 의사를 평서문으로 묻습니다.",
+    description: `${
+      currentLanguage === "English" ? "you must say english\n" : ""
+    }  
+      퀴즈 정답 확인합니다. 정답인 경우, 이후 사용자의 다음 의사를 평서문으로 묻습니다.
+      ${currentLanguage === "English" ? "you must say english\n" : ""}
+      `,
     parameters: {
       type: "object",
       properties: {
@@ -93,13 +115,21 @@ export const courseQuizAnswerFunctions = [
         },
         nextQuiz: {
           type: "string",
-          description:
-            "더 어려운 퀴즈를 풀지 평서문으로 의사를 물어봅니다.  (예시: 조금 더 어려운 문제를 풀어볼래요.)",
+          description: `${
+            currentLanguage === "English" ? "you must say english\n" : ""
+          }  
+            더 어려운 퀴즈를 풀지 평서문으로 의사를 물어봅니다.  (예시: 조금 더 어려운 문제를 풀어볼래요.)
+            ${currentLanguage === "English" ? "you must say english\n" : ""}
+            `,
         },
         nextCourse: {
           type: "string",
-          description:
-            "다음 강의를 들을지 평서문으로 의사를 물어봅니다.  (예시: 다음 강의를 들어볼래요.)",
+          description: `${
+            currentLanguage === "English" ? "you must say english\n" : ""
+          }  
+            다음 강의를 들을지 평서문으로 의사를 물어봅니다.  (예시: 다음 강의를 들어볼래요.)
+            ${currentLanguage === "English" ? "you must say english\n" : ""}
+            `,
         },
         // introMessage: {
         //   type: "string",
@@ -112,8 +142,12 @@ export const courseQuizAnswerFunctions = [
   },
   {
     name: "quiz_incorrect",
-    description:
-      "퀴즈 정답 확인합니다. 오답인 경우, 이후 사용자의 다음 의사를 평서문으로 묻습니다.",
+    description: `${
+      currentLanguage === "English" ? "you must say english\n" : ""
+    }  
+      퀴즈 정답 확인합니다. 오답인 경우, 이후 사용자의 다음 의사를 평서문으로 묻습니다.
+      ${currentLanguage === "English" ? "you must say english\n" : ""}
+      `,
     parameters: {
       type: "object",
       properties: {
@@ -123,13 +157,21 @@ export const courseQuizAnswerFunctions = [
         },
         nextQuiz: {
           type: "string",
-          description:
-            "더 쉬운 퀴즈를 풀지 평서문으로 의사를 물어봅니다. (예시: 조금 더 쉬운 문제를 풀어볼래요.)",
+          description: `${
+            currentLanguage === "English" ? "you must say english\n" : ""
+          }  
+            더 쉬운 퀴즈를 풀지 평서문으로 의사를 물어봅니다. (예시: 조금 더 쉬운 문제를 풀어볼래요.)
+            ${currentLanguage === "English" ? "you must say english\n" : ""}
+            `,
         },
         referenceNeeded: {
           type: "string",
-          description:
-            "관련 자료를 제공받고 싶은지 평서문으로 의사를 물어봅니다.  (예시: 관련 자료를 받고 싶어요.)",
+          description: `${
+            currentLanguage === "English" ? "you must say english\n" : ""
+          }  
+            관련 자료를 제공받고 싶은지 평서문으로 의사를 물어봅니다.  (예시: 관련 자료를 받고 싶어요.)
+            ${currentLanguage === "English" ? "you must say english\n" : ""}
+            `,
         },
 
         // introMessage: {
@@ -143,11 +185,15 @@ export const courseQuizAnswerFunctions = [
   },
 ];
 
-export const referenceFunctions = [
+export const referenceFunctions = (currentLanguage: string) => [
   {
     name: "generate_reference",
-    description:
-      "사용자의 이전 질문과 답변을 참고해, 현재 강의에서 참고했을 법한 자료(영상, 문서 등)를 실감나게 생성합니다.",
+    description: `${
+      currentLanguage === "English" ? "you must say english\n" : ""
+    }  
+      사용자의 이전 질문과 답변을 참고해, 현재 강의에서 참고했을 법한 자료(영상, 문서 등)를 실감나게 생성합니다.
+      ${currentLanguage === "English" ? "you must say english\n" : ""}
+      `,
     parameters: {
       type: "object",
       properties: {
@@ -161,12 +207,18 @@ export const referenceFunctions = [
             },
             title: {
               type: "string",
-              description: "참고 자료의 제목 (예: 데이터 사이언스와 기초)",
+              description: `
+              ${currentLanguage === "English" ? "you must say english\n" : ""}
+              참고 자료의 제목 (예: 데이터 사이언스와 기초)
+              ${currentLanguage === "English" ? "you must say english\n" : ""}`,
             },
             file: {
               type: "string",
-              description:
-                "자료 파일 이름 및 확장자. 반드시 10자 내외 제공. (예: 데이터 사이언스 소개.pdf)",
+              description: `
+                   ${currentLanguage === "English" ? "you must say english\n" : ""}
+                자료 파일 이름 및 확장자. 반드시 10자 내외 제공. (예: 데이터 사이언스 소개.pdf)
+                ${currentLanguage === "English" ? "you must say english\n" : ""}
+                `,
             },
             pages: {
               type: "string",

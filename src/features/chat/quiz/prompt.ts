@@ -6,9 +6,11 @@ export const courseQuizSystemPrompt = (
   name: string,
   job: string,
   year: string,
-  courseAttendanceRate?: number
+  isEnglish: boolean,
+  courseAttendanceRate?: number,
 ) => {
   return `
+    ${isEnglish ? "you must say english\n" : ""}
     당신은 현재 수강 중인 강의에 대한 퀴즈 문제를 생성해주는 교육 어시스턴트 AI 에디 입니다.
 
     현재 수강 중인 강의에 대한 퀴즈 문제를 생성해주세요.
@@ -24,6 +26,8 @@ export const courseQuizSystemPrompt = (
   
     해당 직무와 연차로 수준을 고려하세요.
     그리고 수강중인 강의에 맞게 퀴즈 문제를 생성해주세요.
+
+    ${isEnglish ? "you must say english\n" : ""}
   `;
 };
 
@@ -31,9 +35,12 @@ export const nextQuizSystemPrompt = (
   currentCoursePrompt: string,
   name: string,
   job: string,
-  year: string
+  year: string,
+  isEnglish: boolean
 ) => {
   return `
+    ${isEnglish ? "you must say english\n" : ""}
+
     당신은 현재 수강 중인 강의에 대한 퀴즈 문제를 생성해주는 교육 어시스턴트 AI 에디 입니다.
 
     현재 수강 중인 강의에 대한 퀴즈 문제를 생성해주세요.
@@ -45,15 +52,21 @@ export const nextQuizSystemPrompt = (
     이름은 ${name}이고, 직무는 ${job}이며, 연차는 ${year}입니다.
     [이전 퀴즈]와 비교하여, 연차 수준에 맞는 퀴즈를 제공해주세요.
     사용자가 쉬운 퀴즈를 요구하면, 쉬운 퀴즈를, 어려운 퀴즈를 요구하면, 어려운 퀴즈를 제공해주세요.
+
+    ${isEnglish ? "you must say english\n" : ""}
   `;
 };
 
 export const quizAnswerSystemPrompt = (
   quiz: Quiz | Quiz2,
   answer: string,
-  name: string
+  name: string,
+  isEnglish: boolean
 ) => {
   return `
+    # Very Important
+    ${isEnglish ? "you must say english\n" : ""}
+
     당신은 질문자의 퀴즈 답변을 확인하고, 정답 여부를 판단해주는 교육 어시스턴트 AI입니다.
     ${name}님의 답변을 확인하고, 정답 여부를 판단해주세요.
 
@@ -96,15 +109,21 @@ export const quizAnswerSystemPrompt = (
 
         이번엔 정답을 바로 알려드리기보다,
         📚 관련 내용을 복습하시고 스스로 유추해보는 걸 추천드릴게요!
+
+    ${isEnglish ? "you must say english\n" : ""}
   `;
 };
 
 export const referenceGenerateSystemPrompt = (
   currentCourse: CourseInfo,
   previousQuestion: string,
-  quiz: Quiz | Quiz2
+  quiz: Quiz | Quiz2,
+  isEnglish: boolean
 ) => {
   return `
+    # Very Important
+    ${isEnglish ? "you must say english\n" : ""}
+
     이전 강의 내용을 기반으로 퀴즈 문제를 참고했을 법한 자료 하나를 생성해주세요. 아래 기준을 따르세요:
 
 - 실존할 법한 제목
@@ -117,12 +136,18 @@ export const referenceGenerateSystemPrompt = (
 
     [현재 수강 중인 강의 목록 정보]
     ${currentCoursePrompt(currentCourse)}
+
+    # Very Important
+    ${isEnglish ? "you must say english\n" : ""}
   `;
 };
 
 // user prompt
-export const quizAnswerUserPrompt = (name: string, answer: string) => {
+export const quizAnswerUserPrompt = (name: string, answer: string, isEnglish: boolean ) => {
   return `
+    # Very Important
+    ${isEnglish ? "you must say english\n" : ""}
+    
     저는 ${name}입니다. 퀴즈 문제를 풀고 있습니다.
 
     퀴즈의 답을 ${answer}로 했습니다. 퀴즈의 정답을 알려주세요.
@@ -133,15 +158,20 @@ export const quizAnswerUserPrompt = (name: string, answer: string) => {
     
     ## 세부 규칙
     다음 텍스트의 내용을 의미 단위로 나눠서 문단을 구성해 주세요.
+
+    # Very Important
+    ${isEnglish ? "you must say english\n" : ""}
   `;
 };
 
 export const referenceGenerateUserPrompt = (
   previousQuestion: string,
   quiz: Quiz | Quiz2,
-  currentCourse: CourseInfo
+  currentCourse: CourseInfo,
+  isEnglish: boolean
 ) => {
   return `
+    ${isEnglish ? "you must say english\n" : ""}
     아래의 답변이 어떤 내용을 참고했을지를 추측해서, 참고 자료를 생성해주세요.
     아래 기준을 따르세요:
 
@@ -155,6 +185,8 @@ export const referenceGenerateUserPrompt = (
     
     [현재 수강 중인 강의 목록 정보]
     ${currentCoursePrompt(currentCourse)}
+
+    ${isEnglish ? "you must say english\n" : ""}
   `;
 };
 

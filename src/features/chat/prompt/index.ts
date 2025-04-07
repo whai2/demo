@@ -1,9 +1,12 @@
 import { CourseInfo, Quiz, Quiz2 } from "../type";
 
 export const metaIntentClassificationSystemPrompt = (
-  currentCoursePrompt: string
+  currentCoursePrompt: string,
+  isEnglish: boolean
 ) => {
   return `
+    ${isEnglish ? "you must say english\n" : ""}
+
     당신은 사용자의 입력을 분석해 intent를 분류하는 AI입니다.
     intent는 다음 세 가지 중 하나입니다:
       
@@ -15,14 +18,19 @@ export const metaIntentClassificationSystemPrompt = (
       ${currentCoursePrompt}
 
     이를 통해, intent를 분석하세요.
+
+    ${isEnglish ? "you must say english\n" : ""}  
   `;
 };
 
 export const quizIntentClassificationSystemPrompt = (
   answer: string,
-  quiz: Quiz | Quiz2
+  quiz: Quiz | Quiz2,
+  isEnglish: boolean
 ) => {
   return `
+    ${isEnglish ? "you must say english\n" : ""}
+
     당신은 사용자의 입력을 분석해 intent를 분류하는 AI입니다.
     intent는 다음 두 가지 중 하나입니다:
     
@@ -36,11 +44,19 @@ export const quizIntentClassificationSystemPrompt = (
     ${quizMarkdownPrompt(quiz)}
 
     이를 통해, intent를 분석하세요.
+
+    ${isEnglish ? "you must say english\n" : ""}
   `;
 };
 
-export function followupQuestionPrompt(previousAnswer: string): string {
+export function followupQuestionPrompt(
+  previousAnswer: string,
+  isEnglish: boolean
+): string {
   return `
+   # Very Important   
+    ${isEnglish ? "you must say english\n" : ""}
+
     아래 답변을 읽고, 유저가 이어서 할 법한 자연스러운 꼬리 질문 두 개를 생성하세요.
 
     답변:
@@ -50,27 +66,41 @@ export function followupQuestionPrompt(previousAnswer: string): string {
     - 전체 흐름과 관련성 있는 질문일 것
     - 너무 포괄적이거나 모호하지 않게 작성
     - 정보 탐색을 이어갈 수 있도록 실용적으로 작성
-    `;
+
+    # Very Important
+    ${isEnglish ? "you must say english\n" : ""}
+  `;
 }
 
-export const userEnhancePrompt = (userMessage: string) => {
+export const userEnhancePrompt = (userMessage: string, isEnglish: boolean) => {
   return `
+    # Very Important
+    ${isEnglish ? "you must say english\n" : ""}
+
     [사용자 질문]
     ${userMessage}
 
     [필수 사항]
     길이를 적당히 줄여서 답해주세요 (500자 내외)
     이 질문을 토대로, 사용자의 의도를 분석해 주세요.
+
+    # Very Important  
+    ${isEnglish ? "you must say english\n" : ""}
   `;
 };
 
-export const userEnhanceQuizPrompt = (userMessage: string) => {
+export const userEnhanceQuizPrompt = (userMessage: string, isEnglish: boolean) => {
   return `
+    # Very Important
+    ${isEnglish ? "you must say english\n" : ""}
     [사용자 질문]
     ${userMessage}
 
     [필수 사항]
     이 질문을 토대로, 사용자의 의도를 분석해 주세요.
+
+    # Very Important
+    ${isEnglish ? "you must say english\n" : ""}
   `;
 };
 

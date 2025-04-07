@@ -33,6 +33,7 @@ export const runCourseQuizFlow = async (
   name: string,
   job: string,
   year: string,
+  currentLanguage: string,
   courseAttendanceRate?: number
 ) => {
   const prompt = currentCoursePrompt(course);
@@ -41,6 +42,7 @@ export const runCourseQuizFlow = async (
   const randomType = types[Math.floor(Math.random() * types.length)];
 
   const enhancedUserMessage = `
+    ${currentLanguage === "English" ? "you must say english\n" : ""}
     [사용자 질문]
     ${userMessage}
     
@@ -53,12 +55,21 @@ export const runCourseQuizFlow = async (
 
     [현재 수강 중인 강의 목록 정보]
     ${prompt}
+
+    ${currentLanguage === "English" ? "you must say english\n" : ""}
   `;
 
   const response = await functionChat(
     enhancedUserMessage,
-    courseQuizSystemPrompt(prompt, name, job, year, courseAttendanceRate),
-    courseQuizFunctions
+    courseQuizSystemPrompt(
+      prompt,
+      name,
+      job,
+      year,
+      currentLanguage === "English",
+      courseAttendanceRate
+    ),
+    courseQuizFunctions(currentLanguage)
   );
 
   if (!response.ok || !response.body) {
@@ -85,6 +96,7 @@ export const runCourseQuizFlow = async (
           answerIndex: 0,
         },
       };
+      setIsLoading(false);
       return updated;
     });
     return;
@@ -151,7 +163,7 @@ export const runCourseQuizFlow = async (
 
 export const useSendQuizAnswer = (quiz: Quiz | Quiz2) => {
   const { setMessages, setIsQuiz, setIsLoading } = useChatStore();
-  const { name } = useUserInfo();
+  const { name, currentLanguage } = useUserInfo();
 
   // const currentCourses = courses.category.find(
   //   (cat) => cat.name === courseCategory
@@ -162,7 +174,11 @@ export const useSendQuizAnswer = (quiz: Quiz | Quiz2) => {
   // );
 
   const sendQuizAnswerCallback = async (answer: string) => {
-    const userMessage = quizAnswerUserPrompt(name, answer);
+    const userMessage = quizAnswerUserPrompt(
+      name,
+      answer,
+      currentLanguage === "English"
+    );
 
     setMessages((prevMessages) => [
       ...prevMessages,
@@ -178,7 +194,7 @@ export const useSendQuizAnswer = (quiz: Quiz | Quiz2) => {
 
     const response = await streamChat(
       userMessage,
-      quizAnswerSystemPrompt(quiz, answer, name)
+      quizAnswerSystemPrompt(quiz, answer, name, currentLanguage === "English")
     );
 
     setMessages((prevMessages) => {
@@ -251,8 +267,8 @@ export const useSendQuizAnswer = (quiz: Quiz | Quiz2) => {
 
     const answerResponse = await functionChat(
       userMessage,
-      quizAnswerSystemPrompt(quiz, answer, name),
-      courseQuizAnswerFunctions
+      quizAnswerSystemPrompt(quiz, answer, name, currentLanguage === "English"),
+      courseQuizAnswerFunctions(currentLanguage)
     );
 
     if (!answerResponse.ok || !answerResponse.body) {
@@ -278,6 +294,7 @@ export const useSendQuizAnswer = (quiz: Quiz | Quiz2) => {
         };
         return updated;
       });
+      setIsLoading(false);
       return;
     }
 
@@ -306,9 +323,14 @@ export const runCourseQuizAnswerFlow = async (
   ) => void,
   setIsLoading: (isLoading: boolean) => void,
   name: string,
-  isInput?: boolean,
+  currentLanguage: string,
+  isInput?: boolean
 ) => {
-  const userMessage = quizAnswerUserPrompt(name, currentText);
+  const userMessage = quizAnswerUserPrompt(
+    name,
+    currentText,
+    currentLanguage === "English"
+  );
 
   if (!isInput) {
     setMessages((prevMessages) => [
@@ -324,7 +346,12 @@ export const runCourseQuizAnswerFlow = async (
 
   const response = await streamChat(
     userMessage,
-    quizAnswerSystemPrompt(quiz, currentText, name)
+    quizAnswerSystemPrompt(
+      quiz,
+      currentText,
+      name,
+      currentLanguage === "English"
+    )
   );
 
   setMessages((prevMessages) => {
@@ -394,8 +421,13 @@ export const runCourseQuizAnswerFlow = async (
 
   const answerResponse = await functionChat(
     userMessage,
-    quizAnswerSystemPrompt(quiz, userMessage, name),
-    courseQuizAnswerFunctions
+    quizAnswerSystemPrompt(
+      quiz,
+      userMessage,
+      name,
+      currentLanguage === "English"
+    ),
+    courseQuizAnswerFunctions(currentLanguage)
   );
 
   if (!answerResponse.ok || !answerResponse.body) {
@@ -421,6 +453,7 @@ export const runCourseQuizAnswerFlow = async (
       };
       return updated;
     });
+    setIsLoading(false);
     return;
   }
 
@@ -434,11 +467,15 @@ export const runCourseQuizAnswerFlow = async (
     };
     return updated;
   });
+
+  setIsLoading(false);
 };
 
 export const useNextQuiz = () => {
-  const { setMessages, setLastQuiz, setIsQuiz, lastQuiz, setIsLoading } = useChatStore();
-  const { courseCategory, courseName, name, job, year } = useUserInfo();
+  const { setMessages, setLastQuiz, setIsQuiz, lastQuiz, setIsLoading } =
+    useChatStore();
+  const { courseCategory, courseName, name, job, year, currentLanguage } =
+    useUserInfo();
 
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory
@@ -454,9 +491,14 @@ export const useNextQuiz = () => {
   const randomType = types[Math.floor(Math.random() * types.length)];
 
   const nextQuizCallback = async (nextQuiz: string) => {
-    const userMessage = quizAnswerUserPrompt(name, nextQuiz);
+    const userMessage = quizAnswerUserPrompt(
+      name,
+      nextQuiz,
+      currentLanguage === "English"
+    );
 
     const enhancedUserMessage = `
+    ${currentLanguage === "English" ? "you must say english\n" : ""}
     [사용자 질문]
     ${userMessage}
     
@@ -471,6 +513,7 @@ export const useNextQuiz = () => {
 
     [이전 퀴즈]와 비교하여, 사용자 수준에 맞는 퀴즈를 제공해주세요. "반드시 문제가 달라야 합니다".
     사용자가 쉬운 퀴즈를 요구하면, 쉬운 퀴즈를, 어려운 퀴즈를 요구하면, 어려운 퀴즈를 제공해주세요.
+    ${currentLanguage === "English" ? "you must say english\n" : ""}
   `;
 
     setMessages((prevMessages) => [
@@ -487,8 +530,14 @@ export const useNextQuiz = () => {
 
     const response = await functionChat(
       enhancedUserMessage,
-      nextQuizSystemPrompt(prompt, name, job, year),
-      courseQuizFunctions
+      nextQuizSystemPrompt(
+        prompt,
+        name,
+        job,
+        year,
+        currentLanguage === "English"
+      ),
+      courseQuizFunctions(currentLanguage)
     );
 
     if (!response.ok || !response.body) {
@@ -584,10 +633,8 @@ export const useNextQuiz = () => {
 };
 
 export const useQuizReference = () => {
-  const { setMessages, lastQuiz, setIsLoading } =
-    useChatStore();
-  const { courseCategory, courseName } =
-    useUserInfo();
+  const { setMessages, lastQuiz, setIsLoading } = useChatStore();
+  const { courseCategory, courseName, currentLanguage } = useUserInfo();
 
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory
@@ -656,14 +703,16 @@ export const useQuizReference = () => {
       referenceGenerateUserPrompt(
         previousQuestion,
         lastQuiz as Quiz | Quiz2,
-        course as unknown as CourseInfo
+        course as unknown as CourseInfo,
+        currentLanguage === "English"
       ),
       referenceGenerateSystemPrompt(
         course as unknown as CourseInfo,
         previousQuestion,
-        lastQuiz as Quiz | Quiz2
+        lastQuiz as Quiz | Quiz2,
+        currentLanguage === "English"
       ),
-      referenceFunctions
+      referenceFunctions(currentLanguage)
     );
 
     const responseData = await referenceResponse.json();

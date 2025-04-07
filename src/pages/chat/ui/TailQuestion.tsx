@@ -2,12 +2,14 @@ import { useEffect, useRef, useState } from "react";
 
 import { getTailQuestion, useSendTailQuestion } from "@/features/chat";
 import { MessageType } from "@/features/chat/type";
+import { useUserInfo } from "@/features/userInfo";
 
 import { ReactComponent as CoxwaveLogo } from "../assets/logo.svg";
 
 import styled from "styled-components";
 
 function TailQuestions({ lastMessage }: { lastMessage: MessageType }) {
+  const { currentLanguage } = useUserInfo();
   const [tailQuestions, setTailQuestions] = useState<string[]>([]);
 
   const sendTailQuestion = useSendTailQuestion();
@@ -17,7 +19,10 @@ function TailQuestions({ lastMessage }: { lastMessage: MessageType }) {
     if (lastMessage.isCourseRecommendation) return;
 
     const fetchTailQuestion = async () => {
-      const tailQuestion = await getTailQuestion([lastMessage]);
+      const tailQuestion = await getTailQuestion(
+        [lastMessage],
+        currentLanguage
+      );
       setTailQuestions(tailQuestion);
     };
 

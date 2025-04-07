@@ -29,7 +29,7 @@ function WidgetButton({
   const { setOpen } = usePopUpOpen();
   const { setMessages, setIsLoading, setIsQuiz, setLastQuiz, isLoading } =
     useChatStore();
-  const { courseCategory, courseName, name, job, year, courseAttendanceRate } =
+  const { courseCategory, courseName, name, job, year, courseAttendanceRate, currentLanguage } =
     useUserInfo();
 
   const currentCourses = courses.category.find(
@@ -106,6 +106,7 @@ function WidgetButton({
                   name,
                   job,
                   year,
+                  currentLanguage,
                   courseAttendanceRate
                 );
 
@@ -124,7 +125,8 @@ function WidgetButton({
                 name,
                 job,
                 year,
-                courseAttendanceRate
+                courseAttendanceRate,
+                currentLanguage
               );
 
               setIsLoading(false);

@@ -6,9 +6,13 @@ export const generalQuestionSystemPrompt = (
   name: string,
   job: string,
   year: string,
+  isEnglish: boolean,
   answerStyle?: string
 ) => {
   return `
+    # Very Important
+    ${isEnglish ? "you must say english\n" : ""}
+
     당신은 현재 강의에 대한 정보를 기반으로 사용자의 질문에 대한 답변을 제공하는 교육 어시스턴트 AI 에디 입니다.
 
     현재 수강 중인 강의 목록 정보를 토대로, 사용자의 질문에 대한 답변을 제공하세요.
@@ -67,15 +71,22 @@ export const generalQuestionSystemPrompt = (
 
     [추가 사항]
     추가 궁금한 점이 있는지도 여쭤주세요.
+    
+    # Very Important
+    ${isEnglish ? "you must say english\n" : ""}
   `;
 };
 
 export const referenceGenerateSystemPrompt = (
   currentCourse: CourseInfo,
   previousQuestion: string,
-  previousAnswer: string
+  previousAnswer: string,
+  isEnglish: boolean
 ) => {
   return `
+  # Very Important
+  ${isEnglish ? "you must say english\n" : ""}
+
     이전 강의 내용을 기반으로 참고했을 법한 자료 하나를 생성해주세요. 아래 기준을 따르세요:
 
 - 실존할 법한 제목
@@ -88,25 +99,38 @@ export const referenceGenerateSystemPrompt = (
 
     [현재 수강 중인 강의 목록 정보]
     ${currentCoursePrompt(currentCourse)}
+
+  # Very Important
+  ${isEnglish ? "you must say english\n" : ""}
   `;
 };
 
 // user prompt
 export const courseGeneralChatUserPrompt = (
   userMessage: string,
-  currentCourse: CourseInfo
+  currentCourse: CourseInfo,
+  isEnglish: boolean
 ) => {
   return `
+    # Very Important
+    ${isEnglish ? "you must say english\n" : ""}
+
     [사용자 질문]
     ${userMessage}
 
     [현재 수강 중인 강의 차시 정보]
     ${currentCoursePrompt2(currentCourse)}
+
+    # Very Important
+    ${isEnglish ? "you must say english\n" : ""}
   `;
 };
 
-export const referenceGenerateUserPrompt = (previousAnswer: string) => {
+export const referenceGenerateUserPrompt = (previousAnswer: string, isEnglish: boolean) => {
   return `
+    # Very Important
+    ${isEnglish ? "you must say english\n" : ""}
+
     아래의 답변이 어떤 내용을 참고했을지를 추측해서, 참고 자료를 생성해주세요.
     아래 기준을 따르세요:
 
@@ -116,6 +140,9 @@ export const referenceGenerateUserPrompt = (previousAnswer: string) => {
     - 영상에서 등장한 시점 (예: 12:42~13:00)
 
     답변: ${previousAnswer}
+
+    # Very Important
+    ${isEnglish ? "you must say english\n" : ""}
   `;
 };
 
@@ -152,8 +179,11 @@ const currentCoursePrompt2 = (currentCourse: CourseInfo) => {
 };
 
 // tail question
-export function followupQuestionPrompt(previousAnswer: string): string {
+export function followupQuestionPrompt(previousAnswer: string, isEnglish: boolean): string {
   return `
+    # Very Important
+    ${isEnglish ? "you must say english\n" : ""}
+
     아래 답변을 읽고, 유저가 이어서 할 법한 자연스러운 꼬리 질문 두 개를 생성하세요.
 
     답변:
@@ -163,5 +193,8 @@ export function followupQuestionPrompt(previousAnswer: string): string {
     - 전체 흐름과 관련성 있는 질문일 것
     - 너무 포괄적이거나 모호하지 않게 작성
     - 정보 탐색을 이어갈 수 있도록 실용적으로 작성
-    `;
+
+    # Very Important
+    ${isEnglish ? "you must say english\n" : ""}
+  `;
 }

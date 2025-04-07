@@ -29,10 +29,12 @@ import styled from "styled-components";
 function ChatPopUpLayout({ children }: PropsWithChildren) {
   const bottomSheetPortalRef = useRef<HTMLDivElement>(null);
   const { setPortalElement } = useBottomSheetPortal();
-  const { courseCategory, courseName } = useUserInfo();
+  const { courseCategory, courseName, currentLanguage } = useUserInfo();
   const { isFristModalOpen, setFirstModalClose } = usePopUpOpen();
   const { isSummationLoading, setIsSummationLoading } =
     useCourseSummationStore();
+
+  console.log(currentLanguage);
 
   const [courseSummation, setCourseSummation] = useState<string>("");
   // const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -54,7 +56,7 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
   useEffect(() => {
     if (course) {
       setIsSummationLoading(true);
-      handleCourseSummation(course.description)
+      handleCourseSummation(course.description, currentLanguage)
         .then((res) => res.json())
         .then((data) => {
           setCourseSummation(data.choices?.[0]?.message?.content ?? "");

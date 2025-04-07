@@ -47,7 +47,7 @@ export const useChatStore = create<ChatState>((set) => ({
 
 export const useSendChat = () => {
   const { setMessages, setIsLoading, setIsQuiz, setLastQuiz, answerStyle } = useChatStore();
-  const { courseCategory, courseName, name, job, year, courseAttendanceRate } =
+  const { courseCategory, courseName, name, job, year, courseAttendanceRate, currentLanguage } =
     useUserInfo();
 
   const currentCourses = courses.category.find(
@@ -64,7 +64,7 @@ export const useSendChat = () => {
   ) => {
     const prompt = currentCoursePrompt(course as unknown as CourseInfo);
 
-    const enhancedUserMessage = userEnhancePrompt(text);
+    const enhancedUserMessage = userEnhancePrompt(text, currentLanguage === "English");
     const currentText = text;
 
     setMessages((prevMessages) => [
@@ -83,8 +83,8 @@ export const useSendChat = () => {
     try {
       const metaResponse = await functionChat(
         enhancedUserMessage,
-        metaIntentClassificationSystemPrompt(prompt),
-        metaFunctions
+        metaIntentClassificationSystemPrompt(prompt, currentLanguage === "English"),
+        metaFunctions(currentLanguage)
       );
 
       const metaData = await metaResponse.json();
@@ -102,7 +102,8 @@ export const useSendChat = () => {
           name,
           job,
           year,
-          answerStyle
+          answerStyle,
+          currentLanguage,
         );
       } else if (intent === "course_recommendation") {
         // ✅ 강의 추천 흐름 (2단계)
@@ -116,7 +117,8 @@ export const useSendChat = () => {
           name,
           job,
           year,
-          courseAttendanceRate
+          courseAttendanceRate,
+          currentLanguage
         );
       } else if (intent === "course_quiz") {
         // ✅ 강의 퀴즈 흐름
@@ -130,6 +132,7 @@ export const useSendChat = () => {
           name,
           job,
           year,
+          currentLanguage,
           courseAttendanceRate
         );
       } else {
@@ -140,7 +143,8 @@ export const useSendChat = () => {
           name,
           job,
           year,
-          answerStyle
+          answerStyle,
+          currentLanguage
         );
       }
 
@@ -160,7 +164,7 @@ export const useSendChat = () => {
   };
 
   const sendQuizAnswer = async (answer: string, quiz: Quiz, setText?: (text: string) => void) => {
-    const enhancedUserMessage = userEnhanceQuizPrompt(answer);
+    const enhancedUserMessage = userEnhanceQuizPrompt(answer, currentLanguage === "English");
     const currentText = answer;
     // setIsQuiz(false);
 
@@ -180,8 +184,8 @@ export const useSendChat = () => {
     try {
       const metaResponse = await functionChat(
         enhancedUserMessage,
-        quizIntentClassificationSystemPrompt(answer, quiz),
-        metaQuizFunctions
+        quizIntentClassificationSystemPrompt(answer, quiz, currentLanguage === "English"),
+        metaQuizFunctions(currentLanguage)
       );
 
       const metaData = await metaResponse.json();
@@ -191,7 +195,7 @@ export const useSendChat = () => {
       ).intent;
 
       if (intent === "quiz_answer") {
-        await runCourseQuizAnswerFlow(quiz, currentText, setMessages, setIsLoading, name, true);
+        await runCourseQuizAnswerFlow(quiz, currentText, setMessages, setIsLoading, name, currentLanguage, true);
       } else if (intent === "others") {
         // ✅ 강의 추천 흐름 (2단계)
         await runGeneralStreaming(
@@ -201,7 +205,8 @@ export const useSendChat = () => {
           name,
           job,
           year,
-          answerStyle
+          answerStyle,
+          currentLanguage
         );
       } else {
         await runGeneralStreaming(
@@ -211,7 +216,8 @@ export const useSendChat = () => {
           name,
           job,
           year,
-          answerStyle
+          answerStyle,
+          currentLanguage
         );
       }
 
@@ -235,7 +241,7 @@ export const useSendChat = () => {
   return { sendChatCallback, sendQuizAnswer };
 };
 
-export const getTailQuestion = async (messages: MessageType[]) => {
+export const getTailQuestion = async (messages: MessageType[], currentLanguage: string) => {
   const lastAssistantMessage = [...messages]
     .reverse()
     .find((message) => message.role === "assistant");
@@ -246,9 +252,9 @@ export const getTailQuestion = async (messages: MessageType[]) => {
 
   try {
     const followupResponse = await functionChat(
-      followupQuestionPrompt(lastAssistantMessage.content),
-      followupQuestionPrompt(lastAssistantMessage.content),
-      followupQuestionFunctions
+      followupQuestionPrompt(lastAssistantMessage.content, currentLanguage === "English"),
+      followupQuestionPrompt(lastAssistantMessage.content, currentLanguage === "English"),
+      followupQuestionFunctions(currentLanguage)
     );
 
     const responseData = await followupResponse.json();
@@ -268,7 +274,7 @@ export const getTailQuestion = async (messages: MessageType[]) => {
 
 export const useSendTailQuestion = () => {
   const { setMessages, setIsLoading, answerStyle } = useChatStore();
-  const { courseCategory, courseName, name, job, year } = useUserInfo();
+  const { courseCategory, courseName, name, job, year, currentLanguage } = useUserInfo();
 
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory
@@ -298,7 +304,8 @@ export const useSendTailQuestion = () => {
       name,
       job,
       year,
-      answerStyle
+      answerStyle,
+      currentLanguage
     );
 
     setIsLoading(false);

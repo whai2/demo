@@ -20,13 +20,14 @@ export const runGeneralStreaming = async (
   course: CourseInfo,
   name: string,
   job: string,
-  year: string
+  year: string,
+  currentLanguage: string
 ) => {
-  const enhancedUserMessage = courseGeneralChatUserPrompt(userMessage, course);
+  const enhancedUserMessage = courseGeneralChatUserPrompt(userMessage, course, currentLanguage === "English");
 
   const response = await streamChat(
     enhancedUserMessage,
-    generalQuestionSystemPrompt(name, job, year)
+    generalQuestionSystemPrompt(name, job, year, currentLanguage === "English")
   );
 
   if (!response.ok || !response.body) {
@@ -92,9 +93,9 @@ export const runGeneralStreaming = async (
   });
 
   const referenceResponse = await functionChat(
-    referenceGenerateUserPrompt(previousAnswer),
-    referenceGenerateSystemPrompt(course, previousQuestion, previousAnswer),
-    referenceFunctions
+    referenceGenerateUserPrompt(previousAnswer, currentLanguage === "English"),
+    referenceGenerateSystemPrompt(course, previousQuestion, previousAnswer, currentLanguage === "English"),
+    referenceFunctions(currentLanguage)
   );
 
   const responseData = await referenceResponse.json();
@@ -126,7 +127,8 @@ export const runGeneralStreaming = async (
 
 export const useContentChat = () => {
   const { setMessages, setIsLoading } = useChatStore();
-  const { courseCategory, courseName, name, job, year } = useUserInfo();
+  const { courseCategory, courseName, name, job, year, currentLanguage } =
+    useUserInfo();
 
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory
@@ -157,7 +159,8 @@ export const useContentChat = () => {
       course as unknown as CourseInfo,
       name,
       job,
-      year
+      year,
+      currentLanguage
     );
     setIsLoading(false);
   };

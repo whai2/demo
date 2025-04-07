@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 
 import { courses } from "@/features/chat";
-import { COURSE_CATEGORY, JOBS, useUserInfo, YEARS } from "@/features/userInfo";
 import { usePopUpOpen } from "@/features/popUpOpen";
+import { COURSE_CATEGORY, JOBS, useUserInfo, YEARS } from "@/features/userInfo";
 
 import { ReactComponent as CoxwaveLogo } from "@/shared/assets/coxwave.svg";
 import { ReactComponent as Arrow } from "../assets/arrow.svg";
 
 import styled from "styled-components";
+
+const LANGUAGES = ["한국어", "English"];
 
 function LoginPage() {
   const { setOpen, setFirstModalOpen } = usePopUpOpen();
@@ -16,6 +18,7 @@ function LoginPage() {
   const [isCourseCategoryOpen, setIsCourseCategoryOpen] = useState(false);
   const [isCourseOpen, setIsCourseOpen] = useState(false);
   const [courseList, setCourseList] = useState<string[]>([]);
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
 
   const {
     name,
@@ -23,12 +26,14 @@ function LoginPage() {
     year,
     courseCategory,
     courseName,
+    currentLanguage,
     setName,
     setJob,
     setYear,
     setCourseCategory,
     setCourseName,
     setIsLogin,
+    setCurrentLanguage,
   } = useUserInfo();
 
   useEffect(() => {
@@ -64,6 +69,10 @@ function LoginPage() {
     setIsCourseOpen(!isCourseOpen);
   };
 
+  const toggleLanguageOpen = () => {
+    setIsLanguageOpen(!isLanguageOpen);
+  };
+
   // 클릭 이벤트
   const handleJobClick = (job: string) => {
     setJob(job);
@@ -86,12 +95,18 @@ function LoginPage() {
     setIsCourseOpen(false);
   };
 
+  const handleLanguageClick = (language: string) => {
+    setCurrentLanguage(language);
+    setIsLanguageOpen(false);
+  };
+
   const isLoginActive =
     name !== "" &&
     job !== "" &&
     year !== "" &&
     courseCategory !== "" &&
-    courseName !== "";
+    courseName !== "" &&
+    currentLanguage !== "";
 
   const handleLogin = () => {
     if (!isLoginActive) return;
@@ -214,6 +229,31 @@ function LoginPage() {
                   </S.JobItem>
                 ))
               )}
+            </S.JobList>
+          </S.InputContainer>
+        </S.Wrapper>
+        <S.Wrapper>
+          <S.Title>언어 선택</S.Title>
+
+          <S.InputContainer $isOpen={isLanguageOpen}>
+            <S.InputWrapper onClick={toggleLanguageOpen}>
+              <S.InnerInput>
+                <S.InnerInputText>
+                  {currentLanguage ? currentLanguage : "선택"}
+                </S.InnerInputText>
+              </S.InnerInput>
+              <S.ChevronDown $isOpen={isLanguageOpen} />
+            </S.InputWrapper>
+
+            <S.JobList $isOpen={isLanguageOpen}>
+              {LANGUAGES.map((language, index) => (
+                <S.JobItem
+                  key={index}
+                  onClick={() => handleLanguageClick(language)}
+                >
+                  {language}
+                </S.JobItem>
+              ))}
             </S.JobList>
           </S.InputContainer>
         </S.Wrapper>

@@ -13,7 +13,8 @@ import { useChatStore } from "../useChat";
 
 export const useCourseRecommendChat = () => {
   const { setMessages, setIsLoading } = useChatStore();
-  const { courseCategory, courseName, name, job, year } = useUserInfo();
+  const { courseCategory, courseName, name, job, year, currentLanguage } =
+    useUserInfo();
 
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory
@@ -28,7 +29,8 @@ export const useCourseRecommendChat = () => {
       course as unknown as CourseInfo,
       currentCourses as unknown as CourseCategory,
       userMessage,
-      courseCategory
+      courseCategory,
+      currentLanguage === "English"
     );
 
     setMessages((prevMessages) => [
@@ -51,7 +53,8 @@ export const useCourseRecommendChat = () => {
         year,
         course as unknown as CourseInfo,
         currentCourses as unknown as CourseCategory,
-        courseCategory
+        courseCategory,
+        currentLanguage === "English"
       )
     );
     if (!response.ok || !response.body) {
@@ -130,9 +133,10 @@ export const useCourseRecommendChat = () => {
           job,
           year,
           generatedAnswer,
-          courseCategory
+          courseCategory,
+          currentLanguage === "English"
         ),
-        functions
+        functions(currentLanguage)
       );
 
       if (

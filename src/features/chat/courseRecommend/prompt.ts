@@ -5,8 +5,10 @@ export const userIntentClassificationSystemPrompt = (
   name: string,
   job: string,
   year: string,
-  courseAttendanceRate: number | undefined
+  courseAttendanceRate: number | undefined,
+  isEnglish: boolean
 ) => `
+  ${isEnglish ? "you must say english\n" : ""}
   당신은 사용자의 질문 의도를 파악하여, 다음으로 배울 내용을 제공하는 AI 어시스턴트 에디 입니다.
 
   [필수 사항]
@@ -34,6 +36,8 @@ export const userIntentClassificationSystemPrompt = (
     이제 거의 완강이시니까, 그동안 배운 걸 어떻게 정리하고 적용할지 고민되실 수 있을 것 같은데요...
 
     혹시 요즘, 디자인 실무에서 가장 막히는 부분이 어떤 건가요?
+
+  ${isEnglish ? "you must say english\n" : ""}
 `;
 
 export const courseRecommendationSystemPrompt = (
@@ -42,8 +46,12 @@ export const courseRecommendationSystemPrompt = (
   year: string,
   currentCourse: CourseInfo,
   currentCourses: CourseCategory,
-  courseCategory: string
+  courseCategory: string,
+  isEnglish: boolean
 ) => `
+  # Very Important
+  ${isEnglish ? "you must say english\n" : ""}
+
   당신은 강의를 추천해주는 교육 어시스턴트 AI 에디 입니다.
 
   # 필수 사항
@@ -76,6 +84,9 @@ export const courseRecommendationSystemPrompt = (
   그에 맞춰 아래 강의를 추천드릴게요 👇
 
 🎯 목표: 사용자의 맥락에 맞는 UI 흐름 설계하기
+
+ # Very Important
+  ${isEnglish ? "you must say english\n" : ""}
 `;
 
 // function prompt (system prompt)
@@ -83,8 +94,12 @@ export const userIntentClassificationFunctionPrompt = (
   name: string,
   job: string,
   year: string,
-  generatedAnswer: string
+  generatedAnswer: string,
+  isEnglish: boolean
 ) => `
+  # Very Important
+  ${isEnglish ? "you must say english\n" : ""}
+
   [이전 답변]
   ${generatedAnswer}
 
@@ -95,6 +110,9 @@ export const userIntentClassificationFunctionPrompt = (
   
   [추천 사항]
   다음 연차의 강의 내용을 연계하면, 훨씬 좋습니다.
+
+  # Very Important
+  ${isEnglish ? "you must say english\n" : ""}
 `;
 
 export const courseFunctionSystemPrompt = (
@@ -102,8 +120,12 @@ export const courseFunctionSystemPrompt = (
   job: string,
   year: string,
   generatedAnswer: string,
-  courseCategory: string
+  courseCategory: string,
+  isEnglish: boolean
 ) => `
+  # Very Important
+  ${isEnglish ? "you must say english\n" : ""}
+
   [이전 답변]
   ${generatedAnswer}
 
@@ -112,6 +134,9 @@ export const courseFunctionSystemPrompt = (
   [필수 사항]
   [이전 답변]을 참고해, 다음 강의로 들으면 좋을 것 같은 강의 3개를 추천해주세요. 무조건 같은 카테고리의 강의를 추천해주세요.
   - **카테고리**: ${courseCategory}
+
+  # Very Important
+  ${isEnglish ? "you must say english\n" : ""}
 `;
 
 // user prompt
@@ -119,7 +144,8 @@ export const courseRecommendationUserPrompt = (
   currentCourse: CourseInfo,
   currentCourses: CourseCategory,
   userMessage: string,
-  courseCategory: string
+  courseCategory: string,
+  isEnglish: boolean
 ) => {
   const prompt = currentCoursePrompt(currentCourse, courseCategory);
 
@@ -129,6 +155,9 @@ export const courseRecommendationUserPrompt = (
   );
 
   return `
+    # Very Important
+    ${isEnglish ? "you must say english\n" : ""}
+    
     [사용자 질문]
     ${userMessage}
 
@@ -140,6 +169,9 @@ export const courseRecommendationUserPrompt = (
 
     [필수 사항]
     길이를 적당히 줄여서 답해주세요 (500자 내외)
+
+    # Very Important
+    ${isEnglish ? "you must say english\n" : ""}
   `;
 };
 

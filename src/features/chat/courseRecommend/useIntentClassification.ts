@@ -19,20 +19,28 @@ export const runRecommendationFlow = async (
   name: string,
   job: string,
   year: string,
-  courseAttendanceRate: number
+  courseAttendanceRate: number,
+  currentLanguage: string
 ) => {
   const enhancedUserMessage = courseRecommendationUserPrompt(
     course,
     currentCourses,
     userMessage,
-    courseCategory
+    courseCategory,
+    currentLanguage === "English"
   );
 
   setIsLoading(true);
 
   const response = await streamChat(
     enhancedUserMessage,
-    userIntentClassificationSystemPrompt(name, job, year, courseAttendanceRate)
+    userIntentClassificationSystemPrompt(
+      name,
+      job,
+      year,
+      courseAttendanceRate,
+      currentLanguage === "English"
+    )
   );
 
   if (!response.ok || !response.body) {
@@ -106,8 +114,14 @@ export const runRecommendationFlow = async (
 
     const getRecommendationCoursesResponse = await functionChat(
       enhancedUserMessage,
-      userIntentClassificationFunctionPrompt(name, job, year, generatedAnswer),
-      userIntentClassificationFunctions
+      userIntentClassificationFunctionPrompt(
+        name,
+        job,
+        year,
+        generatedAnswer,
+        currentLanguage === "English"
+      ),
+      userIntentClassificationFunctions(currentLanguage)
     );
 
     if (

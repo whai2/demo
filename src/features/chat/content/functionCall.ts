@@ -1,8 +1,11 @@
-export const referenceFunctions = [
+export const referenceFunctions = (currentLanguage: string) => [
   {
     name: "generate_reference",
     description:
-      "사용자의 이전 질문과 답변을 참고해, 현재 강의에서 참고했을 법한 자료(영상, 문서 등)를 실감나게 생성합니다.",
+      `${currentLanguage === "English" ? "you must say english\n" : ""}
+      사용자의 이전 질문과 답변을 참고해, 현재 강의에서 참고했을 법한 자료(영상, 문서 등)를 실감나게 생성합니다.
+      ${currentLanguage === "English" ? "you must say english\n" : ""}
+      `,
     parameters: {
       type: "object",
       properties: {
@@ -16,12 +19,13 @@ export const referenceFunctions = [
             },
             title: {
               type: "string",
-              description: "참고 자료의 제목 (예: 데이터 사이언스와 기초)",
+              description: `참고 자료의 제목 (예: 데이터 사이언스와 기초)
+              ${currentLanguage === "English" ? "you must say english\n" : ""}`,
             },
             file: {
               type: "string",
-              description:
-                "자료 파일 이름 및 확장자. 반드시 10자 내외 제공. (예: 데이터 사이언스 소개.pdf)",
+              description: `자료 파일 이름 및 확장자. 반드시 10자 내외 제공. (예: 데이터 사이언스 소개.pdf)
+              ${currentLanguage === "English" ? "you must say english\n" : ""}`,
             },
             pages: {
               type: "string",

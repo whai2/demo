@@ -15,10 +15,16 @@ import { chat } from "../apis/chat.api";
 
 import { courseSummationSystemPrompt } from "./prompt";
 
-export const handleCourseSummation = async (description: string) => {
+export const handleCourseSummation = async (
+  description: string,
+  currentLanguage: string
+) => {
   const response = await chat(
-    "최대 150자 이내로 강의 개요를 요약해줘",
-    courseSummationSystemPrompt(description)
+    `${currentLanguage === "English" ? "you must say english\n" : ""}
+    "최대 150자 이내로 강의 개요를 요약해줘"
+    ${currentLanguage === "English" ? "you must say english\n" : ""}
+    `,
+    courseSummationSystemPrompt(description, currentLanguage === "English")
   );
 
   return response;
