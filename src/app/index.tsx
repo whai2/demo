@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { Router } from "@/app/routers";
 import { Video } from "@/pages/background/video";
 import { LoginPage } from "@/pages/login";
+// import { Loading } from "@/shared/ui";
 import { WidgetButton } from "@/widgets/widgetButton";
 
 import { useChatStore } from "@/features/chat";
@@ -17,6 +18,7 @@ function App() {
   const { isOpen, setToggle } = usePopUpOpen();
   const { setCurrentPage } = useNavigate();
   const { setMessages } = useChatStore();
+  // const { isSummationLoading } = useCourseSummationStore();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -45,9 +47,22 @@ function App() {
     <>
       {isLogin ? (
         <S.Container>
-          <Video />
-          <WidgetButton isOpen={isOpen} setIsOpen={setToggle} />
-          {isOpen && <Router />}
+          {/* {isSummationLoading ? (
+            <S.LoadingContainer>
+              <Loading />
+            </S.LoadingContainer>
+          ) : (
+            <>
+              <Video />
+              <WidgetButton isOpen={isOpen} setIsOpen={setToggle} />
+              {isOpen && <Router />}
+            </>
+          )} */}
+          <>
+              <Video />
+              <WidgetButton isOpen={isOpen} setIsOpen={setToggle} />
+              {isOpen && <Router />}
+            </>
         </S.Container>
       ) : (
         <S.LoginLayout>
@@ -71,6 +86,15 @@ const S = {
   `,
 
   Container: styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  `,
+
+  LoadingContainer: styled.div`
+    padding-top: 450px;
     width: 100%;
     display: flex;
     flex-direction: column;

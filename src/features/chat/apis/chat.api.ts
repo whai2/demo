@@ -11,6 +11,7 @@ export const streamChat = async (userMessage: string, systemPrompt: string) => {
         { role: "system", content: systemPrompt },
         { role: "user", content: userMessage },
       ],
+      temperature: 0,
       stream: true,
     }),
   });
@@ -54,6 +55,7 @@ export const functionChat = async (
         { role: "system", content: systemPrompt },
         { role: "user", content: userMessage },
       ],
+      temperature: 0,
       functions: functions,
       function_call: "auto",
     }),

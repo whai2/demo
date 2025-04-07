@@ -1,3 +1,16 @@
+import { create } from "zustand";
+
+interface CourseSummationStore {
+  isSummationLoading: boolean;
+  setIsSummationLoading: (isSummationLoading: boolean) => void;
+}
+
+export const useCourseSummationStore = create<CourseSummationStore>((set) => ({
+  isSummationLoading: false,
+  setIsSummationLoading: (isSummationLoading: boolean) =>
+    set({ isSummationLoading }),
+}));
+
 import { chat } from "../apis/chat.api";
 
 import { courseSummationSystemPrompt } from "./prompt";

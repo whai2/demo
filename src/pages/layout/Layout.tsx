@@ -14,7 +14,11 @@ import {
 import { Input } from "@/widgets/input";
 import { TopBar } from "@/widgets/topBar";
 
-import { courses, handleCourseSummation } from "@/features/chat";
+import {
+  courses,
+  handleCourseSummation,
+  useCourseSummationStore,
+} from "@/features/chat";
 import { usePopUpOpen } from "@/features/popUpOpen";
 import { useUserInfo } from "@/features/userInfo";
 
@@ -27,9 +31,11 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
   const { setPortalElement } = useBottomSheetPortal();
   const { courseCategory, courseName } = useUserInfo();
   const { isFristModalOpen, setFirstModalClose } = usePopUpOpen();
+  const { isSummationLoading, setIsSummationLoading } =
+    useCourseSummationStore();
 
   const [courseSummation, setCourseSummation] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory
@@ -47,7 +53,7 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
 
   useEffect(() => {
     if (course) {
-      setIsLoading(true);
+      setIsSummationLoading(true);
       handleCourseSummation(course.description)
         .then((res) => res.json())
         .then((data) => {
@@ -57,7 +63,7 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
           console.error("Error:", error);
         })
         .finally(() => {
-          setIsLoading(false);
+          setIsSummationLoading(false);
         });
     }
   }, [course]);
@@ -87,7 +93,7 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
                   </S.ModalPriceText>
                 </S.ModalCategoryAndTitle>
 
-                {isLoading ? (
+                {isSummationLoading ? (
                   <Loading />
                 ) : (
                   <ModalDescription description={courseSummation} />

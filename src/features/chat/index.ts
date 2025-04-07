@@ -6,7 +6,10 @@ export {
 export { useContentChat } from "./content/useContentChat";
 export { useCourseRecommendChat } from "./courseRecommend/useCourseRecommendChat";
 export { runRecommendationFlow } from "./courseRecommend/useIntentClassification";
-export { handleCourseSummation } from "./courseSummation/useCourseSummation";
+export {
+  handleCourseSummation,
+  useCourseSummationStore,
+} from "./courseSummation/useCourseSummation";
 export { runGeneralStreaming } from "./generalChat/useGeneralChat";
 export {
   runCourseQuizFlow,

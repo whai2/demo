@@ -8,18 +8,12 @@ import { ReactComponent as Rectangle } from "../assets/rectangle.svg";
 
 import styled from "styled-components";
 
-function ReferenceToggle({
-  reference,
-  isQuizReference,
-}: {
-  reference: any;
-  isQuizReference: boolean | undefined | null;
-}) {
+function ReferenceToggle({ reference }: { reference: any }) {
   const { courseName } = useUserInfo();
 
   if (!reference) return null;
 
-  const [isOpen, setIsOpen] = useState(isQuizReference ? true : false);
+  const [isOpen, setIsOpen] = useState(true);
 
   const toggleOpen = () => {
     setIsOpen(!isOpen);
