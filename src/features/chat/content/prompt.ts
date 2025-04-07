@@ -59,32 +59,32 @@ export const referenceGenerateSystemPrompt = (
 - 실존할 법한 제목
 - PDF나 PPT 등 파일 형태 (제목은 반드시 한글로 작성)
 - 몇 페이지를 참고했는지
-- 영상에서 등장한 시점 (예: 12:42)
+- 영상에서 등장한 시점 (예: 12:42~13:00)
 
     질문: ${previousQuestion}
     답변: ${previousAnswer}
 
     [현재 수강 중인 강의 목록 정보]
-    ${currentCoursePrompt2(currentCourse)}
+    ${currentCoursePrompt(currentCourse)}
   `;
 };
 
-// const currentCoursePrompt = (currentCourse: CourseInfo) => {
-//   return `
-//   ### 📘 ${currentCourse.name}
+const currentCoursePrompt = (currentCourse: CourseInfo) => {
+  return `
+  ### 📘 ${currentCourse.name}
 
-//     - **강의 개요**: ${currentCourse.description}
-//     - **⏱ 총 강의 시간**: ${currentCourse.duration}
-//     - **🎯 수강 대상**: ${currentCourse.target}
+    - **강의 개요**: ${currentCourse.description}
+    - **⏱ 총 강의 시간**: ${currentCourse.duration}
+    - **🎯 수강 대상**: ${currentCourse.target}
 
-//     #### 📚 커리큘럼
-//     1. ${currentCourse.content[0]["1차시"]}
-//     2. ${currentCourse.content[0]["2차시"]}
-//     3. ${currentCourse.content[0]["3차시"]}
-//     4. ${currentCourse.content[0]["4차시"]}
-//     5. ${currentCourse.content[0]["5차시"]}
-//   `;
-// };
+    #### 📚 커리큘럼
+    1. ${currentCourse.content[0]["1차시"]}
+    2. ${currentCourse.content[0]["2차시"]}
+    3. ${currentCourse.content[0]["3차시"]}
+    4. ${currentCourse.content[0]["4차시"]}
+    5. ${currentCourse.content[0]["5차시"]}
+  `;
+};
 
 // user prompt
 export const courseGeneralChatUserPrompt = (

@@ -45,7 +45,7 @@ function ChatPage() {
                     {message.reference && message.reference.isLoading ? (
                       <Loading />
                     ) : (
-                      <ReferenceToggle reference={message.reference} />
+                      <ReferenceToggle reference={message.reference?.reference} />
                     )}
                     {(() => {
                       if (!message.courseQuiz) return null;

@@ -4,12 +4,20 @@ import { ROUTES, useNavigate } from "@/features/navigate";
 
 import styled from "styled-components";
 
-function QuickTaps({ title, items, handleClickTapQuestion }: QuickTapsType2) {
+function QuickTaps({
+  title,
+  items,
+  icon,
+  handleClickTapQuestion,
+}: QuickTapsType2) {
   const { setCurrentPage } = useNavigate();
 
   return (
     <S.QuickTaps>
-      <S.QuickTapsTitle>{title}</S.QuickTapsTitle>
+      <S.QuickTapHeader>
+        <S.QuickTapIcon as={icon} />
+        <S.QuickTapsTitle>{title}</S.QuickTapsTitle>
+      </S.QuickTapHeader>
       {items.map((item) => (
         <S.QuickTap
           key={item.text}
@@ -18,7 +26,7 @@ function QuickTaps({ title, items, handleClickTapQuestion }: QuickTapsType2) {
             handleClickTapQuestion(item.text);
           }}
         >
-          <S.QuickTapIcon as={item.icon} />
+          {/* <S.QuickTapIcon as={item.icon} /> */}
           <S.QuickTapText>{item.text}</S.QuickTapText>
         </S.QuickTap>
       ))}
@@ -40,7 +48,7 @@ const S = {
   QuickTapsTitle: styled.span`
     color: #97999b;
     font-family: Pretendard;
-    font-size: 12px;
+    font-size: 15px;
     font-style: normal;
     font-weight: 600;
     line-height: 18px;
@@ -62,8 +70,8 @@ const S = {
   `,
 
   QuickTapIcon: styled.svg`
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     color: #51a1ca;
   `,
 
@@ -74,5 +82,11 @@ const S = {
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
+  `,
+
+  QuickTapHeader: styled.div`
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
   `,
 };

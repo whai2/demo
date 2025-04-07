@@ -1,10 +1,11 @@
-import QuickTaps from "./QuickTaps";
-import QuickTaps2 from "./QuickTaps2";
 import { useContentChat } from "@/features/chat";
 import { useUserInfo } from "@/features/userInfo";
+import QuickTaps from "./QuickTaps";
+import QuickTaps2 from "./QuickTaps2";
 
 import {
   courseLoadMaps,
+  courseSummationTaps,
   oftenQuestionsTaps,
   othersQuestionsTaps,
 } from "../constants/quickTaps";
@@ -27,7 +28,11 @@ function HomePage() {
           무엇을 도와드릴까요?
         </S.Title>
       </S.Header>
-      <QuickTaps2 {...oftenQuestionsTaps} handleClickTapQuestion={sendChatCallback} />
+      <QuickTaps2
+        {...oftenQuestionsTaps}
+        handleClickTapQuestion={sendChatCallback}
+      />
+      <QuickTaps {...courseSummationTaps} />
       <QuickTaps {...othersQuestionsTaps} />
       <QuickTaps {...courseLoadMaps} />
     </S.Container>
