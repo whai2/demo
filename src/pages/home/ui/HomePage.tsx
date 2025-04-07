@@ -28,11 +28,11 @@ function HomePage() {
           무엇을 도와드릴까요?
         </S.Title>
       </S.Header>
+      <QuickTaps {...courseSummationTaps} />
       <QuickTaps2
         {...oftenQuestionsTaps}
         handleClickTapQuestion={sendChatCallback}
       />
-      <QuickTaps {...courseSummationTaps} />
       <QuickTaps {...othersQuestionsTaps} />
       <QuickTaps {...courseLoadMaps} />
     </S.Container>

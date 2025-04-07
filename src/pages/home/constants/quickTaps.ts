@@ -35,7 +35,7 @@ export const oftenQuestionsTaps = {
 };
 
 export const courseSummationTaps = {
-  title: "강의 내용 요약",
+  title: "강의 요약",
   icon: Document,
   items: [
     {

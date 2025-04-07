@@ -26,13 +26,20 @@ export const userIntentClassificationSystemPrompt = (
   다음으로 배울 내용 추천에 대해 ""질문 형태로 물어보세요"".
   
   중요한 점은, 강의 제목을 제공해서는 안 됩니다.
+
+  ## 답변 예시
+  - 사용자 질문 1: 지금 보는 강의랑 비슷한 강의를 찾아 주세요.
+  - 67% 수강 완료하셨네요! 🎉
+    ${name}님! 디자인 입문 1년 차에 이렇게 꾸준히 학습하시는 분은 정말 드물어요. 멋지세요 😊
+    이제 거의 완강이시니까, 그동안 배운 걸 어떻게 정리하고 적용할지 고민되실 수 있을 것 같은데요...
+
+    혹시 요즘, 디자인 실무에서 가장 막히는 부분이 어떤 건가요?
 `;
 
 export const courseRecommendationSystemPrompt = (
   name: string,
   job: string,
   year: string,
-  courseAttendanceRate: number | undefined,
   currentCourse: CourseInfo,
   currentCourses: CourseCategory,
   courseCategory: string
@@ -41,11 +48,8 @@ export const courseRecommendationSystemPrompt = (
 
   # 필수 사항
   사용자의 이름은 ${name}이고, 직무는 ${job}이며, 연차는 ${year}입니다.
-  또한, 현재 수강률은 ${
-    courseAttendanceRate ? `${courseAttendanceRate * 100}%` : "0%"
-  }입니다.
   
-  수강률에 따라 격려의 말을 해주세요. 개인화된 조언을 제공해주세요. (수강률은 마크다운으로 강조)
+  이름과 직무, 연차에 따라, 개인화된 조언을 제공해주세요. (수강률은 마크다운으로 강조)
   추천 강의는 마크다운으로 강조해주세요.
 
   [현재 수강 중인 강의 목록 정보]
@@ -60,6 +64,17 @@ export const courseRecommendationSystemPrompt = (
 
   단순 요약보다는, 해당 유저의 니즈나 관심사, 실무 문제를 미리 예측해주는 식으로 조언해주세요.
   친절하고 컨텍스트를 잘 반영하는 답변을 만들어주세요.
+
+  [세부 규칙: 마크다운]
+  다음 텍스트의 내용을 의미 단위로 나눠서 문단을 구성해 주세요. 주제나 흐름이 바뀌는 부분마다 개행을 추가해 주시면 됩니다.
+  다음 텍스트에서 '예를 들어', '이를 통해', '또한', '그리고', '하지만', '결론적으로', '요약하자면' 등의 접속사나 전환어가 나오는 부분을 기준으로 개행해 주세요.
+
+  ## 답변 예시
+  - 사용자 질문 1: 기획부터  UI 흐름까지 배우고 싶어요
+  - 좋아요! 그 목표라면, UX 흐름을 구조화하고 사용자 중심으로 설계하는 역량을 키우는 게 중요해요.
+  그에 맞춰 아래 강의를 추천드릴게요 👇
+
+🎯 목표: 사용자의 맥락에 맞는 UI 흐름 설계하기
 `;
 
 // function prompt (system prompt)
@@ -86,7 +101,7 @@ export const courseFunctionSystemPrompt = (
   job: string,
   year: string,
   generatedAnswer: string,
-  courseCategory: string,
+  courseCategory: string
 ) => `
   [이전 답변]
   ${generatedAnswer}
@@ -103,11 +118,14 @@ export const courseRecommendationUserPrompt = (
   currentCourse: CourseInfo,
   currentCourses: CourseCategory,
   userMessage: string,
-  courseCategory: string,
+  courseCategory: string
 ) => {
   const prompt = currentCoursePrompt(currentCourse, courseCategory);
 
-  const coursesMarkdown = formatCoursesToMarkdown(currentCourses, courseCategory);
+  const coursesMarkdown = formatCoursesToMarkdown(
+    currentCourses,
+    courseCategory
+  );
 
   return `
     [사용자 질문]
@@ -124,7 +142,10 @@ export const courseRecommendationUserPrompt = (
   `;
 };
 
-const currentCoursePrompt = (currentCourse: CourseInfo, courseCategory: string) => {
+const currentCoursePrompt = (
+  currentCourse: CourseInfo,
+  courseCategory: string
+) => {
   return `
   ### 📘 ${currentCourse.name}
 
@@ -142,7 +163,10 @@ const currentCoursePrompt = (currentCourse: CourseInfo, courseCategory: string) 
   `;
 };
 
-function formatCoursesToMarkdown(courses: CourseCategory, courseCategory: string): string {
+function formatCoursesToMarkdown(
+  courses: CourseCategory,
+  courseCategory: string
+): string {
   return courses.courses
     .map((course, index) => {
       const courseName = course.name;

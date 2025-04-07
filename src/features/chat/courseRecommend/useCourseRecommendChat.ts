@@ -13,8 +13,7 @@ import { useChatStore } from "../useChat";
 
 export const useCourseRecommendChat = () => {
   const { setMessages, setIsLoading } = useChatStore();
-  const { courseCategory, courseName, name, job, year, courseAttendanceRate } =
-    useUserInfo();
+  const { courseCategory, courseName, name, job, year } = useUserInfo();
 
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory
@@ -50,7 +49,6 @@ export const useCourseRecommendChat = () => {
         name,
         job,
         year,
-        courseAttendanceRate,
         course as unknown as CourseInfo,
         currentCourses as unknown as CourseCategory,
         courseCategory
