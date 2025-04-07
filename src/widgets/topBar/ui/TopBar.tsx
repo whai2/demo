@@ -46,14 +46,14 @@ function TopBar() {
           </ToolTipLayout>
         </S.ToolTipContainer>
 
-        <S.ChatHistoryIcon
+        {/* <S.ChatHistoryIcon
           disabled={isLoading}
           onClick={() => {
             if (isLoading) return;
             setCurrentPage(ROUTES.CHAT);
           }}
         />
-        <S.CustomerCentorIcon />
+        <S.CustomerCentorIcon /> */}
       </S.NavContainer>
     </S.Container>
   );
