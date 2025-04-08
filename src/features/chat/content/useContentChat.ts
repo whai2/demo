@@ -1,4 +1,4 @@
-import { courses } from "@/features/chat";
+import { EnglishCourses, KoreanCourses } from "@/features/chat";
 import { useUserInfo } from "@/features/userInfo";
 import { functionChat, streamChat } from "../apis/chat.api";
 import { useChatStore } from "../useChat";
@@ -129,6 +129,8 @@ export const useContentChat = () => {
   const { setMessages, setIsLoading } = useChatStore();
   const { courseCategory, courseName, name, job, year, currentLanguage } =
     useUserInfo();
+
+  const courses = currentLanguage === "한국어" ? KoreanCourses : EnglishCourses;
 
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory

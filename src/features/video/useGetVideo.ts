@@ -12,7 +12,15 @@ export const videoCategory = [
     playListId: "PLz-ep5RbHosU2hnz5ejezwaYpdMutMVB0",
   },
   {
+    name: "Artificial Intelligence",
+    playListId: "PLz-ep5RbHosU2hnz5ejezwaYpdMutMVB0",
+  },
+  {
     name: "프로그래밍",
+    playListId: "PLC3y8-rFHvwgg3vaYJgHGnModB54rxOk3",
+  },
+  {
+    name: "Programming",
     playListId: "PLC3y8-rFHvwgg3vaYJgHGnModB54rxOk3",
   },
   {
@@ -20,8 +28,8 @@ export const videoCategory = [
     playListId: "PL1O57nCUQ-e-OVRFdIB-Gu1U91yH7egmm",
   },
   {
-    name: "마케팅",
-    playListId: "PLEiEAq2VkUULa5aOQmO_al2VVmhC-eqeI",
+    name: "Business/Planning",
+    playListId: "PL1O57nCUQ-e-OVRFdIB-Gu1U91yH7egmm",
   },
 ];
 
@@ -174,7 +182,7 @@ export const parseDuration = (duration: string) => {
   const hours = parseInt(match[2] || "0");
   const minutes = parseInt(match[4] || "0");
   const seconds = parseInt(match[6] || "0");
-  return `${hours > 0 ? hours + "시간 " : ""}${minutes}분 ${seconds}초`;
+  return `${hours > 0 ? hours + ": " : ""}${minutes}:${seconds}`;
 };
 
 export const parseDurationToSeconds = (duration: string) => {

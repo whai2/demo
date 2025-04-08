@@ -34,6 +34,19 @@ export const oftenQuestionsTaps = {
   ],
 };
 
+export const oftenQuestionsTapsEnglish = {
+  title: "Provides customized help for content",
+  icon: chat,
+  items: [
+    {
+      text: "Can you explain that more simply?",
+    },
+    {
+      text: "I’m not sure I understand this part",
+    },
+  ],
+};
+
 export const courseSummationTaps = {
   title: "강의 개요 요약",
   icon: Document,
@@ -43,6 +56,19 @@ export const courseSummationTaps = {
     },
     {
       text: "강의 핵심 키워드와 설명을 표로 제공해 주세요",
+    },
+  ],
+};
+
+export const courseSummationTapsEnglish = {
+  title: "Summarize the course overview",
+  icon: Document,
+  items: [
+    {
+      text: " Summarize what I’ve learned so far",
+    },
+    {
+      text: "Provide key course keywords and explanations in a table",
     },
   ],
 };
@@ -60,6 +86,19 @@ export const othersQuestionsTaps = {
   ],
 };
 
+export const othersQuestionsTapsEnglish = {
+  title: "Evaluation of Learning Status",
+  icon: Quiz,
+  items: [
+    {
+      text: "How can I review this lesson?",
+    },
+    {
+      text: "Can I check if I’ve understood everything correctly?",
+    },
+  ],
+};
+
 export const courseLoadMaps = {
   title: "강의 로드맵",
   icon: Recommend,
@@ -69,6 +108,19 @@ export const courseLoadMaps = {
     },
     {
       text: "이 강의 너무 어려워서 못 듣겠어요",
+    },
+  ],
+};
+
+export const courseLoadMapsEnglish = {
+  title: "Course Roadmap",
+  icon: Recommend,
+  items: [
+    {
+      text: "Find similar courses I might like",
+    },
+    {
+      text: "This course feels too hard for me",
     },
   ],
 };

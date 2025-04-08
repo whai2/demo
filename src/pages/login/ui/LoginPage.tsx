@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 
-import { courses } from "@/features/chat";
+import LanguageToggle from "./LanguageToggle";
+
+import { EnglishCourses, KoreanCourses } from "@/features/chat";
 import { usePopUpOpen } from "@/features/popUpOpen";
 import { COURSE_CATEGORY, JOBS, useUserInfo, YEARS } from "@/features/userInfo";
 
@@ -9,16 +11,19 @@ import { ReactComponent as Arrow } from "../assets/arrow.svg";
 
 import styled from "styled-components";
 
-const LANGUAGES = ["한국어", "English"];
-
 function LoginPage() {
   const { setOpen, setFirstModalOpen } = usePopUpOpen();
   const [isJobOpen, setIsJobOpen] = useState(false);
   const [isYearOpen, setIsYearOpen] = useState(false);
   const [isCourseCategoryOpen, setIsCourseCategoryOpen] = useState(false);
-  const [isCourseOpen, setIsCourseOpen] = useState(false);
+  // const [isCourseOpen, setIsCourseOpen] = useState(false);
   const [courseList, setCourseList] = useState<string[]>([]);
-  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+
+  const [selectedJobs, setSelectedJobs] = useState<string[]>([]);
+  const [selectedYears, setSelectedYears] = useState<string[]>([]);
+  const [selectedCourseCategories, setSelectedCourseCategories] = useState<
+    string[]
+  >([]);
 
   const {
     name,
@@ -38,9 +43,16 @@ function LoginPage() {
 
   useEffect(() => {
     if (courseCategory) {
-      const selectedCategory = courses.category.find(
-        (cat) => cat.name === courseCategory
-      );
+      let selectedCategory;
+      if (currentLanguage === "한국어") {
+        selectedCategory = KoreanCourses.category.find(
+          (cat) => cat.name === courseCategory
+        );
+      } else {
+        selectedCategory = EnglishCourses.category.find(
+          (cat) => cat.name === courseCategory
+        );
+      }
 
       if (selectedCategory) {
         const courseTitles = selectedCategory.courses.map(
@@ -51,7 +63,72 @@ function LoginPage() {
         setCourseList([]);
       }
     }
-  }, [courseCategory]);
+  }, [courseCategory, currentLanguage]);
+
+  useEffect(() => {
+    const names = JOBS.map((job) =>
+      currentLanguage === "한국어" ? job.korean : job.english
+    );
+
+    setSelectedJobs(names);
+
+    const index = JOBS.findIndex((j) => j.korean === job || j.english === job);
+
+    if (index !== -1) {
+      const newJob =
+        currentLanguage === "한국어" ? JOBS[index].korean : JOBS[index].english;
+
+      setJob(newJob);
+    }
+  }, [job, currentLanguage]);
+
+  useEffect(() => {
+    const names = YEARS.map((year) =>
+      currentLanguage === "한국어" ? year.korean : year.english
+    );
+    setSelectedYears(names);
+
+    const index = YEARS.findIndex(
+      (y) => y.korean === year || y.english === year
+    );
+
+    if (index !== -1) {
+      const newYear =
+        currentLanguage === "한국어"
+          ? YEARS[index].korean
+          : YEARS[index].english;
+
+      setYear(newYear);
+    }
+  }, [year, currentLanguage]);
+
+  useEffect(() => {
+    const names = COURSE_CATEGORY.map((courseCategory) =>
+      currentLanguage === "한국어"
+        ? courseCategory.korean
+        : courseCategory.english
+    );
+    setSelectedCourseCategories(names);
+
+    const index = COURSE_CATEGORY.findIndex(
+      (c) => c.korean === courseCategory || c.english === courseCategory
+    );
+
+    if (index !== -1) {
+      const newCourseCategory =
+        currentLanguage === "한국어"
+          ? COURSE_CATEGORY[index].korean
+          : COURSE_CATEGORY[index].english;
+
+      setCourseCategory(newCourseCategory);
+    }
+  }, [courseCategory, currentLanguage]);
+
+  useEffect(() => {
+    if (courseCategory) {
+      setCourseName(courseList[0]);
+    }
+  }, [courseCategory, courseList]);
 
   const toggleJobOpen = () => {
     setIsJobOpen(!isJobOpen);
@@ -63,14 +140,6 @@ function LoginPage() {
 
   const toggleCourseCategoryOpen = () => {
     setIsCourseCategoryOpen(!isCourseCategoryOpen);
-  };
-
-  const toggleCourseOpen = () => {
-    setIsCourseOpen(!isCourseOpen);
-  };
-
-  const toggleLanguageOpen = () => {
-    setIsLanguageOpen(!isLanguageOpen);
   };
 
   // 클릭 이벤트
@@ -90,14 +159,8 @@ function LoginPage() {
     setIsYearOpen(false);
   };
 
-  const handleCourseClick = (course: string) => {
-    setCourseName(course);
-    setIsCourseOpen(false);
-  };
-
   const handleLanguageClick = (language: string) => {
     setCurrentLanguage(language);
-    setIsLanguageOpen(false);
   };
 
   const isLoginActive =
@@ -125,6 +188,17 @@ function LoginPage() {
         <S.HeaderSubTitle>정보를 입력해주세요</S.HeaderSubTitle>
       </S.Header>
 
+      <LanguageToggle
+        isOn={currentLanguage === "English"}
+        onToggle={() => {
+          if (currentLanguage === "English") {
+            handleLanguageClick("한국어");
+          } else {
+            handleLanguageClick("English");
+          }
+        }}
+        label={currentLanguage ? currentLanguage : "언어 선택"}
+      />
       <S.Container>
         <S.Wrapper>
           <S.Title>이름</S.Title>
@@ -147,7 +221,7 @@ function LoginPage() {
             </S.InputWrapper>
 
             <S.JobList $isOpen={isJobOpen}>
-              {JOBS.map((job) => (
+              {selectedJobs.map((job) => (
                 <S.JobItem key={job} onClick={() => handleJobClick(job)}>
                   {job}
                 </S.JobItem>
@@ -168,7 +242,7 @@ function LoginPage() {
             </S.InputWrapper>
 
             <S.JobList $isOpen={isYearOpen}>
-              {YEARS.map((year) => (
+              {selectedYears.map((year) => (
                 <S.JobItem key={year} onClick={() => handleYearClick(year)}>
                   {year}
                 </S.JobItem>
@@ -191,7 +265,7 @@ function LoginPage() {
             </S.InputWrapper>
 
             <S.JobList $isOpen={isCourseCategoryOpen}>
-              {COURSE_CATEGORY.map((courseCategory) => (
+              {selectedCourseCategories.map((courseCategory) => (
                 <S.JobItem
                   key={courseCategory}
                   onClick={() => handleCourseCategoryClick(courseCategory)}
@@ -206,17 +280,17 @@ function LoginPage() {
         <S.Wrapper>
           <S.Title>강의명</S.Title>
 
-          <S.InputContainer $isOpen={isCourseOpen}>
-            <S.InputWrapper onClick={toggleCourseOpen}>
+          <S.InputContainer $isOpen={false}>
+            <S.InputWrapper>
               <S.InnerInput>
                 <S.InnerInputText>
-                  {courseName ? courseName : "선택"}
+                  {courseName ? courseName : "강의 카테고리를 선택하세요."}
                 </S.InnerInputText>
               </S.InnerInput>
-              <S.ChevronDown $isOpen={isCourseOpen} />
+              {/* <S.ChevronDown $isOpen={isCourseOpen} /> */}
             </S.InputWrapper>
 
-            <S.JobList $isOpen={isCourseOpen}>
+            {/* <S.JobList $isOpen={isCourseOpen}>
               {courseList.length === 0 ? (
                 <S.JobItem>강의 카테고리를 선택하세요</S.JobItem>
               ) : (
@@ -229,10 +303,10 @@ function LoginPage() {
                   </S.JobItem>
                 ))
               )}
-            </S.JobList>
+            </S.JobList> */}
           </S.InputContainer>
         </S.Wrapper>
-        <S.Wrapper>
+        {/* <S.Wrapper>
           <S.Title>언어 선택</S.Title>
 
           <S.InputContainer $isOpen={isLanguageOpen}>
@@ -256,7 +330,7 @@ function LoginPage() {
               ))}
             </S.JobList>
           </S.InputContainer>
-        </S.Wrapper>
+        </S.Wrapper> */}
       </S.Container>
 
       <S.Button $isActive={isLoginActive} onClick={handleLogin}>
@@ -387,6 +461,9 @@ const S = {
     font-style: normal;
     font-weight: var(--sds-typography-body-font-weight-regular);
     line-height: 20px; /* 142.857% */
+
+    white-space: nowrap;
+    overflow: auto;
   `,
 
   ChevronDown: styled(Arrow)<{ $isOpen: boolean }>`

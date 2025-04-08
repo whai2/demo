@@ -2,6 +2,7 @@ import ToolTip from "@/shared/ui/toolTip/ToolTip";
 
 import { useChatStore } from "@/features/chat";
 import { ROUTES, useNavigate } from "@/features/navigate";
+import { useUserInfo } from "@/features/userInfo";
 
 import styled from "styled-components";
 import { ReactComponent as ChatHistoryIcon } from "../assets/chatHistory.svg";
@@ -13,6 +14,8 @@ import { ReactComponent as NewChatIcon } from "../assets/newChat.svg";
 function TopBar() {
   const { currentPage, goBack, setCurrentPage } = useNavigate();
   const { isLoading, setMessages } = useChatStore();
+  const { currentLanguage } = useUserInfo();
+
   return (
     <S.Container>
       <S.TitleContainer>
@@ -39,7 +42,9 @@ function TopBar() {
             }}
           />
           <ToolTipLayout>
-            <ToolTip>새채팅</ToolTip>
+            <ToolTip>
+              {currentLanguage === "한국어" ? "새채팅" : "New Chat"}
+            </ToolTip>
           </ToolTipLayout>
         </S.ToolTipContainer>
 

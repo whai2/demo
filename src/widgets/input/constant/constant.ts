@@ -4,7 +4,7 @@ export interface AnswerStyleType {
   subTitle: string;
 }
 
-const answerStyleList = [
+const answerStyleListKorean = [
   {
     id: 1,
     title: "핵심요약",
@@ -25,4 +25,25 @@ const answerStyleList = [
   },
 ];
 
-export default answerStyleList;
+export const answerStyleListEnglish = [
+  {
+    id: 1,
+    title: "Core Summary",
+    subTitle: "Summarize the core points concisely",
+    requestParams: "concise",
+  },
+  {
+    id: 2,
+    title: "Beginner",
+    subTitle: "Make it easy for non-experts to understand",
+    requestParams: "easy",
+  },
+  {
+    id: 3,
+    title: "Professional",
+    subTitle: "Explain the content in detail",
+    requestParams: "professional",
+  },
+];
+
+export default answerStyleListKorean;

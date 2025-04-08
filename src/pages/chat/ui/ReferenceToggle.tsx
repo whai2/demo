@@ -9,7 +9,7 @@ import { ReactComponent as Rectangle } from "../assets/rectangle.svg";
 import styled from "styled-components";
 
 function ReferenceToggle({ reference }: { reference: any }) {
-  const { courseName } = useUserInfo();
+  const { courseName, currentLanguage } = useUserInfo();
 
   if (!reference) return null;
 
@@ -22,7 +22,9 @@ function ReferenceToggle({ reference }: { reference: any }) {
   return (
     <S.Container $isOpen={isOpen}>
       <S.TitleContainer onClick={toggleOpen}>
-        <S.Text>답변 참고 자료</S.Text>
+        <S.Text>
+          {currentLanguage === "한국어" ? "답변 참고 자료" : "Reference Material"}
+        </S.Text>
         <S.ChevronDown $isOpen={isOpen} />
       </S.TitleContainer>
       <S.ReferenceList $isOpen={isOpen}>
@@ -30,8 +32,13 @@ function ReferenceToggle({ reference }: { reference: any }) {
           pages={reference.pages}
           title={reference.title}
           file={reference.file}
+          currentLanguage={currentLanguage}
         />
-        <ReferenceItem title={courseName} time={reference.time} />
+        <ReferenceItem
+          title={courseName}
+          time={reference.time}
+          currentLanguage={currentLanguage}
+        />
       </S.ReferenceList>
     </S.Container>
   );
@@ -44,19 +51,29 @@ function ReferenceItem({
   title,
   file,
   time,
+  currentLanguage,
 }: {
   pages?: string;
   title: string;
   file?: string;
   time?: string;
+  currentLanguage: string;
 }) {
   return (
     <S.ReferenceItem>
       <S.LinkIcon />
       <S.ReferenceTextContainer>
         <S.ReferenceTextWrapper>
-          {time && <S.ReferenceHeader>강의클립 </S.ReferenceHeader>}
-          {pages && file && <S.ReferenceHeader>강의자료 </S.ReferenceHeader>}
+          {time && (
+            <S.ReferenceHeader>
+              {currentLanguage === "한국어" ? "강의클립 " : "Lecture Clip "}
+            </S.ReferenceHeader>
+          )}
+          {pages && file && (
+            <S.ReferenceHeader>
+              {currentLanguage === "한국어" ? "강의자료 " : "Lecture Material "}
+            </S.ReferenceHeader>
+          )}
           <S.ReferenceTitle>{title}</S.ReferenceTitle>
         </S.ReferenceTextWrapper>
         <S.RectangleContainer>

@@ -15,7 +15,8 @@ import { Input } from "@/widgets/input";
 import { TopBar } from "@/widgets/topBar";
 
 import {
-  courses,
+  EnglishCourses,
+  KoreanCourses,
   handleCourseSummation,
   useCourseSummationStore,
 } from "@/features/chat";
@@ -37,6 +38,8 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
   const [courseSummation, setCourseSummation] = useState<string>("");
   // const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const courses = currentLanguage === "한국어" ? KoreanCourses : EnglishCourses;
+
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory
   );
@@ -53,6 +56,7 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
 
   useEffect(() => {
     if (course) {
+      console.log("course", course);
       setIsSummationLoading(true);
       handleCourseSummation(course.description, currentLanguage)
         .then((res) => res.json())
@@ -66,7 +70,7 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
           setIsSummationLoading(false);
         });
     }
-  }, [course]);
+  }, [course, currentLanguage]);
 
   return (
     <S.ChatLayout $isOpen={true} $isFirstOpen={true}>
@@ -89,7 +93,7 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
                     ))}
                   </S.ModalCourseNameText>
                   <S.ModalPriceText>
-                    {course?.price} | {course?.duration}
+                    {course?.duration} | {course?.target}
                   </S.ModalPriceText>
                 </S.ModalCategoryAndTitle>
 
@@ -99,10 +103,16 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
                   <ModalDescription description={courseSummation} />
                 )}
 
-                <S.StartText>이제 강의를 시작해볼까요?</S.StartText>
+                <S.StartText>
+                  {currentLanguage === "한국어"
+                    ? "이제 강의를 시작해볼까요?"
+                    : "Let's start the course now?"}
+                </S.StartText>
 
                 <S.Button onClick={() => setFirstModalClose()}>
-                  <S.ButtonText>수강하기</S.ButtonText>
+                  <S.ButtonText>
+                    {currentLanguage === "한국어" ? "수강하기" : "Start"}
+                  </S.ButtonText>
                 </S.Button>
               </S.ModalTextContainer>
             </S.ModalContainer>
@@ -200,6 +210,7 @@ const S = {
     background: ${({ theme }) => theme.chatBody?.backgroundColor ?? "#f5f5f5"};
     overflow-y: auto;
     height: 100%;
+    margin-bottom: 20px;
   `,
 
   EmptyChatInput: styled.div`

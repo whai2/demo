@@ -1,9 +1,12 @@
 import AnswerStyle from "./AnswerStyle";
 
-import answerStyleList from "../../constant/constant";
+import answerStyleListKorean, {
+  answerStyleListEnglish,
+} from "../../constant/constant";
 
 import { ReactComponent as LogoIcon } from "../../assets/logo.svg";
 
+import { useUserInfo } from "@/features/userInfo";
 import styled from "styled-components";
 
 type AnswerStylesProps = {
@@ -15,11 +18,20 @@ function AnswerStyles({
   selectedOption,
   handleSelectAnswerStyle,
 }: AnswerStylesProps) {
+  const { currentLanguage } = useUserInfo();
+
+  const answerStyleList =
+    currentLanguage === "한국어"
+      ? answerStyleListKorean
+      : answerStyleListEnglish;
+
   return (
     <S.Container>
       <S.Header>
         <S.LogoContainer />
-        <S.HeaderTitle>답변스타일</S.HeaderTitle>
+        <S.HeaderTitle>
+          {currentLanguage === "한국어" ? "답변스타일" : "Answer Style"}
+        </S.HeaderTitle>
       </S.Header>
       {answerStyleList.map((item) => (
         <AnswerStyle

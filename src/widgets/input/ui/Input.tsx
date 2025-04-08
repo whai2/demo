@@ -9,10 +9,10 @@ import { useHandleInputSize } from "../hooks/useHandleInputSize";
 
 import { useChatStore, useSendChat } from "@/features/chat";
 import { usePopUpOpen } from "@/features/popUpOpen";
-
+import { useUserInfo } from "@/features/userInfo";
+import { ReactComponent as ArrowDown } from "../assets/arrowDown.svg";
 import { ReactComponent as LogoIcon } from "../assets/logo.svg";
 import { ReactComponent as SendIcon } from "../assets/send.svg";
-import { ReactComponent as ArrowDown } from "../assets/arrowDown.svg";
 
 import styled from "styled-components";
 
@@ -21,6 +21,7 @@ function Input() {
   const { textareaRef } = useHandleInputSize(text);
   const { isOpen } = usePopUpOpen();
   const { setCurrentPage } = useNavigate();
+  const { currentLanguage } = useUserInfo();
 
   const { sendChatCallback, sendQuizAnswer } = useSendChat();
   const { isQuiz, lastQuiz, isLoading } = useChatStore();
@@ -76,7 +77,11 @@ function Input() {
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           value={text}
-          placeholder="질문을 입력하세요"
+          placeholder={
+            currentLanguage === "한국어"
+              ? "질문을 입력하세요"
+              : "Enter your question"
+          }
         />
 
         <S.ChatSendContainer>
@@ -286,5 +291,4 @@ const S = {
     transform: ${(props) =>
       props.$isAnswerStylesOpen ? "rotate(180deg)" : "rotate(0deg)"};
   `,
-
 };

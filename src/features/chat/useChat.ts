@@ -17,7 +17,7 @@ import {
 
 import { useUserInfo } from "@/features/userInfo";
 import { parseDurationToSeconds, videoStore } from "@/features/video";
-import { courses } from "./constants/constants";
+import { EnglishCourses, KoreanCourses } from "./constants/constants";
 
 import { runRecommendationFlow } from "./courseRecommend/useIntentClassification";
 import { runGeneralStreaming } from "./generalChat/useGeneralChat";
@@ -63,6 +63,8 @@ export const useSendChat = () => {
     currentLanguage,
   } = useUserInfo();
   const { progress, currentVideo } = videoStore();
+
+  const courses = currentLanguage === "한국어" ? KoreanCourses : EnglishCourses;
 
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory
@@ -335,6 +337,8 @@ export const useSendTailQuestion = () => {
   const { setMessages, setIsLoading, answerStyle } = useChatStore();
   const { courseCategory, courseName, name, job, year, currentLanguage } =
     useUserInfo();
+
+    const courses = currentLanguage === "한국어" ? KoreanCourses : EnglishCourses;
 
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory

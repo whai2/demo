@@ -20,10 +20,15 @@ export const handleCourseSummation = async (
   currentLanguage: string
 ) => {
   const response = await chat(
-    `${currentLanguage === "English" ? "you must say english\n" : ""}
+    `
+    # Very Important
+    ${currentLanguage === "English" ? "you must say english\n" : ""}
+
     "최대 150자 이내로 강의 개요를 요약해줘"
+
     ${currentLanguage === "English" ? "you must say english\n" : ""}
     `,
+
     courseSummationSystemPrompt(description, currentLanguage === "English")
   );
 

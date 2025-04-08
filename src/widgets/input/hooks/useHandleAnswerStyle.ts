@@ -1,15 +1,23 @@
 import { useEffect, useState } from "react";
 
 import { useChatStore } from "@/features/chat";
-import answerStyleList from "../constant/constant";
+import { useUserInfo } from "@/features/userInfo";
+
+import answerStyleListKorean, { answerStyleListEnglish } from "../constant/constant";
 
 export const useHandleAnswerStyle = () => {
   const { setAnswerStyle } = useChatStore();
   const [isFirst, setIsFirst] = useState(true);
   const [isAnswerStylesOpen, setIsAnswerStylesOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(1);
-  const [answerStyleTitle, setAnswerStyleTitle] = useState("답변스타일");
+  const { currentLanguage } = useUserInfo();
+  const [answerStyleTitle, setAnswerStyleTitle] = useState(
+    currentLanguage === "한국어" ? "답변스타일" : "Answer Style"
+  );
   const [answerStyleRequestParams, setAnswerStyleRequestParams] = useState("");
+
+  const answerStyleList =
+    currentLanguage === "한국어" ? answerStyleListKorean : answerStyleListEnglish;
 
   const handleAnswerStyleToggle = () => {
     if (isFirst) {
@@ -33,7 +41,7 @@ export const useHandleAnswerStyle = () => {
     if (!isFirst) {
       setAnswerStyleTitle(
         answerStyleList.find((item) => item.id === selectedOption)?.title ||
-          "답변스타일"
+          (currentLanguage === "한국어" ? "답변스타일" : "Answer Style")
       );
     }
   }, [selectedOption, isFirst]);

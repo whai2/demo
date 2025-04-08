@@ -3,7 +3,7 @@ import { functionChat, streamChat } from "@/features/chat/apis/chat.api";
 import { useChatStore } from "@/features/chat";
 import { CourseInfo, MessageType, Quiz, Quiz2 } from "@/features/chat/type";
 import { useUserInfo } from "@/features/userInfo";
-import { courses } from "../constants/constants";
+import { EnglishCourses, KoreanCourses } from "../constants/constants";
 
 import {
   courseQuizAnswerFunctions,
@@ -42,7 +42,9 @@ export const runCourseQuizFlow = async (
   const randomType = types[Math.floor(Math.random() * types.length)];
 
   const enhancedUserMessage = `
+    # very important
     ${currentLanguage === "English" ? "you must say english\n" : ""}
+
     [사용자 질문]
     ${userMessage}
     
@@ -477,6 +479,8 @@ export const useNextQuiz = () => {
   const { courseCategory, courseName, name, job, year, currentLanguage } =
     useUserInfo();
 
+  const courses = currentLanguage === "한국어" ? KoreanCourses : EnglishCourses;
+
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory
   );
@@ -498,7 +502,9 @@ export const useNextQuiz = () => {
     );
 
     const enhancedUserMessage = `
+    # very important
     ${currentLanguage === "English" ? "you must say english\n" : ""}
+
     [사용자 질문]
     ${userMessage}
     
@@ -636,6 +642,8 @@ export const useQuizReference = () => {
   const { setMessages, lastQuiz, setIsLoading } = useChatStore();
   const { courseCategory, courseName, currentLanguage } = useUserInfo();
 
+  const courses = currentLanguage === "한국어" ? KoreanCourses : EnglishCourses;
+
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory
   );
@@ -660,7 +668,9 @@ export const useQuizReference = () => {
     const previousQuestion = question;
     // const previousAnswer = assistantMessage;
     const introMessage =
-      "퀴즈에 대한 참고 자료를 보여드릴게요!\n 아래의 참고 자료로 돌아가 복습해보는 것도 좋을 것 같아요!";
+      currentLanguage === "한국어"
+        ? "퀴즈에 대한 참고 자료를 보여드릴게요!\n 아래의 참고 자료로 돌아가 복습해보는 것도 좋을 것 같아요!"
+        : "I will show you the reference material for the quiz!\n You can also review by going back to the reference material below!";
 
     let displayedMessage = "";
 

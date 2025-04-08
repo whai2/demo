@@ -5,9 +5,13 @@ import QuickTaps2 from "./QuickTaps2";
 
 import {
   courseLoadMaps,
+  courseLoadMapsEnglish,
   courseSummationTaps,
+  courseSummationTapsEnglish,
   oftenQuestionsTaps,
+  oftenQuestionsTapsEnglish,
   othersQuestionsTaps,
+  othersQuestionsTapsEnglish,
 } from "../constants/quickTaps";
 
 import { ReactComponent as CoxwaveLogo } from "@/shared/assets/coxwave.svg";
@@ -15,7 +19,7 @@ import { ReactComponent as CoxwaveLogo } from "@/shared/assets/coxwave.svg";
 import styled from "styled-components";
 
 function HomePage() {
-  const { name } = useUserInfo();
+  const { name, currentLanguage } = useUserInfo();
   const { sendChatCallback } = useContentChat();
 
   return (
@@ -23,18 +27,41 @@ function HomePage() {
       <S.Header>
         <S.CoxwaveLogo />
         <S.Title>
-          안녕하세요! {name}님
+          {currentLanguage === "한국어"
+            ? `안녕하세요! ${name}님`
+            : `Hi there, ${name}`!}
           <br />
-          무엇을 도와드릴까요?
+          {currentLanguage === "한국어"
+            ? "무엇을 도와드릴까요?"
+            : "How can I help you today?"}
         </S.Title>
       </S.Header>
-      <QuickTaps {...courseSummationTaps} />
-      <QuickTaps2
-        {...oftenQuestionsTaps}
-        handleClickTapQuestion={sendChatCallback}
-      />
-      <QuickTaps {...othersQuestionsTaps} />
-      <QuickTaps {...courseLoadMaps} />
+      {currentLanguage === "한국어" ? (
+        <QuickTaps {...courseSummationTaps} />
+      ) : (
+        <QuickTaps {...courseSummationTapsEnglish} />
+      )}
+      {currentLanguage === "한국어" ? (
+        <QuickTaps2
+          {...oftenQuestionsTaps}
+          handleClickTapQuestion={sendChatCallback}
+        />
+      ) : (
+        <QuickTaps2
+          {...oftenQuestionsTapsEnglish}
+          handleClickTapQuestion={sendChatCallback}
+        />
+      )}
+      {currentLanguage === "한국어" ? (
+        <QuickTaps {...othersQuestionsTaps} />
+      ) : (
+        <QuickTaps {...othersQuestionsTapsEnglish} />
+      )}
+      {currentLanguage === "한국어" ? (
+        <QuickTaps {...courseLoadMaps} />
+      ) : (
+        <QuickTaps {...courseLoadMapsEnglish} />
+      )}
     </S.Container>
   );
 }
@@ -62,7 +89,10 @@ const S = {
   Header: styled.div`
     display: flex;
     width: 100%;
-    height: 48px;
+    height: 137px;
+    padding: 0px 6px 0px 8px;
+    flex-direction: column;
+    justify-content: center;
     align-items: flex-start;
     gap: 24px;
   `,

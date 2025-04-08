@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 import type { Quiz2 } from "@/features/chat";
 import { useChatStore, useSendQuizAnswer } from "@/features/chat";
-
+import { useUserInfo } from "@/features/userInfo";
 import { ReactComponent as SendIcon } from "../../assets/sendIcon.svg";
 
 import styled from "styled-components";
@@ -12,6 +12,8 @@ function Quiz2({ quiz }: { quiz: Quiz2 }) {
   const sendQuizAnswerCallback = useSendQuizAnswer(quiz);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { isLoading } = useChatStore();
+  const { currentLanguage } = useUserInfo();
+
   useEffect(() => {
     textareaRef.current?.focus();
   }, []);
@@ -25,7 +27,11 @@ function Quiz2({ quiz }: { quiz: Quiz2 }) {
       <S.Question>Q. {quiz.question}</S.Question>
       <S.TextArea
         ref={textareaRef}
-        placeholder="답변을 작성하고 'Ctrl + Enter'를 눌러주세요."
+        placeholder={
+          currentLanguage === "한국어"
+            ? "답변을 작성하고 'Ctrl + Enter'를 눌러주세요."
+            : "Write your answer and press 'Ctrl + Enter' to submit."
+        }
         value={text}
         onChange={handleInputChange}
         $disabled={isLoading}

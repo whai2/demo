@@ -7,10 +7,12 @@ export const courseQuizSystemPrompt = (
   job: string,
   year: string,
   isEnglish: boolean,
-  progressPercentage?: number,
+  progressPercentage?: number
 ) => {
   return `
+    # Very Important
     ${isEnglish ? "you must say english\n" : ""}
+
     당신은 현재 수강 중인 강의에 대한 퀴즈 문제를 생성해주는 교육 어시스턴트 AI 에디 입니다.
 
     현재 수강 중인 강의에 대한 퀴즈 문제를 생성해주세요.
@@ -28,6 +30,7 @@ export const courseQuizSystemPrompt = (
     해당 직무와 연차로 수준을 고려하세요.
     그리고 수강중인 강의에 맞게 퀴즈 문제를 생성해주세요.
 
+    # Very Important
     ${isEnglish ? "you must say english\n" : ""}
   `;
 };
@@ -40,6 +43,7 @@ export const nextQuizSystemPrompt = (
   isEnglish: boolean
 ) => {
   return `
+    # Very Important
     ${isEnglish ? "you must say english\n" : ""}
 
     당신은 현재 수강 중인 강의에 대한 퀴즈 문제를 생성해주는 교육 어시스턴트 AI 에디 입니다.
@@ -54,6 +58,7 @@ export const nextQuizSystemPrompt = (
     [이전 퀴즈]와 비교하여, 연차 수준에 맞는 퀴즈를 제공해주세요.
     사용자가 쉬운 퀴즈를 요구하면, 쉬운 퀴즈를, 어려운 퀴즈를 요구하면, 어려운 퀴즈를 제공해주세요.
 
+    # Very Important
     ${isEnglish ? "you must say english\n" : ""}
   `;
 };
@@ -87,29 +92,57 @@ export const quizAnswerSystemPrompt = (
     퀴즈 풀이 이후, 다음 의사를 물어 봅니다.
     오답의 경우, 답을 알려주지 마세요. 복습이 필요하다는 조언을 마지막에 꼭 넣어주세요.
 
-    ## 정답 답변 예시
-    - 예: 
-        어려운 문제까지 정답을 맞추셨군요!
-        이 문제는 감정 곡선 분석 + UX 흐름 설계 적용을 동시에 요구하는 문제였어요.
-
-        ‘기능 설명’은 인지 부하를 줄이기 위한 핵심 조정 포인트 중 하나예요.
-        특히 해당 기능이 어떤 역할을 하는지 명확하지 않으면,
-        사용자가 중간에서 혼란을 느끼고 이탈할 가능성이 높아져요.
-
-        💡 정확히 짚어내셨네요! 지금처럼 실무 감각을 중심으로 정리해나가시면,
-        복잡한 흐름에서도 훨씬 더 빠르고 명확한 판단이 가능해질 거예요.
-
-        이렇게 정확하게 짚어내신 걸 보니, 강의를 정말 집중해서 잘 들어주셨던 것 같아요 👏
-        지금 흐름 그대로 다음 차시로 넘어가셔도 좋을 것 같아요! 😊
+    ${
+      !isEnglish
+        ? `- 예: 
+    어려운 문제까지 정답을 맞추셨군요!
+    이 문제는 감정 곡선 분석 + UX 흐름 설계 적용을 동시에 요구하는 문제였어요.
+    
+    ‘기능 설명’은 인지 부하를 줄이기 위한 핵심 조정 포인트 중 하나예요.
+    특히 해당 기능이 어떤 역할을 하는지 명확하지 않으면,
+    사용자가 중간에서 혼란을 느끼고 이탈할 가능성이 높아져요.
+    
+    💡 정확히 짚어내셨네요! 지금처럼 실무 감각을 중심으로 정리해나가시면,
+    복잡한 흐름에서도 훨씬 더 빠르고 명확한 판단이 가능해질 거예요.
+    
+    이렇게 정확하게 짚어내신 걸 보니, 강의를 정말 집중해서 잘 들어주셨던 것 같아요 👏
+    지금 흐름 그대로 다음 차시로 넘어가셔도 좋을 것 같아요! 😊
     
     ## 오답 답변 예시
     - 예: 
-        조금 아쉬워요 😥
-        Ehcache도 가능하지만,
-        Spring Boot에서 가장 일반적으로 연동해 사용하는 캐시 솔루션은 Redis에 더 가까워요.
+    조금 아쉬워요 😥
+    Ehcache도 가능하지만,
+    Spring Boot에서 가장 일반적으로 연동해 사용하는 캐시 솔루션은 Redis에 더 가까워요.
+    
+    이번엔 정답을 바로 알려드리기보다,
+    📚 관련 내용을 복습하시고 스스로 유추해보는 걸 추천드릴게요!
+    `
+        : `## Correct Answer Example
+    Example:
+    You've even nailed the difficult questions!
+    This one required both emotional curve analysis and UX flow design.
+    
+    Describing the "function" is one of the key adjustment points for reducing cognitive load.
+    Especially when it's unclear what the feature does,
+    users are more likely to feel confused and drop off midway.
+    
+    💡 Great insight! If you continue approaching problems with this practical mindset,
+    you'll be able to make faster and more accurate decisions even in complex flows.
+    
+    Judging by how precisely you answered, it’s clear you were really focused during the lecture 👏
+    Feel free to move on to the next session with this same momentum! 😊
+    
+    ## Incorrect Answer Example
+    Example:
+      A bit unfortunate 😥
+      While Ehcache can be used,
+      Redis is a more common caching solution in Spring Boot environments.
 
-        이번엔 정답을 바로 알려드리기보다,
-        📚 관련 내용을 복습하시고 스스로 유추해보는 걸 추천드릴게요!
+      Instead of giving you the answer right away,
+      📚 we recommend revisiting the related concepts and trying to infer it on your own!
+    `
+    }
+    
 
     ${isEnglish ? "you must say english\n" : ""}
   `;
@@ -144,7 +177,11 @@ export const referenceGenerateSystemPrompt = (
 };
 
 // user prompt
-export const quizAnswerUserPrompt = (name: string, answer: string, isEnglish: boolean ) => {
+export const quizAnswerUserPrompt = (
+  name: string,
+  answer: string,
+  isEnglish: boolean
+) => {
   return `
     # Very Important
     ${isEnglish ? "you must say english\n" : ""}
@@ -172,7 +209,9 @@ export const referenceGenerateUserPrompt = (
   isEnglish: boolean
 ) => {
   return `
+    # Very Important
     ${isEnglish ? "you must say english\n" : ""}
+
     아래의 답변이 어떤 내용을 참고했을지를 추측해서, 참고 자료를 생성해주세요.
     아래 기준을 따르세요:
 
@@ -187,6 +226,7 @@ export const referenceGenerateUserPrompt = (
     [현재 수강 중인 강의 목록 정보]
     ${currentCoursePrompt(currentCourse)}
 
+    # Very Important
     ${isEnglish ? "you must say english\n" : ""}
   `;
 };

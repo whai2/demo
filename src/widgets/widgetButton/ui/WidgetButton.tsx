@@ -6,7 +6,10 @@ import {
   runRecommendationFlow,
   useChatStore,
 } from "@/features/chat";
-import { courses } from "@/features/chat/constants/constants";
+import {
+  EnglishCourses,
+  KoreanCourses,
+} from "@/features/chat/constants/constants";
 import { CourseCategory, CourseInfo } from "@/features/chat/type";
 import { ROUTES, useNavigate } from "@/features/navigate";
 import { usePopUpOpen } from "@/features/popUpOpen";
@@ -41,6 +44,8 @@ function WidgetButton({
   } = useUserInfo();
   const { progress, currentVideo } = videoStore();
 
+  const courses = currentLanguage === "한국어" ? KoreanCourses : EnglishCourses;
+
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory
   );
@@ -72,13 +77,17 @@ function WidgetButton({
       <S.ChatButton onClick={handleClick} $isOpen={isOpen}>
         {isOpen ? (
           <>
-            <S.Text $isOpen={isOpen}>닫기</S.Text>
+            <S.Text $isOpen={isOpen}>
+              {currentLanguage === "한국어" ? "닫기" : "Close"}
+            </S.Text>
             <CloseIcon />
           </>
         ) : (
           <>
             <S.ChatIcon />
-            <S.Text $isOpen={isOpen}>AI 챗봇</S.Text>
+            <S.Text $isOpen={isOpen}>
+              {currentLanguage === "한국어" ? "AI 챗봇" : "AI Chatbot"}
+            </S.Text>
           </>
         )}
       </S.ChatButton>

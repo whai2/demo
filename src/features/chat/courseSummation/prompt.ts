@@ -4,7 +4,6 @@ export const courseSummationSystemPrompt = (
 ) => {
   return `
     # Very Important
-
     ${isEnglish ? "you must say english\n" : ""}
 
     너는 강의 개요를 요약하는 어시스턴트 AI야.

@@ -1,8 +1,4 @@
-export {
-  businessCoursesData,
-  courses,
-  productivityCourses,
-} from "./constants/constants";
+export { KoreanCourses, EnglishCourses } from "./constants/constants";
 export { useContentChat } from "./content/useContentChat";
 export { useCourseRecommendChat } from "./courseRecommend/useCourseRecommendChat";
 export { runRecommendationFlow } from "./courseRecommend/useIntentClassification";

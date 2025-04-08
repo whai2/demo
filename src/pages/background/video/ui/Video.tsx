@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import YouTube from "react-youtube";
 
 import { useAlarmStore } from "@/features/alarm";
-import { courses } from "@/features/chat";
+import { EnglishCourses, KoreanCourses } from "@/features/chat";
 import { useUserInfo } from "@/features/userInfo";
 import {
   parseDuration,
@@ -20,6 +20,15 @@ import { ReactComponent as Statistics } from "../assets/statistics.svg";
 
 import styled from "styled-components";
 
+const EnglishLesson = {
+  "1차시": "Lesson 1",
+  "2차시": "Lesson 2",
+  "3차시": "Lesson 3",
+  "4차시": "Lesson 4",
+  "5차시": "Lesson 5",
+  "6차시": "Lesson 6",
+};
+
 const YoutubePlaylist = () => {
   const { currentVideo, videos, setCurrentVideo } = useGetVideo();
   const { setIsTaken, progress, setClassName } = videoStore();
@@ -29,12 +38,15 @@ const YoutubePlaylist = () => {
     courseName,
     courseAttendanceRate,
     reset,
+    currentLanguage,
   } = useUserInfo();
 
   const [isHighlighted, setIsHighlighted] = useState(false);
   const [isHighlighted2, setIsHighlighted2] = useState(false);
 
   const prevValueRef = useRef<number>(courseAttendanceRate);
+
+  const courses = currentLanguage === "한국어" ? KoreanCourses : EnglishCourses;
 
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory
@@ -93,33 +105,67 @@ const YoutubePlaylist = () => {
           <>
             <S.TopBar>
               <S.UserInfoButton onClick={reset}>
-                <S.ButtonText>강의 정보 변경</S.ButtonText>
+                <S.ButtonText>
+                  {currentLanguage === "한국어"
+                    ? "강의 정보 변경"
+                    : "Edit Course Info"}
+                </S.ButtonText>
               </S.UserInfoButton>
+
               <S.TopBarInner>
                 <S.TopBarCategory>{courseCategory}</S.TopBarCategory>
                 <Bar />
                 <S.TopBarTitle>{course?.name}</S.TopBarTitle>
               </S.TopBarInner>
+
               <S.AttendanceRate>
-                <div
-                  style={{
-                    transition: "color 0.3s ease, font-weight 0.3s ease",
-                    color: isHighlighted ? "#1a2a9c" : "#090909",
-                    fontWeight: isHighlighted ? 700 : 400,
-                  }}
-                >
-                  강의 완료율 {Math.round(courseAttendanceRate * 100)}%
-                </div>
-                <div
-                  style={{
-                    transition: "color 0.3s ease, font-weight 0.3s ease",
-                    color: isHighlighted2 ? "#1a2a9c" : "#090909",
-                    fontWeight: isHighlighted2 ? 700 : 400,
-                  }}
-                >
-                  영상 진행률{" "}
-                  {progressPercentage ? progressPercentage.toFixed(0) : 0}%
-                </div>
+                {currentLanguage === "한국어" ? (
+                  <>
+                    <div
+                      style={{
+                        transition: "color 0.3s ease, font-weight 0.3s ease",
+                        color: isHighlighted ? "#1a2a9c" : "#090909",
+                        fontWeight: isHighlighted ? 700 : 400,
+                      }}
+                    >
+                      강의 완료율
+                      {Math.round(courseAttendanceRate * 100)}%
+                    </div>
+                    <div
+                      style={{
+                        transition: "color 0.3s ease, font-weight 0.3s ease",
+                        color: isHighlighted2 ? "#1a2a9c" : "#090909",
+                        fontWeight: isHighlighted2 ? 700 : 400,
+                      }}
+                    >
+                      영상 진행률{" "}
+                      {progressPercentage ? progressPercentage.toFixed(0) : 0}%
+                    </div>
+                  </>
+                ) : (
+                  <div>
+                    <div
+                      style={{
+                        transition: "color 0.3s ease, font-weight 0.3s ease",
+                        color: isHighlighted ? "#1a2a9c" : "#090909",
+                        fontWeight: isHighlighted ? 700 : 400,
+                      }}
+                    >
+                      Course Completion Rate{" "}
+                      {Math.round(courseAttendanceRate * 100)}%
+                    </div>
+                    <div
+                      style={{
+                        transition: "color 0.3s ease, font-weight 0.3s ease",
+                        color: isHighlighted2 ? "#1a2a9c" : "#090909",
+                        fontWeight: isHighlighted2 ? 700 : 400,
+                      }}
+                    >
+                      Video Progress{" "}
+                      {progressPercentage ? progressPercentage.toFixed(0) : 0}%
+                    </div>
+                  </div>
+                )}
               </S.AttendanceRate>
             </S.TopBar>
             <S.VideoContainer>
@@ -131,27 +177,43 @@ const YoutubePlaylist = () => {
         <S.BottomContainer>
           <S.Tab>
             <Alert />
-            공지사항
+            <S.TabText>
+              {currentLanguage === "한국어" ? "공지사항" : "Announcements"}
+            </S.TabText>
           </S.Tab>
           <S.TabBar />
           <S.Tab>
             <Docs />
-            강의소개
+            <S.TabText>
+              {currentLanguage === "한국어"
+                ? "강의소개"
+                : "Course Introduction"}
+            </S.TabText>
           </S.Tab>
           <S.TabBar />
           <S.Tab>
             <Introduction />
-            강사소개
+            <S.TabText>
+              {currentLanguage === "한국어"
+                ? "강사소개"
+                : "Instructor Introduction"}
+            </S.TabText>
           </S.Tab>
           <S.TabBar />
           <S.Tab>
             <Docs2 />
-            강의자료
+            <S.TabText>
+              {currentLanguage === "한국어" ? "강의자료" : "Course Materials"}
+            </S.TabText>
           </S.Tab>
           <S.TabBar />
           <S.Tab>
             <Statistics />
-            학습통계
+            <S.TabText>
+              {currentLanguage === "한국어"
+                ? "학습통계"
+                : "Learning Statistics"}
+            </S.TabText>
           </S.Tab>
         </S.BottomContainer>
       </S.Content>
@@ -159,7 +221,9 @@ const YoutubePlaylist = () => {
         <S.SideBarHeader>
           <S.SideBarHeaderInner>
             <S.SideBarHeaderInnerInner>
-              <S.SideBarHeaderText>강의 목차</S.SideBarHeaderText>
+              <S.SideBarHeaderText>
+                {currentLanguage === "한국어" ? "강의 목차" : "Course Outline"}
+              </S.SideBarHeaderText>
             </S.SideBarHeaderInnerInner>
           </S.SideBarHeaderInner>
         </S.SideBarHeader>
@@ -186,7 +250,15 @@ const YoutubePlaylist = () => {
                     setClassName(sessionTitle);
                   }}
                 >
-                  <S.Number>[{sessionTitle}]</S.Number>
+                  <S.Number>
+                    [
+                    {currentLanguage === "한국어"
+                      ? sessionTitle
+                      : EnglishLesson[
+                          sessionTitle as keyof typeof EnglishLesson
+                        ]}
+                    ]
+                  </S.Number>
                   {contentTitle}
                   <S.Duration>{parseDuration(video.duration)}</S.Duration>
                 </S.SideBarItem>
@@ -427,6 +499,7 @@ const S = {
     display: inline-flex;
     align-items: center;
     gap: 11px;
+    max-width: 500px;
   `,
 
   TopBarTitle: styled.span`
@@ -449,6 +522,7 @@ const S = {
     font-style: normal;
     font-weight: 500;
     line-height: 28px; /* 175% */
+    white-space: nowrap;
   `,
 
   BottomBar: styled.div`
@@ -470,6 +544,17 @@ const S = {
     flex: 1 0 0;
     border: none;
     border-radius: 4px;
+  `,
+
+  TabText: styled.span`
+    color: var(--GREY-2_444444_27, #444);
+    font-feature-settings: "liga" off, "clig" off;
+    font-family: Pretendard;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 28px; /* 175% */
+    white-space: nowrap;
   `,
 
   SaveButton: styled.button`

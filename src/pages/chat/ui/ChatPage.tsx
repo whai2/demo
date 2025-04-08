@@ -26,6 +26,8 @@ function ChatPage() {
 
   const lastMessage = messages[messages.length - 1];
 
+  console.log(lastMessage);
+
   return (
     <S.Container ref={containerRef}>
       {messages.map((message, index) =>

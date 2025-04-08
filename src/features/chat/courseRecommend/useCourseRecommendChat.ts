@@ -7,7 +7,7 @@ import {
 } from "./prompt";
 
 import { useUserInfo } from "@/features/userInfo";
-import { courses } from "../constants/constants";
+import { EnglishCourses, KoreanCourses } from "../constants/constants";
 import { CourseCategory, CourseInfo } from "../type";
 import { useChatStore } from "../useChat";
 
@@ -15,6 +15,8 @@ export const useCourseRecommendChat = () => {
   const { setMessages, setIsLoading } = useChatStore();
   const { courseCategory, courseName, name, job, year, currentLanguage } =
     useUserInfo();
+
+  const courses = currentLanguage === "한국어" ? KoreanCourses : EnglishCourses;
 
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory
