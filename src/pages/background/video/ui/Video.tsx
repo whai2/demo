@@ -32,7 +32,7 @@ const YoutubePlaylist = () => {
   } = useUserInfo();
 
   const [isHighlighted, setIsHighlighted] = useState(false);
-  // const [isHighlighted2, setIsHighlighted2] = useState(false);
+  const [isHighlighted2, setIsHighlighted2] = useState(false);
 
   const prevValueRef = useRef<number>(courseAttendanceRate);
 
@@ -55,8 +55,6 @@ const YoutubePlaylist = () => {
     ? (currentVideoProgress / currentVideoDuration) * 100
     : 0;
 
-  // const prevValueRef2 = useRef<number>(progressPercentage);
-
   useEffect(() => {
     setIsTaken(videos[0]?.id, true);
   }, [currentVideo]);
@@ -70,6 +68,7 @@ const YoutubePlaylist = () => {
   useEffect(() => {
     if (prevValueRef.current !== courseAttendanceRate) {
       setIsHighlighted(true);
+
       const timeout = setTimeout(() => setIsHighlighted(false), 1500);
       prevValueRef.current = courseAttendanceRate;
 
@@ -77,42 +76,15 @@ const YoutubePlaylist = () => {
     }
   }, [courseAttendanceRate]);
 
-  // const highlightTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  useEffect(() => {
+    if (progressPercentage >= 80) {
+      setIsHighlighted2(true);
 
-  // useEffect(() => {
-  //   const prevProgress = prevValueRef2.current;
-  //   const prevChunk = Math.floor(prevProgress / 10);
-  //   const currentChunk = Math.floor(progressPercentage / 10);
-
-  //   prevValueRef2.current = progressPercentage;
-
-  //   if (progressPercentage < 80) {
-  //     setIsHighlighted2(false);
-  //     if (highlightTimeoutRef.current) {
-  //       clearTimeout(highlightTimeoutRef.current);
-  //       highlightTimeoutRef.current = null;
-  //     }
-  //     return;
-  //   }
-
-  //   if (prevChunk === currentChunk) return;
-
-  //   if (!highlightTimeoutRef.current) {
-  //     setIsHighlighted2(true);
-
-  //     highlightTimeoutRef.current = setTimeout(() => {
-  //       setIsHighlighted2(false);
-  //       highlightTimeoutRef.current = null;
-  //     }, 1500);
-  //   }
-
-  //   return () => {
-  //     if (highlightTimeoutRef.current) {
-  //       clearTimeout(highlightTimeoutRef.current);
-  //       highlightTimeoutRef.current = null;
-  //     }
-  //   };
-  // }, [progressPercentage]);
+      setTimeout(() => {
+        setIsHighlighted2(false);
+      }, 1500);
+    }
+  }, [progressPercentage]);
 
   return (
     <S.Container>
@@ -139,11 +111,11 @@ const YoutubePlaylist = () => {
                   강의 완료율 {Math.round(courseAttendanceRate * 100)}%
                 </div>
                 <div
-                  // style={{
-                  //   transition: "color 0.3s ease, font-weight 0.3s ease",
-                  //   color: isHighlighted2 ? "#1a2a9c" : "#090909",
-                  //   fontWeight: isHighlighted2 ? 700 : 400,
-                  // }}
+                  style={{
+                    transition: "color 0.3s ease, font-weight 0.3s ease",
+                    color: isHighlighted2 ? "#1a2a9c" : "#090909",
+                    fontWeight: isHighlighted2 ? 700 : 400,
+                  }}
                 >
                   영상 진행률{" "}
                   {progressPercentage ? progressPercentage.toFixed(0) : 0}%
