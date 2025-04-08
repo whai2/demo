@@ -34,12 +34,9 @@ function TopBar() {
           <S.StyledIcon
             as={NewChatIcon}
             onClick={() => {
-              if (!isLoading) {
-                setCurrentPage(ROUTES.HOME);
-                setMessages([]);
-              }
+              setCurrentPage(ROUTES.HOME);
+              setMessages([]);
             }}
-            disabled={isLoading}
           />
           <ToolTipLayout>
             <ToolTip>새채팅</ToolTip>

@@ -1,4 +1,5 @@
 import ReactMarkdown from "react-markdown";
+import reactStringReplace from "react-string-replace";
 import remarkGfm from "remark-gfm";
 
 import ActionTable from "./ActionTable";
@@ -12,13 +13,13 @@ function TextEditor({ text }: { text: string }) {
       remarkPlugins={[remarkGfm]}
       components={{
         p: ({ node, children, ...props }) => (
-          <S.Text {...props}>{children}</S.Text>
+          <S.Text {...props}>{replaceStrong(children)}</S.Text>
         ),
         ul: ({ node, children, ...props }) => (
-          <S.List {...props}>{children}</S.List>
+          <S.List {...props}>{replaceStrong(children)}</S.List>
         ),
         li: ({ node, children, ...props }) => (
-          <S.ListItem {...props}>{children}</S.ListItem>
+          <S.ListItem {...props}>{replaceStrong(children)}</S.ListItem>
         ),
         table: ({ node, ...props }) => (
           <ActionTable>
@@ -38,6 +39,9 @@ function TextEditor({ text }: { text: string }) {
         tr: ({ node, ...props }) => <S.Tr {...props} />,
         th: ({ node, ...props }) => <S.Th {...props} />,
         td: ({ node, ...props }) => <S.Td {...props} />,
+        h1: ({ node, ...props }) => <S.H1 {...props} />,
+        h2: ({ node, ...props }) => <S.H2 {...props} />,
+        h3: ({ node, ...props }) => <S.H3 {...props} />,
       }}
     >
       {text}
@@ -46,6 +50,17 @@ function TextEditor({ text }: { text: string }) {
 }
 
 export default TextEditor;
+
+const replaceStrong = (children: React.ReactNode): React.ReactNode => {
+  if (Array.isArray(children)) {
+    return children.map(replaceStrong);
+  } else if (typeof children === "string") {
+    return reactStringReplace(children, /\*\*(.+?)\*\*/g, (match, i) => (
+      <S.Strong key={i}>{match}</S.Strong>
+    ));
+  }
+  return children;
+};
 
 const S = {
   List: styled.ul`
@@ -158,5 +173,23 @@ const S = {
     white-space: normal;
     overflow-wrap: break-word;
     word-break: break-word;
+  `,
+
+  H1: styled.h1`
+    font-size: 15px;
+    font-weight: 700;
+    color: #090909;
+  `,
+
+  H2: styled.h2`
+    font-size: 14px;
+    font-weight: 600;
+    color: #090909;
+  `,
+
+  H3: styled.h3`
+    font-size: 14px;
+    font-weight: 500;
+    color: #090909;
   `,
 };

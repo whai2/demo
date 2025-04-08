@@ -42,7 +42,7 @@ const S = {
     justify-content: center;
     align-items: center;
     gap: 10px;
-    border-radius: 3px;
+    border-radius: 12px;
     background: #edf5f9;
     cursor: pointer;
     height: 150px;

@@ -119,7 +119,7 @@ export const courseGeneralChatUserPrompt = (
     ${userMessage}
 
     [현재 수강 중인 강의 차시 정보]
-    ${currentCoursePrompt2(currentCourse)}
+    ${currentCoursePrompt(currentCourse)}
 
     # Very Important
     ${isEnglish ? "you must say english\n" : ""}
@@ -151,7 +151,6 @@ const currentCoursePrompt = (currentCourse: CourseInfo) => {
   ### 📘 ${currentCourse.name}
 
     - **강의 개요**: ${currentCourse.description}
-    - **⏱ 총 강의 시간**: ${currentCourse.duration}
     - **🎯 수강 대상**: ${currentCourse.target}
 
     #### 📚 커리큘럼
@@ -163,20 +162,20 @@ const currentCoursePrompt = (currentCourse: CourseInfo) => {
   `;
 };
 
-const currentCoursePrompt2 = (currentCourse: CourseInfo) => {
-  return `
+// const currentCoursePrompt2 = (currentCourse: CourseInfo) => {
+//   return `
 
-    ### 사용자가 보고 있는 차시
-    1. ${currentCourse.content[0]["1차시"]}
+//     ### 사용자가 보고 있는 차시
+//     1. ${currentCourse.content[0]["1차시"]}
 
-    ### 📚 커리큘럼
-    1. ${currentCourse.content[0]["1차시"]}
-    2. ${currentCourse.content[0]["2차시"]}
-    3. ${currentCourse.content[0]["3차시"]}
-    4. ${currentCourse.content[0]["4차시"]}
-    5. ${currentCourse.content[0]["5차시"]}
-  `;
-};
+//     ### 📚 커리큘럼
+//     1. ${currentCourse.content[0]["1차시"]}
+//     2. ${currentCourse.content[0]["2차시"]}
+//     3. ${currentCourse.content[0]["3차시"]}
+//     4. ${currentCourse.content[0]["4차시"]}
+//     5. ${currentCourse.content[0]["5차시"]}
+//   `;
+// };
 
 // tail question
 export function followupQuestionPrompt(previousAnswer: string, isEnglish: boolean): string {
