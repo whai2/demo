@@ -11,6 +11,7 @@ import { CourseCategory, CourseInfo } from "@/features/chat/type";
 import { ROUTES, useNavigate } from "@/features/navigate";
 import { usePopUpOpen } from "@/features/popUpOpen";
 import { useUserInfo } from "@/features/userInfo";
+import { parseDurationToSeconds, videoStore } from "@/features/video";
 
 import { ReactComponent as CloseIcon } from "../assets/close.svg";
 import { ReactComponent as ChatIcon } from "../assets/logo.svg";
@@ -29,8 +30,16 @@ function WidgetButton({
   const { setOpen } = usePopUpOpen();
   const { setMessages, setIsLoading, setIsQuiz, setLastQuiz, isLoading } =
     useChatStore();
-  const { courseCategory, courseName, name, job, year, courseAttendanceRate, currentLanguage } =
-    useUserInfo();
+  const {
+    courseCategory,
+    courseName,
+    name,
+    job,
+    year,
+    courseAttendanceRate,
+    currentLanguage,
+  } = useUserInfo();
+  const { progress, currentVideo } = videoStore();
 
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory
@@ -43,7 +52,16 @@ function WidgetButton({
   const { clipIdRef } = useTriggerInterval();
   const isCallToAction = data?.type === "callToAction";
 
-  // const sendChatCallback = useSendChat();
+  const currentVideoDuration = parseDurationToSeconds(
+    currentVideo?.duration ?? ""
+  );
+
+  const currentVideoId = currentVideo?.id;
+  const currentVideoProgress = progress[currentVideoId ?? ""];
+
+  const progressPercentage = currentVideoDuration
+    ? (currentVideoProgress / currentVideoDuration) * 100
+    : 0;
 
   const handleClick = () => {
     setIsOpen(!isOpen);
@@ -51,10 +69,7 @@ function WidgetButton({
 
   return (
     <S.ChatContainer>
-      <S.ChatButton
-        onClick={handleClick}
-        $isOpen={isOpen}
-      >
+      <S.ChatButton onClick={handleClick} $isOpen={isOpen}>
         {isOpen ? (
           <>
             <S.Text $isOpen={isOpen}>닫기</S.Text>
@@ -73,7 +88,7 @@ function WidgetButton({
           key={clipIdRef.current}
           onClick={async () => {
             if (isLoading) return;
-            
+
             if (data.question) {
               setOpen();
               setTriggered(false);
@@ -107,7 +122,7 @@ function WidgetButton({
                   job,
                   year,
                   currentLanguage,
-                  courseAttendanceRate
+                  parseInt(progressPercentage.toFixed(0))
                 );
 
                 setIsLoading(false);

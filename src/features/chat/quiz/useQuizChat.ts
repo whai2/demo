@@ -34,7 +34,7 @@ export const runCourseQuizFlow = async (
   job: string,
   year: string,
   currentLanguage: string,
-  courseAttendanceRate?: number
+  progressPercentage?: number
 ) => {
   const prompt = currentCoursePrompt(course);
 
@@ -67,7 +67,7 @@ export const runCourseQuizFlow = async (
       job,
       year,
       currentLanguage === "English",
-      courseAttendanceRate
+      progressPercentage
     ),
     courseQuizFunctions(currentLanguage)
   );

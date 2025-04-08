@@ -7,7 +7,7 @@ export const courseQuizSystemPrompt = (
   job: string,
   year: string,
   isEnglish: boolean,
-  courseAttendanceRate?: number,
+  progressPercentage?: number,
 ) => {
   return `
     ${isEnglish ? "you must say english\n" : ""}
@@ -20,8 +20,9 @@ export const courseQuizSystemPrompt = (
 
     [필수 사항]
     사용자의 이름은 ${name}이고, 직무는 ${job}이며, 연차는 ${year}입니다.
-    또한, 현재 수강률은 ${
-      courseAttendanceRate ? `${courseAttendanceRate * 100}%` : "0%"
+    
+    또한, 현재 차시 수강률은 ${
+      progressPercentage ? `${progressPercentage}%` : "0%"
     }입니다.
   
     해당 직무와 연차로 수준을 고려하세요.

@@ -104,8 +104,6 @@ export const useGetVideo = () => {
       (category) => category.name === courseCategory
     );
 
-    console.log(currentCategory);
-
     if (!currentCategory) return;
 
     // 먼저 플레이리스트의 비디오 ID 목록을 가져옴

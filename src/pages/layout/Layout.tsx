@@ -34,8 +34,6 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
   const { isSummationLoading, setIsSummationLoading } =
     useCourseSummationStore();
 
-  console.log(currentLanguage);
-
   const [courseSummation, setCourseSummation] = useState<string>("");
   // const [isLoading, setIsLoading] = useState<boolean>(false);
 

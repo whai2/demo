@@ -1,7 +1,11 @@
 import { create } from "zustand";
 
 import { functionChat } from "./apis/chat.api";
-import { followupQuestionFunctions, metaFunctions, metaQuizFunctions } from "./functions";
+import {
+  followupQuestionFunctions,
+  metaFunctions,
+  metaQuizFunctions,
+} from "./functions";
 import {
   currentCoursePrompt,
   followupQuestionPrompt,
@@ -12,6 +16,7 @@ import {
 } from "./prompt";
 
 import { useUserInfo } from "@/features/userInfo";
+import { parseDurationToSeconds, videoStore } from "@/features/video";
 import { courses } from "./constants/constants";
 
 import { runRecommendationFlow } from "./courseRecommend/useIntentClassification";
@@ -46,9 +51,18 @@ export const useChatStore = create<ChatState>((set) => ({
 }));
 
 export const useSendChat = () => {
-  const { setMessages, setIsLoading, setIsQuiz, setLastQuiz, answerStyle } = useChatStore();
-  const { courseCategory, courseName, name, job, year, courseAttendanceRate, currentLanguage } =
-    useUserInfo();
+  const { setMessages, setIsLoading, setIsQuiz, setLastQuiz, answerStyle } =
+    useChatStore();
+  const {
+    courseCategory,
+    courseName,
+    name,
+    job,
+    year,
+    courseAttendanceRate,
+    currentLanguage,
+  } = useUserInfo();
+  const { progress, currentVideo } = videoStore();
 
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory
@@ -58,13 +72,27 @@ export const useSendChat = () => {
     (course) => course.name === courseName
   );
 
+  const currentVideoDuration = parseDurationToSeconds(
+    currentVideo?.duration ?? ""
+  );
+
+  const currentVideoId = currentVideo?.id;
+  const currentVideoProgress = progress[currentVideoId ?? ""];
+
+  const progressPercentage = currentVideoDuration
+    ? (currentVideoProgress / currentVideoDuration) * 100
+    : 0;
+
   const sendChatCallback = async (
     text: string,
     setText?: (text: string) => void
   ) => {
     const prompt = currentCoursePrompt(course as unknown as CourseInfo);
 
-    const enhancedUserMessage = userEnhancePrompt(text, currentLanguage === "English");
+    const enhancedUserMessage = userEnhancePrompt(
+      text,
+      currentLanguage === "English"
+    );
     const currentText = text;
 
     setMessages((prevMessages) => [
@@ -83,7 +111,10 @@ export const useSendChat = () => {
     try {
       const metaResponse = await functionChat(
         enhancedUserMessage,
-        metaIntentClassificationSystemPrompt(prompt, currentLanguage === "English"),
+        metaIntentClassificationSystemPrompt(
+          prompt,
+          currentLanguage === "English"
+        ),
         metaFunctions(currentLanguage)
       );
 
@@ -103,7 +134,7 @@ export const useSendChat = () => {
           job,
           year,
           answerStyle,
-          currentLanguage,
+          currentLanguage
         );
       } else if (intent === "course_recommendation") {
         // ✅ 강의 추천 흐름 (2단계)
@@ -133,7 +164,7 @@ export const useSendChat = () => {
           job,
           year,
           currentLanguage,
-          courseAttendanceRate
+          parseInt(progressPercentage.toFixed(0))
         );
       } else {
         await runGeneralStreaming(
@@ -163,8 +194,15 @@ export const useSendChat = () => {
     }
   };
 
-  const sendQuizAnswer = async (answer: string, quiz: Quiz, setText?: (text: string) => void) => {
-    const enhancedUserMessage = userEnhanceQuizPrompt(answer, currentLanguage === "English");
+  const sendQuizAnswer = async (
+    answer: string,
+    quiz: Quiz,
+    setText?: (text: string) => void
+  ) => {
+    const enhancedUserMessage = userEnhanceQuizPrompt(
+      answer,
+      currentLanguage === "English"
+    );
     const currentText = answer;
     // setIsQuiz(false);
 
@@ -184,7 +222,11 @@ export const useSendChat = () => {
     try {
       const metaResponse = await functionChat(
         enhancedUserMessage,
-        quizIntentClassificationSystemPrompt(answer, quiz, currentLanguage === "English"),
+        quizIntentClassificationSystemPrompt(
+          answer,
+          quiz,
+          currentLanguage === "English"
+        ),
         metaQuizFunctions(currentLanguage)
       );
 
@@ -195,7 +237,15 @@ export const useSendChat = () => {
       ).intent;
 
       if (intent === "quiz_answer") {
-        await runCourseQuizAnswerFlow(quiz, currentText, setMessages, setIsLoading, name, currentLanguage, true);
+        await runCourseQuizAnswerFlow(
+          quiz,
+          currentText,
+          setMessages,
+          setIsLoading,
+          name,
+          currentLanguage,
+          true
+        );
       } else if (intent === "others") {
         // ✅ 강의 추천 흐름 (2단계)
         await runGeneralStreaming(
@@ -241,7 +291,10 @@ export const useSendChat = () => {
   return { sendChatCallback, sendQuizAnswer };
 };
 
-export const getTailQuestion = async (messages: MessageType[], currentLanguage: string) => {
+export const getTailQuestion = async (
+  messages: MessageType[],
+  currentLanguage: string
+) => {
   const lastAssistantMessage = [...messages]
     .reverse()
     .find((message) => message.role === "assistant");
@@ -252,8 +305,14 @@ export const getTailQuestion = async (messages: MessageType[], currentLanguage: 
 
   try {
     const followupResponse = await functionChat(
-      followupQuestionPrompt(lastAssistantMessage.content, currentLanguage === "English"),
-      followupQuestionPrompt(lastAssistantMessage.content, currentLanguage === "English"),
+      followupQuestionPrompt(
+        lastAssistantMessage.content,
+        currentLanguage === "English"
+      ),
+      followupQuestionPrompt(
+        lastAssistantMessage.content,
+        currentLanguage === "English"
+      ),
       followupQuestionFunctions(currentLanguage)
     );
 
@@ -274,7 +333,8 @@ export const getTailQuestion = async (messages: MessageType[], currentLanguage: 
 
 export const useSendTailQuestion = () => {
   const { setMessages, setIsLoading, answerStyle } = useChatStore();
-  const { courseCategory, courseName, name, job, year, currentLanguage } = useUserInfo();
+  const { courseCategory, courseName, name, job, year, currentLanguage } =
+    useUserInfo();
 
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory
