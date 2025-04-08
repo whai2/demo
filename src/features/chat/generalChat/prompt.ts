@@ -118,7 +118,7 @@ export const courseGeneralChatUserPrompt = (
     [사용자 질문]
     ${userMessage}
 
-    [현재 수강 중인 강의 차시 정보]
+    [현재 수강 중인 강의 정보]
     ${currentCoursePrompt(currentCourse)}
 
     # Very Important
