@@ -12,6 +12,7 @@ import { usePopUpOpen } from "@/features/popUpOpen";
 
 import { ReactComponent as LogoIcon } from "../assets/logo.svg";
 import { ReactComponent as SendIcon } from "../assets/send.svg";
+import { ReactComponent as ArrowDown } from "../assets/arrowDown.svg";
 
 import styled from "styled-components";
 
@@ -92,6 +93,11 @@ function Input() {
               >
                 {answerStyleTitle}
               </S.Text>
+              <S.BottomChervron
+                // $isTextInput={isTextInput}
+                $isAnswerStylesOpen={isAnswerStylesOpen}
+                $disabled={isLoading}
+              />
             </S.AnswerStylesBox>
           </S.LogoContainer>
           <S.SendIcon
@@ -265,4 +271,20 @@ const S = {
     height: 16px;
     transform: translate(0, 1.2px);
   `,
+
+  BottomChervron: styled(ArrowDown)<{
+    // $isTextInput: boolean;
+    $disabled?: boolean;
+    $isAnswerStylesOpen: boolean;
+  }>`
+    width: 16px;
+    height: 16px;
+    color: ${({ $disabled, $isAnswerStylesOpen }) =>
+      $disabled ? "#97999B" : $isAnswerStylesOpen ? "#51A1CA" : "#97999B"};
+
+    transition: transform 0.3s ease;
+    transform: ${(props) =>
+      props.$isAnswerStylesOpen ? "rotate(180deg)" : "rotate(0deg)"};
+  `,
+
 };
