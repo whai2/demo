@@ -21,7 +21,7 @@ export const courseQuizSystemPrompt = (
     [필수 사항]
     사용자의 이름은 ${name}이고, 직무는 ${job}이며, 연차는 ${year}입니다.
     
-    또한, 현재 차시 수강률은 ${
+    또한, 현재 차시 진행률은 ${
       progressPercentage ? `${progressPercentage}%` : "0%"
     }입니다.
   

@@ -70,9 +70,9 @@ const YoutubePlaylist = () => {
                 <S.TopBarTitle>{course?.name}</S.TopBarTitle>
               </S.TopBarInner>
               <S.AttendanceRate>
-                <div>전체 수강률 {courseAttendanceRate * 100}%</div>
+                <div>강의 완료율 {courseAttendanceRate * 100}%</div>
                 <div>
-                  차시 수강률{" "}
+                  영상 진행률{" "}
                   {progressPercentage ? progressPercentage.toFixed(0) : 0}%
                 </div>
               </S.AttendanceRate>
