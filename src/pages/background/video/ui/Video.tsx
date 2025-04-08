@@ -11,7 +11,12 @@ import {
   videoStore,
 } from "@/features/video";
 
+import { ReactComponent as Alert } from "../assets/alert.svg";
 import { ReactComponent as Bar } from "../assets/bar.svg";
+import { ReactComponent as Docs } from "../assets/docs.svg";
+import { ReactComponent as Docs2 } from "../assets/docs2.svg";
+import { ReactComponent as Introduction } from "../assets/introduce.svg";
+import { ReactComponent as Statistics } from "../assets/statistics.svg";
 
 import styled from "styled-components";
 
@@ -82,10 +87,33 @@ const YoutubePlaylist = () => {
             </S.VideoContainer>
           </>
         )}
-        <S.BottomBar>
-          <S.Tab>강의 자료</S.Tab>
-          <S.Tab>강의 통계</S.Tab>
-        </S.BottomBar>
+
+        <S.BottomContainer>
+          <S.Tab>
+            <Alert />
+            공지사항
+          </S.Tab>
+          <S.TabBar />
+          <S.Tab>
+            <Docs />
+            강의소개
+          </S.Tab>
+          <S.TabBar />
+          <S.Tab>
+            <Introduction />
+            강사소개
+          </S.Tab>
+          <S.TabBar />
+          <S.Tab>
+            <Docs2 />
+            강의자료
+          </S.Tab>
+          <S.TabBar />
+          <S.Tab>
+            <Statistics />
+            학습통계
+          </S.Tab>
+        </S.BottomContainer>
       </S.Content>
       <S.SideBar>
         <S.SideBarHeader>
@@ -300,6 +328,7 @@ const S = {
     align-items: center;
     gap: 20px;
     flex-shrink: 0;
+    height: 100%;
   `,
 
   Duration: styled.div`
@@ -393,18 +422,14 @@ const S = {
   `,
 
   Tab: styled.button`
-    width: 100%;
-    background: none;
+    display: flex;
+    padding: 18px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex: 1 0 0;
     border: none;
-    padding: 10px 20px;
-    margin: 0 10px;
-    cursor: pointer;
-    font-size: 16px;
-    color: #555;
-
-    &:hover {
-      color: #000;
-    }
+    border-radius: 4px;
   `,
 
   SaveButton: styled.button`
@@ -436,5 +461,21 @@ const S = {
     display: inline-flex;
     align-items: center;
     gap: 16px;
+  `,
+
+  BottomContainer: styled.div`
+    display: flex;
+    align-items: center;
+    align-self: stretch;
+    background: var(--WHITE_FFFFFF_100, #fff);
+
+    /* Elevation_5 */
+    box-shadow: 0px 0px 16px 0px rgba(0, 0, 0, 0.16);
+  `,
+
+  TabBar: styled.div`
+    width: 1px;
+    height: 20px;
+    background: var(--GREY--2_D3D3D3_83, #d3d3d3);
   `,
 };
