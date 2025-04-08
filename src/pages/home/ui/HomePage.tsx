@@ -50,6 +50,7 @@ const S = {
     gap: 20px;
     flex: 1 0 0;
     width: 100%;
+    height: 100%;
   `,
 
   CoxwaveLogo: styled(CoxwaveLogo)`
