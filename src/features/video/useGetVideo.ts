@@ -81,6 +81,7 @@ export const videoStore = create<VideoType>()(
     }),
     {
       name: "video",
+      partialize: (state) => ({ videos: state.videos }),
     }
   )
 );
