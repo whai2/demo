@@ -1,18 +1,22 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import YouTube from "react-youtube";
 
 import { useAlarmStore } from "@/features/alarm";
 import { courses } from "@/features/chat";
 import { useUserInfo } from "@/features/userInfo";
-import { parseDuration, parseDurationToSeconds, useGetVideo, videoStore } from "@/features/video";
+import {
+  parseDuration,
+  parseDurationToSeconds,
+  useGetVideo,
+  videoStore,
+} from "@/features/video";
 
 import { ReactComponent as Bar } from "../assets/bar.svg";
 
 import styled from "styled-components";
 
 const YoutubePlaylist = () => {
-  const { currentVideo, videos, setCurrentVideo } =
-    useGetVideo();
+  const { currentVideo, videos, setCurrentVideo } = useGetVideo();
   const { setIsTaken, progress, setClassName } = videoStore();
   const {
     setCourseAttendanceRate,
@@ -40,7 +44,6 @@ const YoutubePlaylist = () => {
   const progressPercentage = currentVideoDuration
     ? (currentVideoProgress / currentVideoDuration) * 100
     : 0;
-
 
   useEffect(() => {
     setIsTaken(videos[0]?.id, true);
@@ -70,7 +73,10 @@ const YoutubePlaylist = () => {
               </S.TopBarInner>
               <S.AttendanceRate>
                 <div>전체 수강률 {courseAttendanceRate * 100}%</div>
-                <div>차시 수강률 {progressPercentage ? progressPercentage.toFixed(0) : 0}%</div>
+                <div>
+                  차시 수강률{" "}
+                  {progressPercentage ? progressPercentage.toFixed(0) : 0}%
+                </div>
               </S.AttendanceRate>
             </S.TopBar>
             <S.VideoContainer>
@@ -131,6 +137,7 @@ export default YoutubePlaylist;
 const InteractiveYouTubePlayer = ({ videoId }: { videoId: string }) => {
   const { progress, setProgress } = videoStore();
 
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const onReady = (event: any) => {
     const savedTime = progress[videoId];
@@ -139,7 +146,11 @@ const InteractiveYouTubePlayer = ({ videoId }: { videoId: string }) => {
       event.target.seekTo(savedTime);
     }
 
-    setInterval(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+
+    intervalRef.current = setInterval(() => {
       const currentTime = event.target.getCurrentTime();
 
       if (currentTime) {
@@ -149,44 +160,22 @@ const InteractiveYouTubePlayer = ({ videoId }: { videoId: string }) => {
   };
 
   const onStateChange = (event: any) => {
-    // const player = event.target;
     const playerState = event.data;
 
-    // if (playerState === 1) {
-    //   // ✅ PLAYING일 때: 처음 한 번만 seekTo
-    //   if (!hasSeeked.current) {
-    //     const savedTime = progress[videoId];
-    //     if (savedTime) {
-    //       player.seekTo(savedTime, true);
-    //     }
-    //     hasSeeked.current = true;
-    //   }
-
-    //   // 감지 시작
-    //   if (intervalRef.current) clearInterval(intervalRef.current);
-
-    //   intervalRef.current = setInterval(() => {
-    //     const currentTime = player.getCurrentTime();
-
-    //     if (currentTime) {
-    //       setProgress(videoId, currentTime);
-    //     }
-    //   }, 500);
-    // } else {
-    //   // 정지/종료 시 감지 멈추기
-    //   if (intervalRef.current) {
-    //     clearInterval(intervalRef.current);
-    //     intervalRef.current = null;
-    //   }
-    // }
-
-    // 영상이 일시정지 되었을 때
     if (playerState === 2) {
       const currentTime = event.target.getCurrentTime();
 
       setProgress(videoId, currentTime);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
 
   return (
     <S.PlayerWrapper>
