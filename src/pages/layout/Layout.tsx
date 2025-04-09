@@ -220,16 +220,20 @@ const S = {
   `,
 
   ModalContainer: styled.div`
-    margin: 15px;
     position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     display: flex;
     padding: 36px;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     border-radius: 12px;
     background: #fff;
     z-index: 1002;
     flex-direction: column;
+    width: 300px;
   `,
 
   Image: styled.img`
