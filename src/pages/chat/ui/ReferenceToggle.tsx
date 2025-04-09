@@ -23,7 +23,9 @@ function ReferenceToggle({ reference }: { reference: any }) {
     <S.Container $isOpen={isOpen}>
       <S.TitleContainer onClick={toggleOpen}>
         <S.Text>
-          {currentLanguage === "한국어" ? "답변 참고 자료" : "Reference Material"}
+          {currentLanguage === "한국어"
+            ? "학습 자료 "
+            : "Learning Material "}
         </S.Text>
         <S.ChevronDown $isOpen={isOpen} />
       </S.TitleContainer>
