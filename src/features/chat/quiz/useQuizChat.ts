@@ -519,8 +519,34 @@ export const useNextQuiz = () => {
 
     [이전 퀴즈]와 비교하여, 사용자 수준에 맞는 퀴즈를 제공해주세요. "반드시 문제가 달라야 합니다".
     사용자가 쉬운 퀴즈를 요구하면, 쉬운 퀴즈를, 어려운 퀴즈를 요구하면, 어려운 퀴즈를 제공해주세요.
+
     ${currentLanguage === "English" ? "you must say english\n" : ""}
   `;
+
+    const enhancedUserMessageEnglish = `
+      # very important
+      ${currentLanguage === "English" ? "you must respond in English\n" : ""}
+
+      [User Question]  
+      ${userMessage}
+
+      [Previous Quiz]  
+      ${quizMarkdownPrompt(lastQuiz as Quiz | Quiz2)}
+
+      [Question Type]  
+      ${randomType}
+
+      [List of Courses Currently Being Taken]  
+      ${prompt}
+
+      Please generate a new quiz appropriate for the user's level, based on the [Previous Quiz].  
+      **The new question must be different from the previous one.**
+
+      If the user asks for an easy question, provide an easy one.  
+      If they request a hard question, provide a more difficult one.
+
+      ${currentLanguage === "English" ? "you must respond in English\n" : ""}
+    `;
 
     setMessages((prevMessages) => [
       ...prevMessages,
@@ -535,7 +561,9 @@ export const useNextQuiz = () => {
     ]);
 
     const response = await functionChat(
-      enhancedUserMessage,
+      currentLanguage === "English"
+        ? enhancedUserMessageEnglish
+        : enhancedUserMessage,
       nextQuizSystemPrompt(
         prompt,
         name,
