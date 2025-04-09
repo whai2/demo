@@ -56,7 +56,6 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
 
   useEffect(() => {
     if (course) {
-      console.log("course", course);
       setIsSummationLoading(true);
       handleCourseSummation(course.description, currentLanguage)
         .then((res) => res.json())

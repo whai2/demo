@@ -210,7 +210,11 @@ function LoginPage() {
         <S.HeaderTitle>
           <CoxwaveLogo />
         </S.HeaderTitle>
-        <S.HeaderSubTitle>정보를 입력해주세요</S.HeaderSubTitle>
+        <S.HeaderSubTitle>
+          {currentLanguage === "한국어"
+            ? "정보를 입력해주세요"
+            : "Please enter your information"}
+        </S.HeaderSubTitle>
       </S.Header>
 
       <LanguageToggle

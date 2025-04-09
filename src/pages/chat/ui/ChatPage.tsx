@@ -26,8 +26,6 @@ function ChatPage() {
 
   const lastMessage = messages[messages.length - 1];
 
-  console.log(lastMessage);
-
   return (
     <S.Container ref={containerRef}>
       {messages.map((message, index) =>
@@ -47,7 +45,9 @@ function ChatPage() {
                     {message.reference && message.reference.isLoading ? (
                       <Loading />
                     ) : (
-                      <ReferenceToggle reference={message.reference?.reference} />
+                      <ReferenceToggle
+                        reference={message.reference?.reference}
+                      />
                     )}
                     {(() => {
                       if (!message.courseQuiz) return null;

@@ -253,7 +253,7 @@ const YoutubePlaylist = () => {
                   <S.Number>
                     [
                     {currentLanguage === "한국어"
-                      ? sessionTitle
+                      ? `${index + 1}회차`
                       : EnglishLesson[
                           sessionTitle as keyof typeof EnglishLesson
                         ]}
