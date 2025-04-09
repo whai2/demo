@@ -4,14 +4,17 @@ interface ToggleProps {
   isOn: boolean;
   onToggle: () => void;
   label?: string;
+  notLabel?: string;
 }
 
-const LanguageToggle = ({ isOn, onToggle, label }: ToggleProps) => {
+const LanguageToggle = ({ isOn, onToggle, label, notLabel }: ToggleProps) => {
   return (
     <S.Wrapper>
-      {label && <S.Label>{label}</S.Label>}
       <S.ToggleContainer isOn={isOn} onClick={onToggle}>
-        <S.ToggleCircle isOn={isOn} />
+        <S.ToggleCircle isOn={isOn}>
+          <S.InnerText>{label}</S.InnerText>
+        </S.ToggleCircle>
+        <S.OuterText isOn={isOn}>{notLabel}</S.OuterText>
       </S.ToggleContainer>
     </S.Wrapper>
   );
@@ -21,9 +24,12 @@ export default LanguageToggle;
 
 const S = {
   Wrapper: styled.div`
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    position: fixed;
+    top: 44px;
+    right: 44px;
+    // width: 143px;
+    // height: 40px;
+    // flex-shrink: 0;
   `,
 
   Label: styled.span`
@@ -32,31 +38,57 @@ const S = {
   `,
 
   ToggleContainer: styled.div<{ isOn: boolean }>`
-    width: 44px;
-    height: 24px;
-    border-radius: 999px;
-    background-color: ${({ isOn }) => (isOn ? "#1A2A9C" : "#ccc")};
+    width: 143px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 30px;
+    background: #e7e8f0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  `,
+
+  OuterText: styled.div<{ isOn: boolean }>`
+    padding-right: 12px;
+    color: #333;
+    font-family: Pretendard;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.3s;
-    position: relative;
+    color: #a1a3b7;
+
+    font-family: Pretendard;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 28px;
+    transition: transform 0.3s ease;
+    transform: ${({ isOn }) => (isOn ? "translateX(-82px)" : "translateX(0)")};
   `,
 
   ToggleCircle: styled.div<{ isOn: boolean }>`
-    width: 18px;
-    height: 18px;
-    background-color: white;
-    border-radius: 50%;
-    position: absolute;
-    top: 3px;
-    left: ${({ isOn }) => (isOn ? "22px" : "4px")};
-    transition: left 0.3s;
+    display: flex;
+    height: 40px;
+    padding: 6px 15px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    border-radius: 30px;
+    background: #1a2a9c;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    transform: ${({ isOn }) => (isOn ? "translateX(70px)" : "translateX(0)")};
   `,
 
-  ToggleLabel: styled.span`
-    font-size: 12px;
-    color: white;
-    margin-left: auto;
-    margin-right: 6px;
-    z-index: 1;
+  InnerText: styled.span`
+    color: #fff;
+    font-family: Pretendard;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 28px; /* 175% */
   `,
 };

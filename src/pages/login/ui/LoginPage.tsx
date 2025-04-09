@@ -182,11 +182,23 @@ function LoginPage() {
 
   return (
     <S.LoginLayout>
+      <LanguageToggle
+        isOn={currentLanguage === "English"}
+        onToggle={() => {
+          if (currentLanguage === "English") {
+            handleLanguageClick("한국어");
+          } else {
+            handleLanguageClick("English");
+          }
+        }}
+        label={currentLanguage === "한국어" ? "한글" : "English"}
+        notLabel={currentLanguage === "English" ? "한글" : "English"}
+      />
       {isJobOpen && (
         <TransparentBackDrop
           onClose={() => {
             setIsJobOpen(false);
-        }}
+          }}
           transparent={true}
         />
       )}
@@ -217,17 +229,6 @@ function LoginPage() {
         </S.HeaderSubTitle>
       </S.Header>
 
-      <LanguageToggle
-        isOn={currentLanguage === "English"}
-        onToggle={() => {
-          if (currentLanguage === "English") {
-            handleLanguageClick("한국어");
-          } else {
-            handleLanguageClick("English");
-          }
-        }}
-        label={currentLanguage ? currentLanguage : "언어 선택"}
-      />
       <S.Container>
         <S.Wrapper>
           <S.Title>이름</S.Title>
