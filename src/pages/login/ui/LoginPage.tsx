@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { TransparentBackDrop } from "@/shared/ui";
 import LanguageToggle from "./LanguageToggle";
 
 import { EnglishCourses, KoreanCourses } from "@/features/chat";
@@ -181,6 +182,30 @@ function LoginPage() {
 
   return (
     <S.LoginLayout>
+      {isJobOpen && (
+        <TransparentBackDrop
+          onClose={() => {
+            setIsJobOpen(false);
+        }}
+          transparent={true}
+        />
+      )}
+      {isYearOpen && (
+        <TransparentBackDrop
+          onClose={() => {
+            setIsYearOpen(false);
+          }}
+          transparent={true}
+        />
+      )}
+      {isCourseCategoryOpen && (
+        <TransparentBackDrop
+          onClose={() => {
+            setIsCourseCategoryOpen(false);
+          }}
+          transparent={true}
+        />
+      )}
       <S.Header>
         <S.HeaderTitle>
           <CoxwaveLogo />
@@ -229,7 +254,6 @@ function LoginPage() {
             </S.JobList>
           </S.InputContainer>
         </S.Wrapper>
-
         <S.Wrapper>
           <S.Title>연차</S.Title>
 
@@ -501,7 +525,7 @@ const S = {
     transform: ${(props) =>
       props.$isOpen ? "translateY(0)" : "translateY(-10px)"};
     transition: opacity 0.3s ease, transform 0.3s ease;
-    z-index: ${(props) => (props.$isOpen ? "1" : "-1")};
+    z-index: ${(props) => (props.$isOpen ? "1003" : "-1")};
   `,
 
   JobItem: styled.div`

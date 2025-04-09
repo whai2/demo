@@ -4,13 +4,14 @@ function BackDrop({ onClose }: { onClose: () => void }) {
   return <S.BackDrop onClick={onClose} />;
 }
 
-export function TransparentBackDrop({ onClose }: { onClose: () => void }) {
+export function TransparentBackDrop({ onClose, transparent }: { onClose: () => void, transparent?: boolean }) {
   return (
     <S.TransparentBackDrop
       onClick={(event) => {
         event.stopPropagation();
         onClose();
       }}
+      $transparent={transparent}
     />
   );
 }
@@ -31,7 +32,7 @@ const S = {
     z-index: -1;
   `,
 
-  TransparentBackDrop: styled.div`
+  TransparentBackDrop: styled.div<{ $transparent?: boolean }>`
     position: fixed;
     top: 0;
     left: 0;
@@ -39,7 +40,7 @@ const S = {
     height: 100%;
     z-index: 1001; // 1000은 채팅 전체
     border-radius: 10px;
-    background-color: rgba(72, 72, 72, 0.5);
+    background-color: ${({ $transparent }) => $transparent ? "transparent" : "rgba(72, 72, 72, 0.5)"};
   `,
 
   ImageBackDrop: styled.div`
