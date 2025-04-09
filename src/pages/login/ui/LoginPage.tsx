@@ -180,6 +180,12 @@ function LoginPage() {
     setFirstModalOpen();
   };
 
+  useEffect(() => {
+    if (currentLanguage === "") {
+      setCurrentLanguage("한국어");
+    }
+  }, [currentLanguage]);
+
   return (
     <S.LoginLayout>
       <LanguageToggle
@@ -191,8 +197,14 @@ function LoginPage() {
             handleLanguageClick("English");
           }
         }}
-        label={currentLanguage === "한국어" ? "한글" : "English"}
-        notLabel={currentLanguage === "English" ? "한글" : "English"}
+        label={
+          currentLanguage === "한국어" || currentLanguage === ""
+            ? "한글"
+            : "English"
+        }
+        notLabel={
+          currentLanguage === "English" ? "한글" : "English"
+        }
       />
       {isJobOpen && (
         <TransparentBackDrop
