@@ -1,7 +1,6 @@
 export const JOBS = [
   { korean: "기획자", english: "Planner" },
   { korean: "개발자", english: "Developer" },
-  { korean: "마케터", english: "Marketer" },
 ];
 
 export const YEARS = [
