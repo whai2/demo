@@ -9,6 +9,8 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
   const { setMessages, setIsLoading, isLoading, lastQuiz } = useChatStore();
   const { currentLanguage } = useUserInfo();
 
+  console.log(nextSteps);
+
   return (
     <S.Container>
       {!nextSteps.isCorrect && lastQuiz && (
@@ -212,6 +214,7 @@ Take a deep breath—and let's take one more step forward.
               setMessages((prevMessages) => {
                 const updated = [...prevMessages];
                 updated[updated.length - 1].content = displayedMessage;
+                updated[updated.length - 1].nextCourseStart = true;
                 return updated;
               });
 
@@ -219,6 +222,8 @@ Take a deep breath—and let's take one more step forward.
                 setTimeout(resolve, Math.random() * 20 + 10)
               );
             }
+
+            setIsLoading(false);
           }}
         >
           <S.ButtonText>

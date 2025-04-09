@@ -133,7 +133,8 @@ function ChatPage() {
         !lastMessage.isCourseRecommendation &&
         !lastMessage.courseQuiz &&
         !lastMessage.reference?.isQuizReference &&
-        !lastMessage.userResult && <TailQuestions lastMessage={lastMessage} />}
+        !lastMessage.userResult &&
+        !lastMessage.nextCourseStart && <TailQuestions lastMessage={lastMessage} />}
 
       {/* <BottomSheet>
         <QuizBottomSheet handleClose={() => setIsBottomSheetOpen(false)} />

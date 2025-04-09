@@ -7,6 +7,7 @@ import { EnglishCourses, KoreanCourses } from "../constants/constants";
 
 import {
   courseQuizAnswerFunctions,
+  courseQuizAnswerFunctionsEnglish,
   courseQuizFunctions,
   referenceFunctions,
 } from "./functionCall";
@@ -19,6 +20,7 @@ import {
   quizMarkdownPrompt,
   referenceGenerateSystemPrompt,
   referenceGenerateUserPrompt,
+  nextQuizSystemPromptEnglish
 } from "./prompt";
 
 export const runCourseQuizFlow = async (
@@ -270,7 +272,9 @@ export const useSendQuizAnswer = (quiz: Quiz | Quiz2) => {
     const answerResponse = await functionChat(
       userMessage,
       quizAnswerSystemPrompt(quiz, answer, name, currentLanguage === "English"),
-      courseQuizAnswerFunctions(currentLanguage)
+      currentLanguage === "English"
+        ? courseQuizAnswerFunctionsEnglish()
+        : courseQuizAnswerFunctions(currentLanguage)
     );
 
     if (!answerResponse.ok || !answerResponse.body) {
@@ -524,9 +528,6 @@ export const useNextQuiz = () => {
   `;
 
     const enhancedUserMessageEnglish = `
-      # very important
-      ${currentLanguage === "English" ? "you must respond in English\n" : ""}
-
       [User Question]  
       ${userMessage}
 
@@ -544,8 +545,6 @@ export const useNextQuiz = () => {
 
       If the user asks for an easy question, provide an easy one.  
       If they request a hard question, provide a more difficult one.
-
-      ${currentLanguage === "English" ? "you must respond in English\n" : ""}
     `;
 
     setMessages((prevMessages) => [
@@ -564,13 +563,14 @@ export const useNextQuiz = () => {
       currentLanguage === "English"
         ? enhancedUserMessageEnglish
         : enhancedUserMessage,
-      nextQuizSystemPrompt(
-        prompt,
-        name,
-        job,
-        year,
-        currentLanguage === "English"
-      ),
+      currentLanguage === "English"
+        ? nextQuizSystemPromptEnglish(
+            prompt,
+            name,
+            job,
+            year
+          )
+        : nextQuizSystemPrompt(prompt, name, job, year, currentLanguage === "English"),
       courseQuizFunctions(currentLanguage)
     );
 

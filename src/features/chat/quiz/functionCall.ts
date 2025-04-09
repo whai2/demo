@@ -185,6 +185,75 @@ export const courseQuizAnswerFunctions = (currentLanguage: string) => [
   },
 ];
 
+export const courseQuizAnswerFunctionsEnglish = () => [
+  {
+    name: "quiz_correct",
+    description: `
+      Check if the quiz answer is correct. If correct, ask the user's next intention as a declarative sentence.
+      You must respond in English.
+    `,
+    parameters: {
+      type: "object",
+      properties: {
+        isCorrect: {
+          type: "boolean",
+          description: "Whether the quiz answer is correct",
+        },
+        nextQuiz: {
+          type: "string",
+          description: `
+            Ask the user's intention in a declarative sentence about solving a more difficult quiz.
+            (e.g., I'd like to try a more difficult question.)
+            You must respond in English.
+          `,
+        },
+        nextCourse: {
+          type: "string",
+          description: `
+            Ask the user's intention in a declarative sentence about proceeding to the next course.
+            (e.g., I'd like to take the next lesson.)
+            You must respond in English.
+          `,
+        },
+      },
+      required: ["isCorrect", "nextQuiz", "nextCourse"],
+    },
+  },
+  {
+    name: "quiz_incorrect",
+    description: `
+      Check if the quiz answer is correct. If incorrect, ask the user's next intention as a declarative sentence.
+      You must respond in English.
+    `,
+    parameters: {
+      type: "object",
+      properties: {
+        isCorrect: {
+          type: "boolean",
+          description: "Whether the quiz answer is correct",
+        },
+        nextQuiz: {
+          type: "string",
+          description: `
+            Ask the user's intention in a declarative sentence about solving an easier quiz.
+            (e.g., I'd like to try an easier question.)
+            You must respond in English.
+          `,
+        },
+        referenceNeeded: {
+          type: "string",
+          description: `
+            Ask the user's intention in a declarative sentence about receiving related materials.
+            (e.g., I'd like to receive related materials.)
+            You must respond in English.
+          `,
+        },
+      },
+      required: ["isCorrect", "nextQuiz", "referenceNeeded"],
+    },
+  },
+];
+
 export const referenceFunctions = (currentLanguage: string) => [
   {
     name: "generate_reference",

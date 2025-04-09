@@ -23,6 +23,7 @@ export type MessageType = {
     isLoading: boolean;
     nextSteps?: string[];
   };
+  nextCourseStart?: boolean;
 };
 
 export interface Quiz {
