@@ -35,7 +35,7 @@ const EnglishLesson = {
 
 const YoutubePlaylist = () => {
   const { currentVideo, videos, setCurrentVideo } = useGetVideo();
-  const { setIsTaken, progress, setClassName } = videoStore();
+  const { setIsTaken, progress, setClassName, setProgress } = videoStore();
   const {
     setCourseAttendanceRate,
     courseCategory,
@@ -273,6 +273,7 @@ const YoutubePlaylist = () => {
                     setCurrentVideo(video);
                     setIsTaken(video.id, true);
                     setClassName(sessionTitle);
+                    setProgress(video.id, 0);
                   }}
                 >
                   <S.Number>
@@ -298,7 +299,7 @@ const YoutubePlaylist = () => {
 export default YoutubePlaylist;
 
 const InteractiveYouTubePlayer = ({ videoId }: { videoId: string }) => {
-  const { progress, setProgress } = videoStore();
+  const { progress, setProgress, setIsPause } = videoStore();
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -317,16 +318,26 @@ const InteractiveYouTubePlayer = ({ videoId }: { videoId: string }) => {
       const currentTime = event.target.getCurrentTime();
 
       if (currentTime) {
+        setIsPause(false);
         setProgress(videoId, currentTime);
       }
     }, 500);
   };
 
-  const onStateChange = (event: any) => {
+  const onStateChange = async (event: any) => {
     const playerState = event.data;
 
     if (playerState === 2) {
-      const currentTime = event.target.getCurrentTime();
+      const currentTime = await event.target.getCurrentTime();
+      const savedProgress = progress[videoId] ?? 0;
+
+      const diff = Math.abs(currentTime - savedProgress);
+
+      if (diff < 0.5) {
+        setIsPause(true);
+      } else {
+        setIsPause(false);
+      }
 
       setProgress(videoId, currentTime);
     }

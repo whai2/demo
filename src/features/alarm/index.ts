@@ -1,1 +1,2 @@
-export { default as useAlarmStore, useTriggerInterval } from "./useAlarmStore";
+export { useAlarmStore } from "./models/useAlarmStore";
+export { useTriggerAlarm } from "./models/useAlarmTrigger";

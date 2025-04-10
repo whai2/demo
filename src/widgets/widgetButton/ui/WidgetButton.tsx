@@ -1,6 +1,6 @@
 import Alarm from "./Alarm";
 
-import { useAlarmStore, useTriggerInterval } from "@/features/alarm";
+import { useAlarmStore, useTriggerAlarm } from "@/features/alarm";
 import {
   runCourseQuizFlow,
   runRecommendationFlow,
@@ -28,7 +28,7 @@ function WidgetButton({
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }) {
-  const { isTriggered, data, setTriggered, isQuiz } = useAlarmStore();
+  const { isTriggered, current } = useAlarmStore();
   const { setCurrentPage } = useNavigate();
   const { setOpen } = usePopUpOpen();
   const { setMessages, setIsLoading, setIsQuiz, setLastQuiz, isLoading } =
@@ -54,8 +54,10 @@ function WidgetButton({
     (course) => course.name === courseName
   );
 
-  const { clipIdRef } = useTriggerInterval();
-  const isCallToAction = data?.type === "callToAction";
+  // const { clipIdRef } = useTriggerInterval();
+  useTriggerAlarm();
+  const isHighPriority =
+    current?.type === "callToAction" || current?.type === "quiz";
 
   const currentVideoDuration = parseDurationToSeconds(
     currentVideo?.duration ?? ""
@@ -92,22 +94,21 @@ function WidgetButton({
         )}
       </S.ChatButton>
 
-      {isTriggered ? (
+      {isTriggered && current ? (
         <Alarm
-          key={clipIdRef.current}
+          // key={clipIdRef.current}
           onClick={async () => {
             if (isLoading) return;
 
-            if (data.question) {
+            if (current?.question) {
               setOpen();
-              setTriggered(false);
               setCurrentPage(ROUTES.CHAT);
 
               setMessages((prevMessages) => [
                 ...prevMessages,
                 {
                   role: "user",
-                  content: data.question as string,
+                  content: current.question as string,
                   isLoading: false,
                 },
               ]);
@@ -119,9 +120,9 @@ function WidgetButton({
                 { role: "assistant", content: "", isLoading: true },
               ]);
 
-              if (isQuiz) {
+              if (current?.type === "quiz") {
                 await runCourseQuizFlow(
-                  data.question,
+                  current.question,
                   setMessages,
                   setIsQuiz,
                   setLastQuiz,
@@ -140,7 +141,7 @@ function WidgetButton({
               }
 
               await runRecommendationFlow(
-                data.question,
+                current.question,
                 setMessages,
                 setIsLoading,
                 currentCourses as unknown as CourseCategory,
@@ -156,8 +157,8 @@ function WidgetButton({
               setIsLoading(false);
             }
           }}
-          isCallToAction={isCallToAction}
-          title={data.message}
+          isHighPriority={isHighPriority}
+          title={current?.message}
         />
       ) : null}
     </S.ChatContainer>

@@ -52,6 +52,7 @@ interface VideoType {
   currentVideoDescription: string | null;
   progress: Record<string, number>;
   className: string;
+  isPause: boolean;
   setVideos: (videos: Video[]) => void;
   setTotalDuration: (totalDuration: string) => void;
   setCurrentVideo: (currentVideo: Video | null) => void;
@@ -59,6 +60,7 @@ interface VideoType {
   setProgress: (videoId: string, currentTime: number) => void;
   setIsTaken: (videoId: string, isTaken: boolean) => void;
   setClassName: (className: string) => void;
+  setIsPause: (isPause: boolean) => void; 
 }
 
 export const videoStore = create<VideoType>()(
@@ -70,6 +72,7 @@ export const videoStore = create<VideoType>()(
       currentVideoDescription: null,
       progress: {},
       className: "",
+      isPause: false,
       setVideos: (videos) => set({ videos }),
       setTotalDuration: (totalDuration) => set({ totalDuration }),
       setCurrentVideo: (currentVideo) => set({ currentVideo }),
@@ -86,6 +89,7 @@ export const videoStore = create<VideoType>()(
           ),
         })),
       setClassName: (className) => set({ className }),
+      setIsPause: (isPause) => set({ isPause }),
     }),
     {
       name: "video",

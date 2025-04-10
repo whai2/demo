@@ -4,21 +4,21 @@ import styled from "styled-components";
 
 function Alarm({
   title,
-  isCallToAction,
+  isHighPriority,
   onClick,
 }: {
   title: string;
   onClick: () => void;
-  isCallToAction: boolean;
+  isHighPriority: boolean;
 }) {
   const formattedTitle = title.replace(/\\n/g, "\n");
 
   return (
     <S.Container onClick={onClick}>
       <S.AlarmContainer>
-        <S.AlarmCorner $isCallToAction={isCallToAction} />
+        <S.AlarmCorner $isHighPriority={isHighPriority} />
       </S.AlarmContainer>
-      <S.TextContainer $isCallToAction={isCallToAction}>
+      <S.TextContainer $isHighPriority={isHighPriority}>
         <S.Text>{formattedTitle}</S.Text>
       </S.TextContainer>
     </S.Container>
@@ -72,14 +72,14 @@ const S = {
     }
   `,
 
-  TextContainer: styled.div<{ $isCallToAction: boolean }>`
+  TextContainer: styled.div<{ $isHighPriority: boolean }>`
     display: flex;
     padding: 6px 12px;
     justify-content: flex-end;
     align-items: center;
     gap: 10px;
     border-radius: var(--Radius-radiusSM, 8px);
-    background: ${(props) => (props.$isCallToAction ? "#51A1CA" : "#171B1F")};
+    background: ${(props) => (props.$isHighPriority ? "#51A1CA" : "#171B1F")};
     max-width: 300px;
   `,
 
@@ -103,9 +103,9 @@ const S = {
     gap: 10px;
   `,
 
-  AlarmCorner: styled(AlarmCorner)<{ $isCallToAction: boolean }>`
+  AlarmCorner: styled(AlarmCorner)<{ $isHighPriority: boolean }>`
     path {
-      color: ${(props) => (props.$isCallToAction ? "#51A1CA" : "#171B1F")};
+      color: ${(props) => (props.$isHighPriority ? "#51A1CA" : "#171B1F")};
     }
   `,
 };
