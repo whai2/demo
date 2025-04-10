@@ -39,9 +39,9 @@ function TextEditor({ text }: { text: string }) {
         tr: ({ node, ...props }) => <S.Tr {...props} />,
         th: ({ node, ...props }) => <S.Th {...props} />,
         td: ({ node, ...props }) => <S.Td {...props} />,
-        h1: ({ node, ...props }) => <S.H1 {...props} />,
-        h2: ({ node, ...props }) => <S.H2 {...props} />,
-        h3: ({ node, ...props }) => <S.H3 {...props} />,
+        h1: ({ node, ...props }) => <S.Text {...props} />,
+        h2: ({ node, ...props }) => <S.Text {...props} />,
+        h3: ({ node, ...props }) => <S.Text {...props} />,
       }}
     >
       {text}

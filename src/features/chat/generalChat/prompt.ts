@@ -17,9 +17,20 @@ export const generalQuestionSystemPrompt = (
 
     현재 수강 중인 강의 목록 정보를 토대로, 사용자의 질문에 대한 답변을 제공하세요.
 
+    ## 세부 규칙: 문단 나누기
+    1. 줄마다 띄워쓰세요!
+    2. 다음 텍스트의 내용을 의미 단위로 나눠서 문단을 구성해 주세요. 주제나 흐름이 바뀌는 부분마다 개행을 추가해 주시면 됩니다.
+    3. 다음 텍스트에서 '예를 들어', '이를 통해', '또한', '그리고', '하지만', '결론적으로', '요약하자면' 등의 접속사나 전환어가 나오는 부분을 기준으로 개행해 주세요.
+
     # 응답 스타일 지침 및 문자 수 요구 사항(엄격하게 적용됨)
     사용자가 정의한 답변 스타일: ${answerStyle}
 
+
+    ## 세부 규칙: 마크다운
+    다음 텍스트의 내용을 의미 단위로 나눠서 문단을 구성해 주세요. 주제나 흐름이 바뀌는 부분마다 개행을 추가해 주시면 됩니다.
+    다음 텍스트에서 '예를 들어', '이를 통해', '또한', '그리고', '하지만', '결론적으로', '요약하자면' 등의 접속사나 전환어가 나오는 부분을 기준으로 개행해 주세요.
+
+    
     ## 세부 규칙: 마크다운
     다음 텍스트의 내용을 의미 단위로 나눠서 문단을 구성해 주세요. 주제나 흐름이 바뀌는 부분마다 개행을 추가해 주시면 됩니다.
     다음 텍스트에서 '예를 들어', '이를 통해', '또한', '그리고', '하지만', '결론적으로', '요약하자면' 등의 접속사나 전환어가 나오는 부분을 기준으로 개행해 주세요.
@@ -62,12 +73,12 @@ export const generalQuestionSystemPrompt = (
           3. 작업 생산성 향상: 복잡한 오브젝트를 반복적으로 생성하지 않고 빠르게 배치할 수 있어 대규모 프로젝트에서도 효과적입니다.
           예 를 들어, 적 NPC나 발사체와 같은 반복적으로 등장하는 객체 구현에 주로 활용됩니다. 또한, Prefab은 팀 프로젝트 환경에서도 통일성을 유지하며 협업을 원활하게 만들어줍니다. Unity의 Prefab 시스템은 게임 개발에서 필수적인 도구로 자리 잡고 있습니다.
     ---
-
+    
     [사용자 정보]
     사용자의 이름은 ${name}이고, 직무는 ${job}이며, 연차는 ${year}입니다.
 
     [필수 사항]
-    강의 관련 질문의 경우, 사용자가 "지금 보고 있다"는 점을 인지하고, "지금 보고 있는 강의"라는 점에 집중해주세요. (강의 제목 마크다운))
+    강의 관련 질문의 경우, 사용자가 "지금 보고 있다"는 점을 인지하고, "지금 보고 있는 강의"라는 점에 집중해주세요. (지금 보고 있는 강의 제목 strong 마크다운)
 
     [추가 사항]
     추가 궁금한 점이 있는지도 여쭤주세요.
@@ -126,7 +137,10 @@ export const courseGeneralChatUserPrompt = (
   `;
 };
 
-export const referenceGenerateUserPrompt = (previousAnswer: string, isEnglish: boolean) => {
+export const referenceGenerateUserPrompt = (
+  previousAnswer: string,
+  isEnglish: boolean
+) => {
   return `
     # Very Important
     ${isEnglish ? "you must say english\n" : ""}
@@ -178,7 +192,10 @@ const currentCoursePrompt = (currentCourse: CourseInfo) => {
 // };
 
 // tail question
-export function followupQuestionPrompt(previousAnswer: string, isEnglish: boolean): string {
+export function followupQuestionPrompt(
+  previousAnswer: string,
+  isEnglish: boolean
+): string {
   return `
     # Very Important
     ${isEnglish ? "you must say english\n" : ""}

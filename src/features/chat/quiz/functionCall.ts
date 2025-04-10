@@ -47,7 +47,7 @@ export const courseQuizFunctions = (currentLanguage: string) => [
         introMessage: {
           type: "string",
           description:
-            "퀴즈 시작 전 수강생을 격려하는 메시지. 수강률, 사용자 이름, 연차, 직무를 포함해야 합니다.",
+            "퀴즈 시작 전 수강생을 격려하는 메시지. 수강률, 사용자 이름, 연차, 직무를 포함해야 합니다. **수강률에 격려합니다.**",
         },
       },
       required: ["question", "introMessage"],

@@ -7,6 +7,14 @@ const alarmMessages = {
       message: "강의에서 궁금한 점은 무엇이든 물어보세요!",
     },
   ],
+  pause: [
+    {
+      message: "강의를 멈추셨어요.\n지금까지 내용 중 궁금한 부분이 있으신가요?",
+    },
+    {
+      message: "잠시 쉬는 중이신가요?\n궁금한 점 있으시면 언제든지 도와드릴게요!",
+    },
+  ],
   callToAction: [
     {
       message:
@@ -43,6 +51,14 @@ export const alarmMessagesEnglish = {
     {
       message:
         "Feel free to ask me anything\nyou're curious about in the course!",
+    },
+  ],
+  pause: [
+    {
+      message: "You've paused the lecture.\nDo you have any questions about the content?",
+    },
+    {
+      message: "Are you taking a break?\nFeel free to ask me anything!",
     },
   ],
   callToAction: [

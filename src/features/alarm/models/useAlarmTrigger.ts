@@ -7,7 +7,9 @@ import { useAlarmStore } from "@/features/alarm/models/useAlarmStore";
 import { useUserInfo } from "@/features/userInfo";
 import { parseDurationToSeconds, videoStore } from "@/features/video";
 
-export const triggerNextAlarm = (type: "default" | "callToAction" | "quiz") => {
+export const triggerNextAlarm = (
+  type: "default" | "callToAction" | "quiz" | "pause"
+) => {
   const { currentLanguage } = useUserInfo.getState();
   const store = useAlarmStore.getState();
 
@@ -16,7 +18,15 @@ export const triggerNextAlarm = (type: "default" | "callToAction" | "quiz") => {
   const messages = source[type];
 
   const lastIndex =
-    type === "default" ? store.lastDefaultIndex : store.lastCallToActionIndex;
+  type === "default"
+    ? store.lastDefaultIndex
+    : type === "callToAction"
+    ? store.lastCallToActionIndex
+    : type === "quiz"
+    ? store.lastQuizIndex
+    : type === "pause"
+    ? store.lastPauseIndex
+    : 0;
 
   const nextIndex = (lastIndex + 1) % messages.length;
   const messageObj = messages[nextIndex];
@@ -36,6 +46,8 @@ export const triggerNextAlarm = (type: "default" | "callToAction" | "quiz") => {
     store.setLastCallToActionIndex(nextIndex);
   } else if (type === "quiz") {
     store.setLastQuizIndex(nextIndex);
+  } else if (type === "pause") {
+    store.setLastPauseIndex(nextIndex);
   }
 };
 
@@ -85,7 +97,7 @@ export const useTriggerAlarm = () => {
 
   useEffect(() => {
     if (isPause) {
-      triggerNextAlarm("default");
+      triggerNextAlarm("pause");
     }
   }, [isPause]);
 };

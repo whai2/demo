@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type AlarmType = "default" | "callToAction" | "quiz";
+type AlarmType = "default" | "callToAction" | "quiz" | "pause";
 
 interface AlarmMessageInstanceType {
   message: string;
@@ -15,6 +15,7 @@ interface AlarmState {
   isTriggered: boolean;
   timeoutId: NodeJS.Timeout | null;
   lastDefaultIndex: number;
+  lastPauseIndex: number;
   lastCallToActionIndex: number;
   lastQuizIndex: number;
   hasTriggeredQuizMap: Record<string, boolean>;
@@ -24,6 +25,7 @@ interface AlarmState {
   clearCurrent: () => void;
   reset: () => void;
   setLastDefaultIndex: (index: number) => void;
+  setLastPauseIndex: (index: number) => void;
   setLastCallToActionIndex: (index: number) => void;
   setLastQuizIndex: (index: number) => void;
   setQuizTriggeredForLecture: (lectureId: string) => void;
@@ -36,6 +38,7 @@ export const useAlarmStore = create<AlarmState>((set, get) => ({
   isTriggered: false,
   timeoutId: null,
   lastDefaultIndex: 0,
+  lastPauseIndex: 0,
   lastCallToActionIndex: 0,
   lastQuizIndex: 0,
   hasTriggeredQuizMap: {},
@@ -123,6 +126,9 @@ export const useAlarmStore = create<AlarmState>((set, get) => ({
 
   setLastDefaultIndex: (index: number) => {
     set({ lastDefaultIndex: index });
+  },
+  setLastPauseIndex: (index: number) => {
+    set({ lastPauseIndex: index });
   },
   setLastCallToActionIndex: (index: number) => {
     set({ lastCallToActionIndex: index });
