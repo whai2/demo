@@ -10,6 +10,7 @@ import {
   courseQuizAnswerFunctionsEnglish,
   courseQuizFunctions,
   referenceFunctions,
+  courseQuizFunctionsEnglish,
 } from "./functionCall";
 import {
   courseQuizSystemPrompt,
@@ -20,7 +21,7 @@ import {
   quizMarkdownPrompt,
   referenceGenerateSystemPrompt,
   referenceGenerateUserPrompt,
-  nextQuizSystemPromptEnglish
+  nextQuizSystemPromptEnglish,
 } from "./prompt";
 
 export const runCourseQuizFlow = async (
@@ -73,7 +74,9 @@ export const runCourseQuizFlow = async (
       currentLanguage === "English",
       progressPercentage
     ),
-    courseQuizFunctions(currentLanguage)
+    currentLanguage === "English"
+      ? courseQuizFunctionsEnglish
+      : courseQuizFunctions(currentLanguage)
   );
 
   if (!response.ok || !response.body) {

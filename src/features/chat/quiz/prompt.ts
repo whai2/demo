@@ -25,6 +25,7 @@ export const courseQuizSystemPrompt = (
       progressPercentage ? `${progressPercentage}%` : "0%"
     }입니다. 80%가 넘을 경우, "이번 회차를 복습해보는 것도 좋을 것 같아요."와 같은 복습을 안내하는 문구를 넣어주세요.
     2. 진행률에 격려 문구를 넣어주세요.
+    3. 이번 회차라는 점을 강조하세요!
 
     # 사용자 정보
     1. 사용자의 이름은 ${name}이고, 직무는 ${job}이며, 연차는 ${year}입니다.

@@ -1,3 +1,58 @@
+export const courseQuizFunctionsEnglish = [
+  {
+    name: "course_quiz",
+    description: `
+      You must answer in English.
+      Generates a multiple-choice quiz question based on the course the user is currently enrolled in.
+      You must answer in English.
+    `,
+    parameters: {
+      type: "object",
+      properties: {
+        question: {
+          type: "object",
+          description: `
+            You must answer in English.
+            A single quiz question with four answer choices and a correct answer index. The question and answer must be accurate and error-free. (Incorrect example: stating that there's one correct answer when multiple answers are actually possible.)
+            You must answer in English.
+          `,
+          properties: {
+            question: {
+              type: "string",
+              description:
+                "The quiz question. It should be clear and based on the course content.",
+            },
+            choices: {
+              type: "array",
+              items: {
+                type: "string",
+              },
+              minItems: 4,
+              maxItems: 4,
+              description:
+                "Four multiple-choice answers. They must be clearly distinguishable and unambiguous. Do not number them; just provide the sentence for each choice.",
+            },
+            answerIndex: {
+              type: "number",
+              minimum: 0,
+              maximum: 3,
+              description:
+                "The index (0–3) of the correct answer. It must match the content of the quiz.",
+            },
+          },
+          required: ["question", "choices", "answerIndex"],
+        },
+        introMessage: {
+          type: "string",
+          description:
+            "An encouraging message before the quiz begins. It should include the user’s name, years of experience, job role, and the current session's progress percentage. Format example: '**You're doing great at XX%!**'",
+        },
+      },
+      required: ["question", "introMessage"],
+    },
+  },
+];
+
 export const courseQuizFunctions = (currentLanguage: string) => [
   {
     name: "course_quiz",
@@ -47,49 +102,7 @@ export const courseQuizFunctions = (currentLanguage: string) => [
         introMessage: {
           type: "string",
           description:
-            "퀴즈 시작 전 수강생을 격려하는 메시지. 수강률, 사용자 이름, 연차, 직무를 포함해야 합니다. **수강률에 격려합니다.**",
-        },
-      },
-      required: ["question", "introMessage"],
-    },
-  },
-  {
-    name: "course_quiz",
-    description: `${
-      currentLanguage === "English" ? "you must say english\n" : ""
-    }
-      현재 수강 중인 강의에 대한 단답형 퀴즈 문제를 생성합니다.
-      ${currentLanguage === "English" ? "you must say english\n" : ""}
-      `,
-    parameters: {
-      type: "object",
-      properties: {
-        question: {
-          type: "object",
-          description: `${
-            currentLanguage === "English" ? "you must say english\n" : ""
-          }
-            하나의 퀴즈 문제와 그에 따른 보기 및 정답 정보. 문제와 답은 정확해야 하며, 출제 오류가 없어야 합니다.
-            ${currentLanguage === "English" ? "you must say english\n" : ""}
-            `,
-          properties: {
-            question: {
-              type: "string",
-              description:
-                "퀴즈 문제. 명확하고 수강 내용을 기반으로 해야 합니다.",
-            },
-            answerText: {
-              type: "string",
-              description:
-                "정답에 대한 단답 내용. quiz 내용과 일치해야 합니다.",
-            },
-          },
-          required: ["question", "answerText"],
-        },
-        introMessage: {
-          type: "string",
-          description:
-            "퀴즈 시작 전 수강생을 격려하는 메시지. 수강률이나 최근 학습 내용을 반영해야 합니다.",
+            "퀴즈 시작 전 수강생을 격려하는 메시지. 이번 회차 %, 사용자 이름, 연차, 직무를 포함해야 합니다. **이번 회차 %에 격려합니다.**",
         },
       },
       required: ["question", "introMessage"],

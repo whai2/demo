@@ -9,8 +9,6 @@ function NextSteps({ nextSteps }: { nextSteps: any }) {
   const { setMessages, setIsLoading, isLoading, lastQuiz } = useChatStore();
   const { currentLanguage } = useUserInfo();
 
-  console.log(nextSteps);
-
   return (
     <S.Container>
       {!nextSteps.isCorrect && lastQuiz && (

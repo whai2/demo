@@ -125,11 +125,8 @@ export const useMouseInactivity = (onInactive: () => void, timeout = 1000 * 60) 
 
       // 마지막 실행 이후 충분한 시간이 지났을 때만 트리거
       if (!last || now - last >= timeout) {
-        console.log("Triggering due to inactivity:", now - (last ?? 0));
         lastTriggeredRef.current = now;
         onInactive();
-      } else {
-        console.log("Skipped trigger: too soon", now - last);
       }
     }, timeout);
   };
