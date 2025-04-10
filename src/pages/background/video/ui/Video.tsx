@@ -46,7 +46,6 @@ const YoutubePlaylist = () => {
   } = useUserInfo();
 
   const [isHighlighted, setIsHighlighted] = useState(false);
-  const [isHighlighted2, setIsHighlighted2] = useState(false); // 30%
 
   const prevValueRef = useRef<number>(courseAttendanceRate);
 
