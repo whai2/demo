@@ -16,7 +16,7 @@ import {
 import { ReactComponent as Alert } from "../assets/alert.svg";
 import { ReactComponent as Bar } from "../assets/bar.svg";
 import animationData from "../assets/courseComplete.json";
-import animationData2 from "../assets/courseCompleteEnglish.json";
+// import animationData2 from "../assets/courseCompleteEnglish.json";
 import { ReactComponent as Docs } from "../assets/docs.svg";
 import { ReactComponent as Docs2 } from "../assets/docs2.svg";
 import { ReactComponent as Introduction } from "../assets/introduce.svg";
