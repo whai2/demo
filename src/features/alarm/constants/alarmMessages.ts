@@ -18,4 +18,24 @@ const alarmMessages = {
   ],
 };
 
+export const alarmMessagesEnglish = {
+  default: [
+    {
+      message: "강의에서 궁금한 점을\n무엇이든 물어보세요!",
+    },
+    { message: "AI 캐미에요.\n무엇을 도와드릴까요?" },
+    { message: `' / ' (슬래시) 키를 누르면, \n바로 질문할 수 있어요!` },
+  ],
+  callToAction: [
+    {
+      message: "Shall we check if you understand\nthis lecture well?",
+      question: "Shall I provide the quiz for this lecture?",
+    },
+    {
+      message: "I've prepared a custom review\n quiz for you!",
+      question: "I want to review the content with a quiz.",
+    },
+  ],
+};
+
 export default alarmMessages;

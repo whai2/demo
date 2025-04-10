@@ -202,9 +202,7 @@ function LoginPage() {
             ? "한글"
             : "English"
         }
-        notLabel={
-          currentLanguage === "English" ? "한글" : "English"
-        }
+        notLabel={currentLanguage === "English" ? "한글" : "English"}
       />
       {isJobOpen && (
         <TransparentBackDrop
@@ -243,21 +241,27 @@ function LoginPage() {
 
       <S.Container>
         <S.Wrapper>
-          <S.Title>이름</S.Title>
+          <S.Title>{currentLanguage === "한국어" ? "이름" : "Name"}</S.Title>
           <S.Input
-            placeholder="이름을 입력해 주세요."
+            placeholder={
+              currentLanguage === "한국어"
+                ? "이름을 입력해 주세요."
+                : "Please enter your name"
+            }
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
         </S.Wrapper>
 
         <S.Wrapper>
-          <S.Title>직무</S.Title>
+          <S.Title>{currentLanguage === "한국어" ? "직무" : "Role"}</S.Title>
 
           <S.InputContainer $isOpen={isJobOpen}>
             <S.InputWrapper onClick={toggleJobOpen}>
               <S.InnerInput>
-                <S.InnerInputText>{job ? job : "선택"}</S.InnerInputText>
+                <S.InnerInputText>
+                  {job ? job : currentLanguage === "한국어" ? "선택" : "Select"}
+                </S.InnerInputText>
               </S.InnerInput>
               <S.ChevronDown $isOpen={isJobOpen} />
             </S.InputWrapper>
@@ -272,12 +276,20 @@ function LoginPage() {
           </S.InputContainer>
         </S.Wrapper>
         <S.Wrapper>
-          <S.Title>연차</S.Title>
+          <S.Title>
+            {currentLanguage === "한국어" ? "연차" : "Years of Experience"}
+          </S.Title>
 
           <S.InputContainer $isOpen={isYearOpen}>
             <S.InputWrapper onClick={toggleYearOpen}>
               <S.InnerInput>
-                <S.InnerInputText>{year ? year : "선택"}</S.InnerInputText>
+                <S.InnerInputText>
+                  {year
+                    ? year
+                    : currentLanguage === "한국어"
+                    ? "선택"
+                    : "Select"}
+                </S.InnerInputText>
               </S.InnerInput>
               <S.ChevronDown $isOpen={isYearOpen} />
             </S.InputWrapper>
@@ -293,13 +305,19 @@ function LoginPage() {
         </S.Wrapper>
 
         <S.Wrapper>
-          <S.Title>강의 카테고리</S.Title>
+          <S.Title>
+            {currentLanguage === "한국어" ? "강의 카테고리" : "Course Category"}
+          </S.Title>
 
           <S.InputContainer $isOpen={isCourseCategoryOpen}>
             <S.InputWrapper onClick={toggleCourseCategoryOpen}>
               <S.InnerInput>
                 <S.InnerInputText>
-                  {courseCategory ? courseCategory : "선택"}
+                  {courseCategory
+                    ? courseCategory
+                    : currentLanguage === "한국어"
+                    ? "선택"
+                    : "Select"}
                 </S.InnerInputText>
               </S.InnerInput>
               <S.ChevronDown $isOpen={isCourseCategoryOpen} />
@@ -319,63 +337,28 @@ function LoginPage() {
         </S.Wrapper>
 
         <S.Wrapper>
-          <S.Title>강의명</S.Title>
+          <S.Title>
+            {currentLanguage === "한국어" ? "강의명" : "Course Title"}
+          </S.Title>
 
           <S.InputContainer $isOpen={false}>
             <S.InputWrapper>
               <S.InnerInput>
                 <S.InnerInputText>
-                  {courseName ? courseName : "강의 카테고리를 선택하세요."}
+                  {courseName
+                    ? courseName
+                    : currentLanguage === "한국어"
+                    ? "강의 카테고리를 선택하세요."
+                    : "Please select your course category"}
                 </S.InnerInputText>
               </S.InnerInput>
-              {/* <S.ChevronDown $isOpen={isCourseOpen} /> */}
             </S.InputWrapper>
-
-            {/* <S.JobList $isOpen={isCourseOpen}>
-              {courseList.length === 0 ? (
-                <S.JobItem>강의 카테고리를 선택하세요</S.JobItem>
-              ) : (
-                courseList.map((course, index) => (
-                  <S.JobItem
-                    key={index}
-                    onClick={() => handleCourseClick(course)}
-                  >
-                    {course}
-                  </S.JobItem>
-                ))
-              )}
-            </S.JobList> */}
           </S.InputContainer>
         </S.Wrapper>
-        {/* <S.Wrapper>
-          <S.Title>언어 선택</S.Title>
-
-          <S.InputContainer $isOpen={isLanguageOpen}>
-            <S.InputWrapper onClick={toggleLanguageOpen}>
-              <S.InnerInput>
-                <S.InnerInputText>
-                  {currentLanguage ? currentLanguage : "선택"}
-                </S.InnerInputText>
-              </S.InnerInput>
-              <S.ChevronDown $isOpen={isLanguageOpen} />
-            </S.InputWrapper>
-
-            <S.JobList $isOpen={isLanguageOpen}>
-              {LANGUAGES.map((language, index) => (
-                <S.JobItem
-                  key={index}
-                  onClick={() => handleLanguageClick(language)}
-                >
-                  {language}
-                </S.JobItem>
-              ))}
-            </S.JobList>
-          </S.InputContainer>
-        </S.Wrapper> */}
       </S.Container>
 
       <S.Button $isActive={isLoginActive} onClick={handleLogin}>
-        확인
+        {currentLanguage === "한국어" ? "확인" : "Confirm"}
       </S.Button>
     </S.LoginLayout>
   );
@@ -455,6 +438,7 @@ const S = {
 
     border-radius: 8px;
     border: 1px solid var(--gray-300-border, #d1d5db);
+    outline: #0d196d;
   `,
 
   Button: styled.button<{ $isActive: boolean }>`

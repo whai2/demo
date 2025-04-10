@@ -2,7 +2,9 @@ import { useEffect, useRef } from "react";
 
 import { create } from "zustand";
 
-import alarmMessages from "@/features/alarm/constants/alarmMessages";
+import alarmMessages, {
+  alarmMessagesEnglish,
+} from "@/features/alarm/constants/alarmMessages";
 
 import { useUserInfo } from "@/features/userInfo";
 import { parseDurationToSeconds, videoStore } from "@/features/video";
@@ -63,7 +65,7 @@ const useAlarmStore = create<AlarmState>()((set) => ({
 export const useTriggerInterval = () => {
   const clipIdRef = useRef<string | null>(null);
   const { currentVideo, progress, className } = videoStore();
-  const { courseAttendanceRate } = useUserInfo();
+  const { courseAttendanceRate, currentLanguage } = useUserInfo();
 
   // useEffect(() => {
   //   const triggerAlarm = () => {
@@ -102,13 +104,26 @@ export const useTriggerInterval = () => {
 
   useEffect(() => {
     const randomAlram = [
-      "이제 거의 완강이신데, 앞으로 어떻게 학습하면 좋을지 안내해 드릴까요?",
-      `${className} 학습 수고하셨습니다.\n강의 로드맵을 제공해 드릴까요?`,
       "수강 완료가 다가오고 있어요.\n다음에는 어떤 것을 배우고 싶나요?",
+      "강의 완료를 앞두고, 어려운 부분이 있나요?",
     ];
 
-    const randomIndex = Math.floor(Math.random() * randomAlram.length);
-    const randomMessage = randomAlram[randomIndex];
+    const randomAlramEnglish = [
+      "Completion of the course is coming up.\nWhat do you want to learn next?",
+      "Ahead of the completion of the lecture, \nare there any difficulties?",
+    ];
+
+    let randomIndex;
+    if (currentLanguage === "한국어") {
+      randomIndex = Math.floor(Math.random() * randomAlram.length);
+    } else {
+      randomIndex = Math.floor(Math.random() * randomAlramEnglish.length);
+    }
+
+    const randomMessage =
+      currentLanguage === "한국어"
+        ? randomAlram[randomIndex]
+        : randomAlramEnglish[randomIndex];
 
     if (courseAttendanceRate >= 0.5) {
       useAlarmStore.setState({
@@ -118,7 +133,10 @@ export const useTriggerInterval = () => {
         data: {
           message: randomMessage,
           type: "callToAction",
-          question: "앞으로의 학습 로드맵을 제공해 주세요.",
+          question:
+            currentLanguage === "한국어"
+              ? "앞으로의 학습 로드맵을 제공해 주세요."
+              : "Please provide the learning roadmap for the future.",
         },
       });
     }
@@ -132,16 +150,26 @@ export const useTriggerInterval = () => {
         },
       });
     }, 8 * 1000);
-  }, [courseAttendanceRate]);
+  }, [courseAttendanceRate, currentLanguage]);
 
   useEffect(() => {
     const triggerAlarm = (isOverHalf: boolean, isOverNinety: boolean) => {
-      const allMessages = [
-        ...alarmMessages.callToAction.map((item) => ({
-          ...item,
-          type: "callToAction" as const,
-        })),
-      ];
+      let allMessages;
+      if (currentLanguage === "한국어") {
+        allMessages = [
+          ...alarmMessages.callToAction.map((item) => ({
+            ...item,
+            type: "callToAction" as const,
+          })),
+        ];
+      } else {
+        allMessages = [
+          ...alarmMessagesEnglish.callToAction.map((item) => ({
+            ...item,
+            type: "callToAction" as const,
+          })),
+        ];
+      }
 
       const { lastCallToActionDataNumber } = useAlarmStore.getState();
       const nextIndex = (lastCallToActionDataNumber + 1) % allMessages.length;
