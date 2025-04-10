@@ -59,9 +59,9 @@ export const triggerNextAlarm = (type: AlarmType) => {
 export const useTriggerAlarm = () => {
   const { courseAttendanceRate } = useUserInfo();
   const { currentVideo, progress, isPause } = videoStore();
-  // useMouseInactivity(() => {
-  //   triggerNextAlarm("mouse");
-  // });
+  useMouseInactivity(() => {
+    triggerNextAlarm("mouse");
+  });
 
   useEffect(() => {
     if (courseAttendanceRate >= 0.5) {
@@ -110,32 +110,48 @@ export const useTriggerAlarm = () => {
   }, [isPause]);
 };
 
-// export const useMouseInactivity = (onInactive: () => void, timeout = 600) => {
-//   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  
-//   useEffect(() => {
-//     const resetTimer = () => {
-//       console.log("timeout", timeout, timeoutRef.current);
-//       if (timeoutRef.current) clearTimeout(timeoutRef.current);
+export const useMouseInactivity = (onInactive: () => void, timeout = 1000 * 60) => {
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastTriggeredRef = useRef<number | null>(null);
 
-//       timeoutRef.current = setTimeout(() => {
-//         onInactive(); // 1분 이상 움직이지 않음
-//       }, timeout);
-//     };
+  const resetTimer = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
 
-//     // 마우스 움직일 때마다 타이머 초기화
-//     const handleMouseMove = () => {
-//       resetTimer();
-//     };
+    timeoutRef.current = setTimeout(() => {
+      const now = Date.now();
+      const last = lastTriggeredRef.current;
 
-//     window.addEventListener("mousemove", handleMouseMove);
+      // 마지막 실행 이후 충분한 시간이 지났을 때만 트리거
+      if (!last || now - last >= timeout) {
+        console.log("Triggering due to inactivity:", now - (last ?? 0));
+        lastTriggeredRef.current = now;
+        onInactive();
+      } else {
+        console.log("Skipped trigger: too soon", now - last);
+      }
+    }, timeout);
+  };
 
-//     // 초기 실행
-//     resetTimer();
+  useEffect(() => {
+    const handleActivity = () => {
+      resetTimer();
+    };
 
-//     return () => {
-//       window.removeEventListener("mousemove", handleMouseMove);
-//       if (timeoutRef.current) clearTimeout(timeoutRef.current);
-//     };
-//   }, [onInactive, timeout]);
-// };
+    window.addEventListener("mousemove", handleActivity);
+    window.addEventListener("keydown", handleActivity);
+    window.addEventListener("touchstart", handleActivity);
+
+    resetTimer(); // 초기화
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      window.removeEventListener("mousemove", handleActivity);
+      window.removeEventListener("keydown", handleActivity);
+      window.removeEventListener("touchstart", handleActivity);
+    };
+  }, [onInactive, timeout]);
+};
