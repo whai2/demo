@@ -163,7 +163,7 @@ const YoutubePlaylist = () => {
                   </>
                 ) : (
                   <S.CourseCompleteWrapperEnglish>
-                    {isCompleted ? (
+                    {/* {isCompleted ? (
                       <S.LottieContainer>
                         <Lottie
                           animationData={animationData2}
@@ -181,7 +181,11 @@ const YoutubePlaylist = () => {
                         Course Completion Rate{" "}
                         {Math.round(courseAttendanceRate * 100)}%
                       </S.CourseComplete>
-                    )}
+                    )} */}
+                    <S.CourseComplete $isHighlighted={isHighlighted}>
+                        Course Completion Rate{" "}
+                        {Math.round(courseAttendanceRate * 100)}%
+                      </S.CourseComplete>
                     <S.CourseComplete>
                       Video Progress{" "}
                       <S.Percentage $progressPercentage={progressPercentage}>
