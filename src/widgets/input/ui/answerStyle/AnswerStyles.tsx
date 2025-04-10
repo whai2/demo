@@ -41,6 +41,7 @@ function AnswerStyles({
           value={item.id}
           selectedOption={selectedOption}
           handleChange={handleSelectAnswerStyle}
+          currentLanguage={currentLanguage}
         />
       ))}
     </S.Container>

@@ -238,6 +238,7 @@ const YoutubePlaylist = () => {
           </S.Tab>
         </S.BottomContainer>
       </S.Content>
+
       <S.SideBar>
         <S.SideBarHeader>
           <S.SideBarHeaderInner>
@@ -399,11 +400,13 @@ const S = {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    max-height: 100vh;
   `,
 
   VideoContainer: styled.div`
     padding: 10px 50px;
     width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -487,6 +490,7 @@ const S = {
     width: 100%;
     height: 0;
     overflow: hidden;
+    max-width: 100%;
 
     iframe {
       position: absolute;
@@ -525,6 +529,7 @@ const S = {
     align-items: center;
     padding: 0 40px;
     justify-content: space-between;
+    gap: 20px;
   `,
 
   TopBarInner: styled.div`
@@ -733,6 +738,7 @@ const S = {
   CourseCompleteWrapperEnglish: styled.div`
     position: relative;
     // height: 60px;
+    width: 250px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;

@@ -6,6 +6,7 @@ type AnswerStyleType = {
   title: string;
   subTitle: string;
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  currentLanguage: string;
 };
 
 function AnswerStyle({
@@ -14,6 +15,7 @@ function AnswerStyle({
   value,
   selectedOption,
   handleChange,
+  currentLanguage,
 }: AnswerStyleType) {
   const isChecked = selectedOption === value;
 
@@ -30,7 +32,9 @@ function AnswerStyle({
         <S.Title>{title}</S.Title>
         <S.SubTitle>{subTitle}</S.SubTitle>
       </div>
-      {isChecked && value === 1 && <S.DefaultAlert>기본</S.DefaultAlert>}
+      {isChecked && value === 1 && (
+        <S.DefaultAlert>{currentLanguage === "한국어" ? "기본" : "Default"}</S.DefaultAlert>
+      )}
     </S.Wrapper>
   );
 }

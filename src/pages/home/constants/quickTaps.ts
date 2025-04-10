@@ -35,7 +35,7 @@ export const oftenQuestionsTaps = {
 };
 
 export const oftenQuestionsTapsEnglish = {
-  title: "Provides customized help for content",
+  title: "Content-Specific Assistance",
   icon: chat,
   items: [
     {
@@ -87,7 +87,7 @@ export const othersQuestionsTaps = {
 };
 
 export const othersQuestionsTapsEnglish = {
-  title: "Evaluation of Learning Status",
+  title: "Learning Progress Assessment",
   icon: Quiz,
   items: [
     {
@@ -113,7 +113,7 @@ export const courseLoadMaps = {
 };
 
 export const courseLoadMapsEnglish = {
-  title: "Course Roadmap",
+  title: "Personalized Learning Roadmap",
   icon: Recommend,
   items: [
     {

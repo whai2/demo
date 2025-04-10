@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type AlarmType = "default" | "callToAction" | "quiz" | "pause";
+export type AlarmType = "default" | "callToAction" | "quiz" | "pause" | "mouse";
 
 interface AlarmMessageInstanceType {
   message: string;
@@ -18,6 +18,7 @@ interface AlarmState {
   lastPauseIndex: number;
   lastCallToActionIndex: number;
   lastQuizIndex: number;
+  lastMouseIndex: number;
   hasTriggeredQuizMap: Record<string, boolean>;
 
   pushToQueue: (item: AlarmMessageInstanceType) => void;
@@ -30,6 +31,7 @@ interface AlarmState {
   setLastQuizIndex: (index: number) => void;
   setQuizTriggeredForLecture: (lectureId: string) => void;
   hasQuizTriggered: (lectureId: string) => boolean;
+  setLastMouseIndex: (index: number) => void;
 }
 
 export const useAlarmStore = create<AlarmState>((set, get) => ({
@@ -41,6 +43,7 @@ export const useAlarmStore = create<AlarmState>((set, get) => ({
   lastPauseIndex: 0,
   lastCallToActionIndex: 0,
   lastQuizIndex: 0,
+  lastMouseIndex: 0,
   hasTriggeredQuizMap: {},
 
   pushToQueue: (item) => {
@@ -155,5 +158,8 @@ export const useAlarmStore = create<AlarmState>((set, get) => ({
     }),
   hasQuizTriggered: (lectureId) => {
     return get().hasTriggeredQuizMap[lectureId] === true;
+  },
+  setLastMouseIndex: (index: number) => {
+    set({ lastMouseIndex: index });
   },
 }));
