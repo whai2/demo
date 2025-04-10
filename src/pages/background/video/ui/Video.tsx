@@ -15,6 +15,7 @@ import {
 
 import { ReactComponent as Alert } from "../assets/alert.svg";
 import { ReactComponent as Bar } from "../assets/bar.svg";
+import animationData from "../assets/courseComplete.json";
 import animationData2 from "../assets/courseCompleteEnglish.json";
 import { ReactComponent as Docs } from "../assets/docs.svg";
 import { ReactComponent as Docs2 } from "../assets/docs2.svg";
@@ -90,21 +91,32 @@ const YoutubePlaylist = () => {
     }
   }, [courseAttendanceRate]);
 
+  const [isHighlighted2, setIsHighlighted2] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
 
   useEffect(() => {
-    if (isCompleted) {
+    if (isHighlighted2) {
+      const timer = setTimeout(() => {
+        setIsHighlighted2(false);
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isHighlighted2]);
+
+  useEffect(() => {
+    if (courseAttendanceRate) {
+      setIsHighlighted2(true);
+    }
+
+    if (courseAttendanceRate === 1) {
+      setIsCompleted(true);
+
       const timer = setTimeout(() => {
         setIsCompleted(false);
       }, 2000);
 
       return () => clearTimeout(timer);
-    }
-  }, [isCompleted]);
-
-  useEffect(() => {
-    if (courseAttendanceRate === 1) {
-      setIsCompleted(true);
     }
   }, [courseAttendanceRate]);
 
@@ -130,22 +142,24 @@ const YoutubePlaylist = () => {
 
               {currentLanguage === "한국어" ? (
                 <S.CourseCompleteWrapperEnglish>
-                  {isCompleted ? (
-                    // <S.LottieContainer>
-                    //   <Lottie
-                    //     animationData={animationData}
-                    //     style={{
-                    //       width: 200,
-                    //       height: 110,
-                    //       paddingBottom: 0,
-                    //       margin: 0,
-                    //       display: "block", // inline-block일 경우도 대비
-                    //     }}
-                    //   />
-                    // </S.LottieContainer>
-                    <S.CourseComplete $isHighlighted={isHighlighted}>
-                      강의 완료율 {Math.round(courseAttendanceRate * 100)}%
-                    </S.CourseComplete>
+                  {isHighlighted2 ? (
+                    <S.LottieContainer>
+                      <Lottie
+                        animationData={animationData}
+                        style={{
+                          width: 130,
+                          paddingBottom: 0,
+                          margin: 0,
+                          display: "block",
+                        }}
+                      />
+                      <S.LottiePercentage
+                        $isKorean={currentLanguage === "한국어"}
+                        $isCompleted={isCompleted}
+                      >
+                        {Math.round(courseAttendanceRate * 100)}%
+                      </S.LottiePercentage>
+                    </S.LottieContainer>
                   ) : (
                     <S.CourseComplete $isHighlighted={isHighlighted}>
                       강의 완료율 {Math.round(courseAttendanceRate * 100)}%
@@ -161,17 +175,23 @@ const YoutubePlaylist = () => {
                 </S.CourseCompleteWrapperEnglish>
               ) : (
                 <S.CourseCompleteWrapperEnglish>
-                  {isCompleted ? (
+                  {isHighlighted2 ? (
                     <S.LottieContainer>
                       <Lottie
                         animationData={animationData2}
                         style={{
-                          width: 330,
+                          width: 250,
                           paddingBottom: 0,
                           margin: 0,
                           display: "block",
                         }}
                       />
+                      <S.LottiePercentage
+                        $isKorean={currentLanguage === "한국어"}
+                        $isCompleted={isCompleted}
+                      >
+                        {Math.round(courseAttendanceRate * 100)}%
+                      </S.LottiePercentage>
                     </S.LottieContainer>
                   ) : (
                     <S.CourseComplete $isHighlighted={isHighlighted}>
@@ -179,6 +199,21 @@ const YoutubePlaylist = () => {
                       {Math.round(courseAttendanceRate * 100)}%
                     </S.CourseComplete>
                   )}
+
+                  {/* <S.LottieContainer>
+                    <Lottie
+                      animationData={animationData2}
+                      style={{
+                        width: 250,
+                        paddingBottom: 0,
+                        margin: 0,
+                        display: "block",
+                      }}
+                    />
+                    <S.LottiePercentage>
+                      {Math.round(courseAttendanceRate * 100)}%
+                    </S.LottiePercentage>
+                  </S.LottieContainer> */}
 
                   <S.VideoProgress>
                     Video Progress{" "}
@@ -721,11 +756,15 @@ const S = {
   `}
   `,
 
-  LottieContainer: styled.div`
+  LottieContainer: styled.div<{
+    $isKorean?: boolean;
+  }>`
     position: absolute;
-    top: -33px;
-    right: -20px;
-    // transform: translateX(-30px);
+    top: -30px;
+    ${({ $isKorean }) => ($isKorean ? "right: 20px;" : "right: 160px;")}
+    display: flex;
+    align-items: center;
+    justify-content: center;
   `,
 
   CourseCompleteWrapper: styled.div`
@@ -744,5 +783,59 @@ const S = {
     align-items: flex-start;
     justify-content: center;
     gap: 5px;
+  `,
+
+  LottiePercentage: styled.div<{
+    $isKorean?: boolean;
+    $isCompleted?: boolean;
+  }>`
+    position: absolute;
+    ${({ $isKorean }) => ($isKorean ? "top: 6.5px;" : "top: 5px;")}
+    ${({ $isCompleted }) => ($isCompleted ? "right: -32px;" : "right: -40px;")}
+    font-size: 17px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* 초기 상태: 그라데이션 */
+    background: linear-gradient(90deg, #456eff, #2cccff);
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    animation: shine 3s ease-in-out infinite;
+
+    @keyframes shine {
+      0% {
+        background-position: 0% center;
+      }
+      50% {
+        background-position: 100% center;
+      }
+      100% {
+        background-position: 0% center;
+      }
+    }
+
+    // @keyframes flicker {
+    //   0%,
+    //   100% {
+    //     background: none;
+    //     color: #6e6e73;
+    //     -webkit-text-fill-color: #6e6e73;
+    //     background-clip: initial;
+    //     -webkit-background-clip: initial;
+    //   }
+    //   50% {
+    //     background: linear-gradient(90deg, #456eff, #2cccff);
+    //     color: transparent;
+    //     -webkit-text-fill-color: transparent;
+    //     background-clip: text;
+    //     -webkit-background-clip: text;
+    //   }
+    // }
   `,
 };
