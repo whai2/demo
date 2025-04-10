@@ -15,8 +15,7 @@ import {
 
 import { ReactComponent as Alert } from "../assets/alert.svg";
 import { ReactComponent as Bar } from "../assets/bar.svg";
-import animationData from "../assets/courseComplete.json";
-// import animationData2 from "../assets/courseCompleteEnglish.json";
+import animationData2 from "../assets/courseCompleteEnglish.json";
 import { ReactComponent as Docs } from "../assets/docs.svg";
 import { ReactComponent as Docs2 } from "../assets/docs2.svg";
 import { ReactComponent as Introduction } from "../assets/introduce.svg";
@@ -129,73 +128,66 @@ const YoutubePlaylist = () => {
                 <S.TopBarTitle>{course?.name}</S.TopBarTitle>
               </S.TopBarInner>
 
-              <S.AttendanceRate>
-                {currentLanguage === "한국어" ? (
-                  <>
-                    <S.CourseCompleteWrapper>
-                      {isCompleted ? (
-                        <S.LottieContainer>
-                          <Lottie
-                            animationData={animationData}
-                            style={{
-                              width: 200,
-                              height: 110,
-                              paddingBottom: 0,
-                              margin: 0,
-                              display: "block", // inline-block일 경우도 대비
-                            }}
-                          />
-                        </S.LottieContainer>
-                      ) : (
-                        <S.CourseComplete $isHighlighted={isHighlighted}>
-                          강의 완료율 {Math.round(courseAttendanceRate * 100)}%
-                        </S.CourseComplete>
-                      )}
-                    </S.CourseCompleteWrapper>
-
-                    <S.CourseComplete>
-                      영상 진행률{" "}
-                      <S.Percentage $progressPercentage={progressPercentage}>
-                        {progressPercentage ? progressPercentage.toFixed(0) : 0}
-                        %
-                      </S.Percentage>
-                    </S.CourseComplete>
-                  </>
-                ) : (
-                  <S.CourseCompleteWrapperEnglish>
-                    {/* {isCompleted ? (
-                      <S.LottieContainer>
-                        <Lottie
-                          animationData={animationData2}
-                          style={{
-                            width: 200,
-                            height: 110,
-                            paddingBottom: 0,
-                            margin: 0,
-                            display: "block", // inline-block일 경우도 대비
-                          }}
-                        />
-                      </S.LottieContainer>
-                    ) : (
-                      <S.CourseComplete $isHighlighted={isHighlighted}>
-                        Course Completion Rate{" "}
-                        {Math.round(courseAttendanceRate * 100)}%
-                      </S.CourseComplete>
-                    )} */}
+              {currentLanguage === "한국어" ? (
+                <S.CourseCompleteWrapperEnglish>
+                  {isCompleted ? (
+                    // <S.LottieContainer>
+                    //   <Lottie
+                    //     animationData={animationData}
+                    //     style={{
+                    //       width: 200,
+                    //       height: 110,
+                    //       paddingBottom: 0,
+                    //       margin: 0,
+                    //       display: "block", // inline-block일 경우도 대비
+                    //     }}
+                    //   />
+                    // </S.LottieContainer>
                     <S.CourseComplete $isHighlighted={isHighlighted}>
-                        Course Completion Rate{" "}
-                        {Math.round(courseAttendanceRate * 100)}%
-                      </S.CourseComplete>
-                    <S.CourseComplete>
-                      Video Progress{" "}
-                      <S.Percentage $progressPercentage={progressPercentage}>
-                        {progressPercentage ? progressPercentage.toFixed(0) : 0}
-                        %
-                      </S.Percentage>
+                      강의 완료율 {Math.round(courseAttendanceRate * 100)}%
                     </S.CourseComplete>
-                  </S.CourseCompleteWrapperEnglish>
-                )}
-              </S.AttendanceRate>
+                  ) : (
+                    <S.CourseComplete $isHighlighted={isHighlighted}>
+                      강의 완료율 {Math.round(courseAttendanceRate * 100)}%
+                    </S.CourseComplete>
+                  )}
+
+                  <S.VideoProgress>
+                    영상 진행률{" "}
+                    <S.Percentage $progressPercentage={progressPercentage}>
+                      {progressPercentage ? progressPercentage.toFixed(0) : 0}%
+                    </S.Percentage>
+                  </S.VideoProgress>
+                </S.CourseCompleteWrapperEnglish>
+              ) : (
+                <S.CourseCompleteWrapperEnglish>
+                  {isCompleted ? (
+                    <S.LottieContainer>
+                      <Lottie
+                        animationData={animationData2}
+                        style={{
+                          width: 330,
+                          paddingBottom: 0,
+                          margin: 0,
+                          display: "block",
+                        }}
+                      />
+                    </S.LottieContainer>
+                  ) : (
+                    <S.CourseComplete $isHighlighted={isHighlighted}>
+                      Course Completion Rate{" "}
+                      {Math.round(courseAttendanceRate * 100)}%
+                    </S.CourseComplete>
+                  )}
+
+                  <S.VideoProgress>
+                    Video Progress{" "}
+                    <S.Percentage $progressPercentage={progressPercentage}>
+                      {progressPercentage ? progressPercentage.toFixed(0) : 0}%
+                    </S.Percentage>
+                  </S.VideoProgress>
+                </S.CourseCompleteWrapperEnglish>
+              )}
             </S.TopBar>
             <S.VideoContainer>
               <InteractiveYouTubePlayer videoId={currentVideo.id} />
@@ -647,14 +639,37 @@ const S = {
   CourseComplete: styled.div<{
     $isHighlighted?: boolean;
   }>`
+    position: absolute;
+    width: 250px;
+    top: -20px;
+    right: 0;
     color: ${({ $isHighlighted }) => ($isHighlighted ? "#1a2a9c" : "#6e6e73")};
-    padding-right: 60px;
 
     font-family: Pretendard;
     font-size: 17px;
     font-style: normal;
     font-weight: 700;
     line-height: 20px; /* 111.111% */
+    height: 30px;
+
+    transition: color 0.3s ease, font-weight 0.3s ease;
+  `,
+
+  VideoProgress: styled.div<{
+    $isHighlighted?: boolean;
+  }>`
+    position: absolute;
+    width: 250px;
+    top: 10px;
+    right: 0;
+    color: ${({ $isHighlighted }) => ($isHighlighted ? "#1a2a9c" : "#6e6e73")};
+
+    font-family: Pretendard;
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px; /* 111.111% */
+    height: 30px;
 
     transition: color 0.3s ease, font-weight 0.3s ease;
   `,
@@ -702,27 +717,26 @@ const S = {
   `,
 
   LottieContainer: styled.div`
-    width: 200px;
-    height: 90px;
-    height: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform: translateX(-20px);
-    overflow: hidden;
+    position: absolute;
+    top: -33px;
+    right: -20px;
+    // transform: translateX(-30px);
   `,
 
   CourseCompleteWrapper: styled.div`
     width: 200px;
-    height: 90px; // Lottie 높이에 맞춰 고정
     display: flex;
     align-items: center;
     justify-content: center;
   `,
 
   CourseCompleteWrapperEnglish: styled.div`
+    position: relative;
+    // height: 60px;
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
     gap: 5px;
   `,
 };

@@ -155,12 +155,17 @@ function WidgetButton({
               );
 
               setIsLoading(false);
+            } else {
+              setOpen();
+              setCurrentPage(ROUTES.HOME);
             }
           }}
           isHighPriority={isHighPriority}
           title={current?.message}
         />
-      ) : null}
+      ) : 
+        null   
+      }
     </S.ChatContainer>
   );
 }
