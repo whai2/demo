@@ -379,9 +379,8 @@ const S = {
 
   SideBar: styled.div`
     width: 400px;
-    height: 100%;
     background-color: #f4f4f4;
-    // padding: 20px;
+    // padding: 16px 24px;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
   `,
@@ -406,7 +405,7 @@ const S = {
 
   Content: styled.div`
     flex: 1;
-    overflow-y: auto;
+    overflow-y: hidden;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -480,13 +479,13 @@ const S = {
   SideBarContent: styled.div`
     display: flex;
     width: 391px;
-    height: 791px;
-    padding: 24px 24px 0px 24px;
+    // height: 791px;
+    padding: 24px 24px 24px 24px;
     flex-direction: column;
     align-items: center;
     gap: 20px;
     flex-shrink: 0;
-    height: 100%;
+    height: auto;
   `,
 
   Duration: styled.div`
@@ -496,19 +495,17 @@ const S = {
   `,
 
   PlayerWrapper: styled.div`
-    position: relative;
-    padding-bottom: 58.25%;
-    width: 100%;
-    height: auto;
-    overflow: hidden;
-    max-width: 100%;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
 
-    iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+  iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
     }
   `,
 
@@ -535,7 +532,8 @@ const S = {
   TopBar: styled.div`
     width: 100%;
     min-height: 80px;
-    height: 100px;
+    height: 90px;
+    max-height: 90px;
     border-bottom: 1px solid #ddd;
     display: flex;
     align-items: center;
@@ -583,6 +581,7 @@ const S = {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 100;
   `,
 
   Tab: styled.button`
