@@ -106,7 +106,7 @@ export const useTriggerAlarm = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       triggerNextAlarm("default");
-    }, 1 * 15 * 1000);
+    }, 1 * 90 * 1000);
 
     return () => clearInterval(interval);
   }, []);
@@ -120,7 +120,7 @@ export const useTriggerAlarm = () => {
 
 export const useMouseInactivity = (
   onInactive: () => void,
-  timeout = 1000 * 15
+  timeout = 1000 * 16
 ) => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const hasEnteredInactivity = useRef(false); // 비활성 상태 진입 여부
