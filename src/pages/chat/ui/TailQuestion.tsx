@@ -42,7 +42,7 @@ function TailQuestions({ lastMessage }: { lastMessage: MessageType }) {
       <S.TitleContainer>
         <S.CoxwaveLogo as={CoxwaveLogo} />
         <S.Title>
-          {currentLanguage === "한국어" ? "AI 추천 질문" : "AI Recommended Questions"}
+          {currentLanguage === "한국어" ? "AI 추천 질문" : "Need Help? Try These Questions!"}
         </S.Title>
       </S.TitleContainer>
       {tailQuestions.map((question) => (

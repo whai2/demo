@@ -105,7 +105,7 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
                 <S.StartText>
                   {currentLanguage === "한국어"
                     ? "이제 강의를 시작해볼까요?"
-                    : "Let's start the course now?"}
+                    : "Ready to start the course?"}
                 </S.StartText>
 
                 <S.Button onClick={() => setFirstModalClose()}>

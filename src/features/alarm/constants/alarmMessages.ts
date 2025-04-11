@@ -50,7 +50,7 @@ export const alarmMessagesEnglish = {
   default: [
     {
       message:
-        "Feel free to ask me anything\nyou're curious about in the course!",
+        "Need help?\nAsk me anything about the lecture!",
     },
   ],
   pause: [
@@ -71,25 +71,25 @@ export const alarmMessagesEnglish = {
     {
       message:
         "Completion of the course is coming up.\nWhat do you want to learn next?",
-      question: "Please provide the learning roadmap for the future.",
+      question: "Can you recommend similar courses?",
       isQuiz: false,
     },
     {
       message:
-        "Ahead of the completion of the lecture, \nare there any difficulties?",
-      question: "Please provide the learning roadmap for the future.",
+        "Almost done?\nWere there any parts you struggled with?",
+      question: "Can you recommend similar courses?",
       isQuiz: false,
     },
   ],
   quiz: [
     {
-      message: "Shall we check if you understand\nthis lecture well?",
+      message: "Do you want to confirm if you’ve understood the entire lecture?",
       question: "Shall I provide the quiz for this lecture?",
       isQuiz: true,
     },
     {
-      message: "I've prepared a custom review\nquiz for you!",
-      question: "I want to review the content with a quiz.",
+      message: "Try the personalized quiz review!\nDo you want to try it out?",
+      question: "Try the personalized quiz review.",
       isQuiz: true,
     },
   ],

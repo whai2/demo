@@ -227,7 +227,7 @@ const YoutubePlaylist = () => {
             <S.TabText>
               {currentLanguage === "한국어"
                 ? "강사소개"
-                : "Instructor Introduction"}
+                : "Meet The Instructor"}
             </S.TabText>
           </S.Tab>
           <S.TabBar />

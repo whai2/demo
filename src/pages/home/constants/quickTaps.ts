@@ -39,10 +39,10 @@ export const oftenQuestionsTapsEnglish = {
   icon: chat,
   items: [
     {
-      text: "Can you explain that more simply?",
+      text: "Can you explain it in a simpler way?",
     },
     {
-      text: "I’m not sure I understand this part",
+      text: "I don’t quite understand this part",
     },
   ],
 };
@@ -61,14 +61,14 @@ export const courseSummationTaps = {
 };
 
 export const courseSummationTapsEnglish = {
-  title: "Summarize the course overview",
+  title: "Course Overview SummarySummarize the course overview",
   icon: Document,
   items: [
     {
       text: " Summarize what I’ve learned so far",
     },
     {
-      text: "Provide key course keywords and explanations in a table",
+      text: "Provide key terms and their explanations in a table",
     },
   ],
 };
@@ -91,10 +91,10 @@ export const othersQuestionsTapsEnglish = {
   icon: Quiz,
   items: [
     {
-      text: "How can I review this lesson?",
+      text: "How can I review this lecture?",
     },
     {
-      text: "Can I check if I’ve understood everything correctly?",
+      text: "Can I confirm if I understood everything?",
     },
   ],
 };
@@ -117,10 +117,10 @@ export const courseLoadMapsEnglish = {
   icon: Recommend,
   items: [
     {
-      text: "Find similar courses I might like",
+      text: "Can you recommend similar courses?",
     },
     {
-      text: "This course feels too hard for me",
+      text: "This lesson feels too difficult for me",
     },
   ],
 };
