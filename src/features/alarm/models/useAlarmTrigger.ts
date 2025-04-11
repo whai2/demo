@@ -106,7 +106,7 @@ export const useTriggerAlarm = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       triggerNextAlarm("default");
-    }, 1 * 90 * 1000);
+    }, 1 * 15 * 1000);
 
     return () => clearInterval(interval);
   }, []);
@@ -120,26 +120,23 @@ export const useTriggerAlarm = () => {
 
 export const useMouseInactivity = (
   onInactive: () => void,
-  timeout = 1000 * 16
+  timeout = 1000 * 15
 ) => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const lastTriggeredRef = useRef<number | null>(null);
+  const hasEnteredInactivity = useRef(false); // 비활성 상태 진입 여부
 
   const startInactivityTimer = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
     timeoutRef.current = setTimeout(() => {
-      const now = Date.now();
-      const last = lastTriggeredRef.current;
-
-      if (!last || now - last >= timeout) {
-        lastTriggeredRef.current = now;
-        onInactive();
-      }
-
-      // 다음 inactivity 체크를 위해 타이머 재설정
-      startInactivityTimer();
+      hasEnteredInactivity.current = true;
     }, timeout);
+  };
+
+  const resetInactivity = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    hasEnteredInactivity.current = false;
+    startInactivityTimer();
   };
 
   useEffect(() => {
@@ -147,17 +144,23 @@ export const useMouseInactivity = (
     let lastMouseY = 0;
 
     const handleActivity = (e: MouseEvent | KeyboardEvent | TouchEvent) => {
-      if (
+      const isRealMouseMove =
         e instanceof MouseEvent &&
-        (e.clientX !== lastMouseX || e.clientY !== lastMouseY)
-      ) {
+        (e.clientX !== lastMouseX || e.clientY !== lastMouseY);
+
+      if (isRealMouseMove) {
         lastMouseX = e.clientX;
         lastMouseY = e.clientY;
-        startInactivityTimer();
       }
 
-      if (e instanceof KeyboardEvent || e instanceof TouchEvent) {
-        startInactivityTimer();
+      if (isRealMouseMove || e instanceof KeyboardEvent || e instanceof TouchEvent) {
+        if (hasEnteredInactivity.current) {
+          hasEnteredInactivity.current = false;
+          onInactive(); // 🔥 알람 트리거
+          startInactivityTimer(); // 다음 타이머 시작
+        } else {
+          resetInactivity(); // 활동 중이면 타이머 리셋
+        }
       }
     };
 
