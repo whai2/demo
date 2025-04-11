@@ -3,10 +3,18 @@ import { useEffect } from "react";
 import { Router } from "@/app/routers";
 import { Video } from "@/pages/background/video";
 import { LoginPage } from "@/pages/login";
+import { TotalSkeleton } from "@/pages/skeleton";
+
 // import { Loading } from "@/shared/ui";
 import { WidgetButton } from "@/widgets/widgetButton";
 
-import { useChatStore } from "@/features/chat";
+import {
+  EnglishCourses,
+  handleCourseSummation,
+  KoreanCourses,
+  useChatStore,
+  useCourseSummationStore,
+} from "@/features/chat";
 import { ROUTES, useNavigate } from "@/features/navigate";
 import { usePopUpOpen } from "@/features/popUpOpen";
 import { useUserInfo } from "@/features/userInfo";
@@ -14,11 +22,23 @@ import { useUserInfo } from "@/features/userInfo";
 import styled from "styled-components";
 
 function App() {
-  const { isLogin, courseCategory, courseName } = useUserInfo();
+  const { isLogin, courseCategory, courseName, currentLanguage } =
+    useUserInfo();
   const { isOpen, setToggle } = usePopUpOpen();
   const { setCurrentPage } = useNavigate();
   const { setMessages } = useChatStore();
-  // const { isSummationLoading } = useCourseSummationStore();
+  const { isSummationLoading, setIsSummationLoading, setCourseSummation } =
+    useCourseSummationStore();
+
+  const courses = currentLanguage === "한국어" ? KoreanCourses : EnglishCourses;
+
+  const currentCourses = courses.category.find(
+    (cat) => cat.name === courseCategory
+  );
+
+  const course = currentCourses?.courses.find(
+    (course) => course.name === courseName
+  );
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -43,26 +63,36 @@ function App() {
     setMessages([]);
   }, [courseCategory, courseName]);
 
+  useEffect(() => {
+    if (course) {
+      setIsSummationLoading(true);
+      handleCourseSummation(course.description, currentLanguage)
+        .then((res) => res.json())
+        .then((data) => {
+          setCourseSummation(data.choices?.[0]?.message?.content ?? "");
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        })
+        .finally(() => {
+          setIsSummationLoading(false);
+        });
+    }
+  }, [course, currentLanguage]);
+
   return (
     <>
       {isLogin ? (
         <S.Container>
-          {/* {isSummationLoading ? (
-            <S.LoadingContainer>
-              <Loading />
-            </S.LoadingContainer>
+          {isSummationLoading ? (
+            <TotalSkeleton />
           ) : (
             <>
               <Video />
               <WidgetButton isOpen={isOpen} setIsOpen={setToggle} />
               {isOpen && <Router />}
             </>
-          )} */}
-          <>
-              <Video />
-              <WidgetButton isOpen={isOpen} setIsOpen={setToggle} />
-              {isOpen && <Router />}
-            </>
+          )}
         </S.Container>
       ) : (
         <S.LoginLayout>

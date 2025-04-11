@@ -1,10 +1,4 @@
-import {
-  Fragment,
-  PropsWithChildren,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { Fragment, PropsWithChildren, useEffect, useRef } from "react";
 
 import {
   Loading,
@@ -17,7 +11,6 @@ import { TopBar } from "@/widgets/topBar";
 import {
   EnglishCourses,
   KoreanCourses,
-  handleCourseSummation,
   useCourseSummationStore,
 } from "@/features/chat";
 import { usePopUpOpen } from "@/features/popUpOpen";
@@ -32,11 +25,8 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
   const { setPortalElement } = useBottomSheetPortal();
   const { courseCategory, courseName, currentLanguage } = useUserInfo();
   const { isFristModalOpen, setFirstModalClose } = usePopUpOpen();
-  const { isSummationLoading, setIsSummationLoading } =
+  const { isSummationLoading, courseSummation } =
     useCourseSummationStore();
-
-  const [courseSummation, setCourseSummation] = useState<string>("");
-  // const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const courses = currentLanguage === "한국어" ? KoreanCourses : EnglishCourses;
 
@@ -53,23 +43,6 @@ function ChatPopUpLayout({ children }: PropsWithChildren) {
       setPortalElement(bottomSheetPortalRef.current);
     }
   }, [bottomSheetPortalRef.current]);
-
-  useEffect(() => {
-    if (course) {
-      setIsSummationLoading(true);
-      handleCourseSummation(course.description, currentLanguage)
-        .then((res) => res.json())
-        .then((data) => {
-          setCourseSummation(data.choices?.[0]?.message?.content ?? "");
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        })
-        .finally(() => {
-          setIsSummationLoading(false);
-        });
-    }
-  }, [course, currentLanguage]);
 
   return (
     <S.ChatLayout $isOpen={true} $isFirstOpen={true}>

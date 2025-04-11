@@ -1,11 +1,16 @@
 import { create } from "zustand";
 
 interface CourseSummationStore {
+  courseSummation: string;
+  setCourseSummation: (courseSummation: string) => void;
   isSummationLoading: boolean;
   setIsSummationLoading: (isSummationLoading: boolean) => void;
 }
 
 export const useCourseSummationStore = create<CourseSummationStore>((set) => ({
+  courseSummation: "",
+  setCourseSummation: (courseSummation: string) =>
+    set({ courseSummation }),
   isSummationLoading: false,
   setIsSummationLoading: (isSummationLoading: boolean) =>
     set({ isSummationLoading }),
