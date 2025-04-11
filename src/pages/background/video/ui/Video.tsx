@@ -497,6 +497,8 @@ const S = {
   PlayerWrapper: styled.div`
   position: relative;
   width: 100%;
+  max-width: 1500px; //
+  height: auto;
   aspect-ratio: 16 / 9;
   overflow: hidden;
 
