@@ -92,7 +92,6 @@ const YoutubePlaylist = () => {
   }, [courseAttendanceRate]);
 
   const [isHighlighted2, setIsHighlighted2] = useState(false);
-  const [isCompleted, setIsCompleted] = useState(false);
 
   useEffect(() => {
     if (isHighlighted2) {
@@ -107,16 +106,6 @@ const YoutubePlaylist = () => {
   useEffect(() => {
     if (courseAttendanceRate) {
       setIsHighlighted2(true);
-    }
-
-    if (courseAttendanceRate === 1) {
-      setIsCompleted(true);
-
-      const timer = setTimeout(() => {
-        setIsCompleted(false);
-      }, 2000);
-
-      return () => clearTimeout(timer);
     }
   }, [courseAttendanceRate]);
 
@@ -155,7 +144,7 @@ const YoutubePlaylist = () => {
                       />
                       <S.LottiePercentage
                         $isKorean={currentLanguage === "한국어"}
-                        $isCompleted={isCompleted}
+                        $isCompleted={courseAttendanceRate === 1}
                       >
                         {Math.round(courseAttendanceRate * 100)}%
                       </S.LottiePercentage>
@@ -188,7 +177,7 @@ const YoutubePlaylist = () => {
                       />
                       <S.LottiePercentage
                         $isKorean={currentLanguage === "한국어"}
-                        $isCompleted={isCompleted}
+                        $isCompleted={courseAttendanceRate === 1}
                       >
                         {Math.round(courseAttendanceRate * 100)}%
                       </S.LottiePercentage>
@@ -791,7 +780,7 @@ const S = {
   }>`
     position: absolute;
     ${({ $isKorean }) => ($isKorean ? "top: 6.5px;" : "top: 5px;")}
-    ${({ $isCompleted }) => ($isCompleted ? "right: -32px;" : "right: -40px;")}
+    ${({ $isCompleted }) => ($isCompleted ? "right: -40px;" : "right: -30px;")}
     font-size: 17px;
     font-weight: 700;
     display: flex;
