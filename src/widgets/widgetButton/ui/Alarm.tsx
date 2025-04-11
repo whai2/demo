@@ -57,13 +57,13 @@ const S = {
     padding-top: 10px;
     padding-right: 10px;
     cursor: pointer;
-    animation: fadeOutInAlarm 8s forwards;
+    animation: fadeOutInAlarm 15s forwards;
 
     @keyframes fadeOutInAlarm {
       0% {
         opacity: 1;
       }
-      50% {
+      66% {
         opacity: 1;
       }
       100% {

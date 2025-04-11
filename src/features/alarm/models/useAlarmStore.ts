@@ -48,7 +48,8 @@ export const useAlarmStore = create<AlarmState>((set, get) => ({
 
   pushToQueue: (item) => {
     const { queue, current, isTriggered, timeoutId } = get();
-    console.log("pushToQueue", item, current);
+
+    console.log("pushToQueue", queue);
 
     // 현재보다 우선순위가 높으면 교체
     const shouldInterrupt =
@@ -58,20 +59,26 @@ export const useAlarmStore = create<AlarmState>((set, get) => ({
       // 현재 타이머 취소하고 교체
       if (timeoutId) clearTimeout(timeoutId);
 
+      const filteredQueue = get().queue.filter(
+        (q) => q.priority <= item.priority && q.type !== item.type
+      );
+
       set({
         current: item,
         isTriggered: true,
+        queue: filteredQueue,
         timeoutId: setTimeout(() => {
           get().clearCurrent();
-        }, 8000),
+        }, 15000),
       });
       return;
     }
 
     // 중복 방지
     const isDuplicate =
-      current?.message === item.message ||
-      queue.some((q) => q.message === item.message);
+      (current?.message === item.message && current?.type === item.type) ||
+      queue.some((q) => q.message === item.message && q.type === item.type);
+
     if (isDuplicate) return;
 
     // 일반 큐 삽입 및 정렬
@@ -94,7 +101,7 @@ export const useAlarmStore = create<AlarmState>((set, get) => ({
 
     const timeoutId = setTimeout(() => {
       get().clearCurrent();
-    }, 8000);
+    }, 15000);
 
     set({
       current: next,
@@ -149,7 +156,7 @@ export const useAlarmStore = create<AlarmState>((set, get) => ({
         }),
         {}
       );
-  
+
       return {
         hasTriggeredQuizMap: {
           ...resetMap,

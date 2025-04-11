@@ -14,8 +14,6 @@ export const triggerNextAlarm = (type: AlarmType) => {
   const { currentLanguage } = useUserInfo.getState();
   const store = useAlarmStore.getState();
 
-  console.log("triggerNextAlarm", type);
-
   const isKorean = currentLanguage === "한국어";
   const source = isKorean ? alarmMessages : alarmMessagesEnglish;
   const messages = source[type];
@@ -68,7 +66,7 @@ export const triggerNextAlarm = (type: AlarmType) => {
 export const useTriggerAlarm = () => {
   const { courseAttendanceRate } = useUserInfo();
   const { currentVideo, progress, isPause } = videoStore();
-  
+
   useMouseInactivity(() => {
     triggerNextAlarm("mouse");
   });
@@ -108,7 +106,7 @@ export const useTriggerAlarm = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       triggerNextAlarm("default");
-    }, 1 * 10 * 1000);
+    }, 1 * 90 * 1000);
 
     return () => clearInterval(interval);
   }, []);
@@ -120,46 +118,60 @@ export const useTriggerAlarm = () => {
   }, [isPause]);
 };
 
-export const useMouseInactivity = (onInactive: () => void, timeout = 1000 * 13) => {
+export const useMouseInactivity = (
+  onInactive: () => void,
+  timeout = 1000 * 16
+) => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastTriggeredRef = useRef<number | null>(null);
 
-  const resetTimer = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
+  const startInactivityTimer = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
     timeoutRef.current = setTimeout(() => {
       const now = Date.now();
       const last = lastTriggeredRef.current;
 
-      // 마지막 실행 이후 충분한 시간이 지났을 때만 트리거
       if (!last || now - last >= timeout) {
         lastTriggeredRef.current = now;
-        console.log("onInactive");
         onInactive();
       }
+
+      // 다음 inactivity 체크를 위해 타이머 재설정
+      startInactivityTimer();
     }, timeout);
   };
 
   useEffect(() => {
-    const handleActivity = () => {
-      resetTimer();
+    let lastMouseX = 0;
+    let lastMouseY = 0;
+
+    const handleActivity = (e: MouseEvent | KeyboardEvent | TouchEvent) => {
+      if (
+        e instanceof MouseEvent &&
+        (e.clientX !== lastMouseX || e.clientY !== lastMouseY)
+      ) {
+        lastMouseX = e.clientX;
+        lastMouseY = e.clientY;
+        startInactivityTimer();
+      }
+
+      if (e instanceof KeyboardEvent || e instanceof TouchEvent) {
+        startInactivityTimer();
+      }
     };
 
     window.addEventListener("mousemove", handleActivity);
     window.addEventListener("keydown", handleActivity);
     window.addEventListener("touchstart", handleActivity);
 
-    resetTimer(); // 초기화
+    startInactivityTimer(); // 초기 타이머 시작
 
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
       window.removeEventListener("mousemove", handleActivity);
       window.removeEventListener("keydown", handleActivity);
       window.removeEventListener("touchstart", handleActivity);
     };
-  }, [onInactive, timeout]);
+  }, []);
 };

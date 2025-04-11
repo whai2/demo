@@ -44,6 +44,8 @@ function WidgetButton({
   } = useUserInfo();
   const { progress, currentVideo } = videoStore();
 
+  // console.log("currentInstance", current, isTriggered);
+
   const courses = currentLanguage === "한국어" ? KoreanCourses : EnglishCourses;
 
   const currentCourses = courses.category.find(
@@ -96,7 +98,7 @@ function WidgetButton({
 
       {isTriggered && current ? (
         <Alarm
-          // key={clipIdRef.current}
+          key={current.message}
           onClick={async () => {
             if (isLoading) return;
 
