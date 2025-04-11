@@ -48,6 +48,7 @@ export const useAlarmStore = create<AlarmState>((set, get) => ({
 
   pushToQueue: (item) => {
     const { queue, current, isTriggered, timeoutId } = get();
+    console.log("pushToQueue", item, current);
 
     // 현재보다 우선순위가 높으면 교체
     const shouldInterrupt =

@@ -189,21 +189,6 @@ const YoutubePlaylist = () => {
                     </S.CourseComplete>
                   )}
 
-                  {/* <S.LottieContainer>
-                    <Lottie
-                      animationData={animationData2}
-                      style={{
-                        width: 250,
-                        paddingBottom: 0,
-                        margin: 0,
-                        display: "block",
-                      }}
-                    />
-                    <S.LottiePercentage>
-                      {Math.round(courseAttendanceRate * 100)}%
-                    </S.LottiePercentage>
-                  </S.LottieContainer> */}
-
                   <S.VideoProgress>
                     Video Progress{" "}
                     <S.Percentage $progressPercentage={progressPercentage}>
@@ -213,6 +198,7 @@ const YoutubePlaylist = () => {
                 </S.CourseCompleteWrapperEnglish>
               )}
             </S.TopBar>
+
             <S.VideoContainer>
               <InteractiveYouTubePlayer videoId={currentVideo.id} />
             </S.VideoContainer>
@@ -430,7 +416,8 @@ const S = {
   VideoContainer: styled.div`
     padding: 10px 50px;
     width: 100%;
-    height: 100%;
+    height: auto;
+    // max-height: 90vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -512,7 +499,7 @@ const S = {
     position: relative;
     padding-bottom: 58.25%;
     width: 100%;
-    height: 0;
+    height: auto;
     overflow: hidden;
     max-width: 100%;
 
@@ -547,6 +534,7 @@ const S = {
 
   TopBar: styled.div`
     width: 100%;
+    min-height: 80px;
     height: 100px;
     border-bottom: 1px solid #ddd;
     display: flex;
@@ -588,6 +576,7 @@ const S = {
 
   BottomBar: styled.div`
     width: 100%;
+    min-height: 60px;
     height: 60px;
     background-color: #f9f9f9;
     border-top: 1px solid #ddd;
@@ -657,6 +646,7 @@ const S = {
 
     /* Elevation_5 */
     box-shadow: 0px 0px 16px 0px rgba(0, 0, 0, 0.16);
+    min-height: 60px;
   `,
 
   TabBar: styled.div`

@@ -14,6 +14,8 @@ export const triggerNextAlarm = (type: AlarmType) => {
   const { currentLanguage } = useUserInfo.getState();
   const store = useAlarmStore.getState();
 
+  console.log("triggerNextAlarm", type);
+
   const isKorean = currentLanguage === "한국어";
   const source = isKorean ? alarmMessages : alarmMessagesEnglish;
   const messages = source[type];
@@ -38,7 +40,14 @@ export const triggerNextAlarm = (type: AlarmType) => {
     message: messageObj.message,
     question: "question" in messageObj ? messageObj.question : undefined,
     type,
-    priority: type === "callToAction" ? 1 : type === "quiz" ? 1 : 3,
+    priority:
+      type === "callToAction"
+        ? 1
+        : type === "quiz"
+        ? 1
+        : type === "default"
+        ? 4
+        : 3,
   } as const;
 
   store.pushToQueue(alarmItem);
@@ -59,6 +68,7 @@ export const triggerNextAlarm = (type: AlarmType) => {
 export const useTriggerAlarm = () => {
   const { courseAttendanceRate } = useUserInfo();
   const { currentVideo, progress, isPause } = videoStore();
+  
   useMouseInactivity(() => {
     triggerNextAlarm("mouse");
   });
@@ -98,7 +108,7 @@ export const useTriggerAlarm = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       triggerNextAlarm("default");
-    }, 1 * 60 * 1000 + 30 * 1000);
+    }, 1 * 10 * 1000);
 
     return () => clearInterval(interval);
   }, []);
@@ -110,7 +120,7 @@ export const useTriggerAlarm = () => {
   }, [isPause]);
 };
 
-export const useMouseInactivity = (onInactive: () => void, timeout = 1000 * 30) => {
+export const useMouseInactivity = (onInactive: () => void, timeout = 1000 * 13) => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastTriggeredRef = useRef<number | null>(null);
 
@@ -126,6 +136,7 @@ export const useMouseInactivity = (onInactive: () => void, timeout = 1000 * 30) 
       // 마지막 실행 이후 충분한 시간이 지났을 때만 트리거
       if (!last || now - last >= timeout) {
         lastTriggeredRef.current = now;
+        console.log("onInactive");
         onInactive();
       }
     }, timeout);
