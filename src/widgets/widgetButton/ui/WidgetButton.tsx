@@ -44,8 +44,6 @@ function WidgetButton({
   } = useUserInfo();
   const { progress, currentVideo } = videoStore();
 
-  // console.log("currentInstance", current, isTriggered);
-
   const courses = currentLanguage === "한국어" ? KoreanCourses : EnglishCourses;
 
   const currentCourses = courses.category.find(
@@ -158,7 +156,7 @@ function WidgetButton({
 
               setIsLoading(false);
             } else {
-              setFirstModalClose()
+              setFirstModalClose();
               setOpen();
               setCurrentPage(ROUTES.HOME);
             }
@@ -166,9 +164,7 @@ function WidgetButton({
           isHighPriority={isHighPriority}
           title={current?.message}
         />
-      ) : 
-        null   
-      }
+      ) : null}
     </S.ChatContainer>
   );
 }

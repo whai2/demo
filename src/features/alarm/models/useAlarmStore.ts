@@ -47,50 +47,47 @@ export const useAlarmStore = create<AlarmState>((set, get) => ({
   hasTriggeredQuizMap: {},
 
   pushToQueue: (item) => {
-    const { queue, current, isTriggered, timeoutId } = get();
+    const { current, isTriggered, timeoutId } = get();
 
-    console.log("pushToQueue", queue);
+    const isDuplicate =
+      current?.message === item.message && current?.type === item.type;
+    if (isDuplicate) return;
 
-    // 현재보다 우선순위가 높으면 교체
-    const shouldInterrupt =
-      !current || item.priority < (current.priority ?? Infinity);
-
-    if (shouldInterrupt && isTriggered) {
-      // 현재 타이머 취소하고 교체
-      if (timeoutId) clearTimeout(timeoutId);
-
-      const filteredQueue = get().queue.filter(
-        (q) => q.priority <= item.priority && q.type !== item.type
-      );
+    if (!current || !isTriggered) {
+      const newTimeoutId = setTimeout(() => {
+        get().clearCurrent();
+      }, 15000);
 
       set({
         current: item,
         isTriggered: true,
-        queue: filteredQueue,
-        timeoutId: setTimeout(() => {
-          get().clearCurrent();
-        }, 15000),
+        queue: [],
+        timeoutId: newTimeoutId,
       });
+
       return;
     }
 
-    // 중복 방지
-    const isDuplicate =
-      (current?.message === item.message && current?.type === item.type) ||
-      queue.some((q) => q.message === item.message && q.type === item.type);
+    const isHigherPriority = item.priority <= current.priority;
 
-    if (isDuplicate) return;
+    if (isHigherPriority) {
+      if (timeoutId) clearTimeout(timeoutId);
 
-    // 일반 큐 삽입 및 정렬
-    const updatedQueue = [...queue, item].sort(
-      (a, b) => a.priority - b.priority
-    );
+      const newTimeoutId = setTimeout(() => {
+        get().clearCurrent();
+      }, 15000);
 
-    set({ queue: updatedQueue });
+      set({
+        current: item,
+        isTriggered: true,
+        queue: [],
+        timeoutId: newTimeoutId,
+      });
 
-    if (!isTriggered && !current) {
-      get().showNext();
+      return;
     }
+
+    return;
   },
 
   showNext: () => {

@@ -43,9 +43,13 @@ export const triggerNextAlarm = (type: AlarmType) => {
         ? 1
         : type === "quiz"
         ? 1
-        : type === "default"
+        : type === "mouse"
+        ? 3
+        : type === "pause"
         ? 4
-        : 3,
+        : type === "default"
+        ? 5
+        : 5,
   } as const;
 
   store.pushToQueue(alarmItem);
