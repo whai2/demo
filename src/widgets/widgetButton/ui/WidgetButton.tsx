@@ -30,7 +30,7 @@ function WidgetButton({
 }) {
   const { isTriggered, current } = useAlarmStore();
   const { setCurrentPage } = useNavigate();
-  const { setOpen } = usePopUpOpen();
+  const { setOpen, setFirstModalClose } = usePopUpOpen();
   const { setMessages, setIsLoading, setIsQuiz, setLastQuiz, isLoading } =
     useChatStore();
   const {
@@ -156,6 +156,7 @@ function WidgetButton({
 
               setIsLoading(false);
             } else {
+              setFirstModalClose()
               setOpen();
               setCurrentPage(ROUTES.HOME);
             }

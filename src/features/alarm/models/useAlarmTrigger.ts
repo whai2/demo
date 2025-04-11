@@ -98,7 +98,7 @@ export const useTriggerAlarm = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       triggerNextAlarm("default");
-    }, 5 * 60 * 1000);
+    }, 1 * 60 * 1000 + 30 * 1000);
 
     return () => clearInterval(interval);
   }, []);
@@ -110,7 +110,7 @@ export const useTriggerAlarm = () => {
   }, [isPause]);
 };
 
-export const useMouseInactivity = (onInactive: () => void, timeout = 1000 * 60) => {
+export const useMouseInactivity = (onInactive: () => void, timeout = 1000 * 30) => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastTriggeredRef = useRef<number | null>(null);
 

@@ -143,7 +143,7 @@ const YoutubePlaylist = () => {
               {currentLanguage === "한국어" ? (
                 <S.CourseCompleteWrapperEnglish>
                   {isHighlighted2 ? (
-                    <S.LottieContainer>
+                    <S.LottieContainer $isKorean={currentLanguage === "한국어"}>
                       <Lottie
                         animationData={animationData}
                         style={{
@@ -176,7 +176,7 @@ const YoutubePlaylist = () => {
               ) : (
                 <S.CourseCompleteWrapperEnglish>
                   {isHighlighted2 ? (
-                    <S.LottieContainer>
+                    <S.LottieContainer $isKorean={currentLanguage === "한국어"}>
                       <Lottie
                         animationData={animationData2}
                         style={{
@@ -690,7 +690,7 @@ const S = {
     font-style: normal;
     font-weight: 700;
     line-height: 20px; /* 111.111% */
-    height: 30px;
+    max-height: 30px;
 
     transition: color 0.3s ease, font-weight 0.3s ease;
   `,
@@ -709,7 +709,7 @@ const S = {
     font-style: normal;
     font-weight: 700;
     line-height: 20px; /* 111.111% */
-    height: 30px;
+    max-height: 30px;
 
     transition: color 0.3s ease, font-weight 0.3s ease;
   `,
@@ -761,7 +761,7 @@ const S = {
   }>`
     position: absolute;
     top: -30px;
-    ${({ $isKorean }) => ($isKorean ? "right: 20px;" : "right: 160px;")}
+    ${({ $isKorean }) => ($isKorean ? "right: 160px;" : "right: 20px;")}
     display: flex;
     align-items: center;
     justify-content: center;
@@ -776,13 +776,13 @@ const S = {
 
   CourseCompleteWrapperEnglish: styled.div`
     position: relative;
-    // height: 60px;
     width: 250px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
     gap: 5px;
+    padding: 5px;
   `,
 
   LottiePercentage: styled.div<{
