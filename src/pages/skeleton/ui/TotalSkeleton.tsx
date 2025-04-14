@@ -64,8 +64,25 @@ const S = {
     align-items: flex-start;
     gap: 20px;
     flex-shrink: 0;
-    background: #f2f2f2;
     overflow-y: auto;
+
+    background: linear-gradient(
+      90deg,
+      rgba(231, 232, 233, 1) 0%,
+      rgba(240, 241, 242, 0.8) 50%,
+      rgba(231, 232, 233, 1) 100%
+    );
+    background-size: 300% 100%;
+    animation: shine 3s infinite linear reverse;
+
+    @keyframes shine {
+      0% {
+        background-position: -150% 0;
+      }
+      100% {
+        background-position: 150% 0;
+      }
+    }
   `,
 
   SideBarItem: styled.div<{ active: boolean }>`
@@ -80,6 +97,24 @@ const S = {
     gap: 12px;
     background-color: ${({ active }) => (active ? "#eaeaea" : "#fff")};
     border-radius: 4px;
+
+    background: linear-gradient(
+      90deg,
+      rgba(231, 232, 233, 1) 0%,
+      rgba(240, 241, 242, 0.8) 50%,
+      rgba(231, 232, 233, 1) 100%
+    );
+    background-size: 300% 100%;
+    animation: shine 3s infinite linear reverse;
+
+    @keyframes shine {
+      0% {
+        background-position: -150% 0;
+      }
+      100% {
+        background-position: 150% 0;
+      }
+    }
 
     &:hover {
       background-color: #eaeaea;
@@ -206,6 +241,24 @@ const S = {
     border: none;
     border-radius: 4px;
     background: #e6e6e6;
+
+    background: linear-gradient(
+      90deg,
+      rgba(231, 232, 233, 1) 0%,
+      rgba(240, 241, 242, 0.8) 50%,
+      rgba(231, 232, 233, 1) 100%
+    );
+    background-size: 300% 100%;
+    animation: shine 3s infinite linear reverse;
+
+    @keyframes shine {
+      0% {
+        background-position: -150% 0;
+      }
+      100% {
+        background-position: 150% 0;
+      }
+    }
   `,
 
   ButtonText: styled.span`
@@ -239,6 +292,24 @@ const S = {
     flex-shrink: 0;
     border-radius: 20px;
     background: #e6e6e6;
+
+    background: linear-gradient(
+      90deg,
+      rgba(231, 232, 233, 1) 0%,
+      rgba(240, 241, 242, 0.8) 50%,
+      rgba(231, 232, 233, 1) 100%
+    );
+    background-size: 300% 100%;
+    animation: shine 3s infinite linear reverse;
+
+    @keyframes shine {
+      0% {
+        background-position: -150% 0;
+      }
+      100% {
+        background-position: 150% 0;
+      }
+    }
   `,
 
   TopBarCategoryWrapper: styled.div`
@@ -254,6 +325,24 @@ const S = {
     flex-shrink: 0;
     border-radius: 20px;
     background: #e6e6e6;
+
+    background: linear-gradient(
+      90deg,
+      rgba(231, 232, 233, 1) 0%,
+      rgba(240, 241, 242, 0.8) 50%,
+      rgba(231, 232, 233, 1) 100%
+    );
+    background-size: 300% 100%;
+    animation: shine 3s infinite linear reverse;
+
+    @keyframes shine {
+      0% {
+        background-position: -150% 0;
+      }
+      100% {
+        background-position: 150% 0;
+      }
+    }
   `,
 
   BottomBar: styled.div`
@@ -281,6 +370,24 @@ const S = {
     height: 14px;
     border-radius: 20px;
     background: #e6e6e6;
+
+    background: linear-gradient(
+      90deg,
+      rgba(231, 232, 233, 1) 0%,
+      rgba(240, 241, 242, 0.8) 50%,
+      rgba(231, 232, 233, 1) 100%
+    );
+    background-size: 300% 100%;
+    animation: shine 3s infinite linear reverse;
+
+    @keyframes shine {
+      0% {
+        background-position: -150% 0;
+      }
+      100% {
+        background-position: 150% 0;
+      }
+    }
   `,
 
   SaveButton: styled.button`
@@ -318,7 +425,23 @@ const S = {
     width: 100%;
     height: 100%;
     flex-shrink: 0;
-    border: 1px solid #e6e6e6;
-    background: #e6e6e6;
+
+    background: linear-gradient(
+      90deg,
+      rgba(231, 232, 233, 1) 0%,
+      rgba(240, 241, 242, 0.8) 50%,
+      rgba(231, 232, 233, 1) 100%
+    );
+    background-size: 300% 100%;
+    animation: shine 3s infinite linear reverse;
+
+    @keyframes shine {
+      0% {
+        background-position: -150% 0;
+      }
+      100% {
+        background-position: 150% 0;
+      }
+    }
   `,
 };

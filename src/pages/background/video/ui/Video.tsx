@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import YouTube from "react-youtube";
 
 import { Lottie } from "@/shared/ui";
@@ -12,11 +12,11 @@ import {
   useGetVideo,
   videoStore,
 } from "@/features/video";
+import { useLottieHighLight } from "../../hooks/useLottieHighLight";
 
 import { ReactComponent as Alert } from "../assets/alert.svg";
 import { ReactComponent as Bar } from "../assets/bar.svg";
-import animationData from "../assets/courseComplete.json";
-import animationData2 from "../assets/courseCompleteEnglish.json";
+// import animationData2 from "../assets/courseCompleteEnglish.json";
 import { ReactComponent as Docs } from "../assets/docs.svg";
 import { ReactComponent as Docs2 } from "../assets/docs2.svg";
 import { ReactComponent as Introduction } from "../assets/introduce.svg";
@@ -45,9 +45,8 @@ const YoutubePlaylist = () => {
     currentLanguage,
   } = useUserInfo();
 
-  const [isHighlighted, setIsHighlighted] = useState(false);
-
-  const prevValueRef = useRef<number>(courseAttendanceRate);
+  const { isHighlighted, animationData } =
+    useLottieHighLight(courseAttendanceRate);
 
   const courses = currentLanguage === "한국어" ? KoreanCourses : EnglishCourses;
 
@@ -80,35 +79,6 @@ const YoutubePlaylist = () => {
     setCourseAttendanceRate(takenVideos.length / videos.length);
   }, [videos, currentVideo]);
 
-  useEffect(() => {
-    if (prevValueRef.current !== courseAttendanceRate) {
-      setIsHighlighted(true);
-
-      const timeout = setTimeout(() => setIsHighlighted(false), 1500);
-      prevValueRef.current = courseAttendanceRate;
-
-      return () => clearTimeout(timeout);
-    }
-  }, [courseAttendanceRate]);
-
-  const [isHighlighted2, setIsHighlighted2] = useState(false);
-
-  useEffect(() => {
-    if (isHighlighted2) {
-      const timer = setTimeout(() => {
-        setIsHighlighted2(false);
-      }, 2000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [isHighlighted2]);
-
-  useEffect(() => {
-    if (courseAttendanceRate) {
-      setIsHighlighted2(true);
-    }
-  }, [courseAttendanceRate]);
-
   return (
     <S.Container>
       <S.Content>
@@ -131,23 +101,17 @@ const YoutubePlaylist = () => {
 
               {currentLanguage === "한국어" ? (
                 <S.CourseCompleteWrapperEnglish>
-                  {isHighlighted2 ? (
+                  {isHighlighted ? (
                     <S.LottieContainer $isKorean={currentLanguage === "한국어"}>
                       <Lottie
                         animationData={animationData}
                         style={{
-                          width: 130,
+                          width: 160,
                           paddingBottom: 0,
                           margin: 0,
                           display: "block",
                         }}
                       />
-                      <S.LottiePercentage
-                        $isKorean={currentLanguage === "한국어"}
-                        $isCompleted={courseAttendanceRate === 1}
-                      >
-                        {Math.round(courseAttendanceRate * 100)}%
-                      </S.LottiePercentage>
                     </S.LottieContainer>
                   ) : (
                     <S.CourseComplete $isHighlighted={isHighlighted}>
@@ -164,10 +128,10 @@ const YoutubePlaylist = () => {
                 </S.CourseCompleteWrapperEnglish>
               ) : (
                 <S.CourseCompleteWrapperEnglish>
-                  {isHighlighted2 ? (
+                  {/* {isHighlighted ? (
                     <S.LottieContainer $isKorean={currentLanguage === "한국어"}>
                       <Lottie
-                        animationData={animationData2}
+                        animationData={animationData}
                         style={{
                           width: 250,
                           paddingBottom: 0,
@@ -187,8 +151,11 @@ const YoutubePlaylist = () => {
                       Course Completion Rate{" "}
                       {Math.round(courseAttendanceRate * 100)}%
                     </S.CourseComplete>
-                  )}
-
+                  )} */}
+                  <S.CourseComplete $isHighlighted={isHighlighted}>
+                      Course Completion Rate{" "}
+                      {Math.round(courseAttendanceRate * 100)}%
+                    </S.CourseComplete>
                   <S.VideoProgress>
                     Video Progress{" "}
                     <S.Percentage $progressPercentage={progressPercentage}>
@@ -495,19 +462,19 @@ const S = {
   `,
 
   PlayerWrapper: styled.div`
-  position: relative;
-  width: 100%;
-  max-width: 1500px; //
-  height: auto;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-
-  iframe {
-    position: absolute;
-    inset: 0;
+    position: relative;
     width: 100%;
-    height: 100%;
-    border: 0;
+    max-width: 1500px; //
+    height: auto;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+
+    iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
     }
   `,
 
@@ -666,10 +633,10 @@ const S = {
     color: ${({ $isHighlighted }) => ($isHighlighted ? "#1a2a9c" : "#6e6e73")};
 
     font-family: Pretendard;
-    font-size: 17px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 700;
-    line-height: 20px; /* 111.111% */
+    line-height: 22px; /* 111.111% */
     max-height: 30px;
 
     transition: color 0.3s ease, font-weight 0.3s ease;
@@ -685,10 +652,10 @@ const S = {
     color: ${({ $isHighlighted }) => ($isHighlighted ? "#1a2a9c" : "#6e6e73")};
 
     font-family: Pretendard;
-    font-size: 17px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 700;
-    line-height: 20px; /* 111.111% */
+    line-height: 18px; /* 111.111% */
     max-height: 30px;
 
     transition: color 0.3s ease, font-weight 0.3s ease;
@@ -740,8 +707,8 @@ const S = {
     $isKorean?: boolean;
   }>`
     position: absolute;
-    top: -30px;
-    ${({ $isKorean }) => ($isKorean ? "right: 160px;" : "right: 20px;")}
+    top: -20px;
+    ${({ $isKorean }) => ($isKorean ? "right: 115px;" : "right: 20px;")}
     display: flex;
     align-items: center;
     justify-content: center;
