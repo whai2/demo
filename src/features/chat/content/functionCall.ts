@@ -90,3 +90,66 @@ export const referenceFunctions = (currentLanguage: string) => [
     },
   },
 ];
+
+export const referenceFunctionsEnglish = () => [
+  {
+    name: "generate_reference",
+    description: `
+        Use the user's previous question and answer as a reference to create a reference material (video, document, etc.) that is likely to be used in the current lecture.
+    `,
+    parameters: {
+      type: "object",
+      properties: {
+        reference: {
+          type: "object",
+          properties: {
+            time: {
+              type: "string",
+              description:
+                "The time range in the lecture video where the reference material is mentioned. Must be in range format. (e.g., 5:15~6:30)",
+            },
+            title: {
+              type: "string",
+              description: `
+              # very important
+              you must provide english
+
+              The title of the reference material.  
+              (Example: Introduction to Data Science)
+
+              you must provide english
+              `,
+            },
+            file: {
+              type: "string",
+              description: `
+              # very important
+              you must provide english
+
+              The file name and extension of the material.  
+              Keep it within 10 characters.  
+              (Example: IntroDS.pdf)
+
+              you must provide english
+              `,
+            },
+            pages: {
+              type: "string",
+              description: `
+              # very important
+              you must provide english
+
+              The page number or range referenced in the material.  
+              (Example: 24page, 10-12p)
+
+              you must provide english
+              `,
+            },
+          },
+          required: ["time", "title", "file", "pages"],
+        },
+      },
+      required: ["reference"],
+    },
+  },
+];

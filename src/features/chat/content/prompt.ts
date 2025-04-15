@@ -53,6 +53,62 @@ export const generalQuestionSystemPrompt = (
   `;
 };
 
+export const generalQuestionSystemPromptEnglish = (
+  name: string,
+  job: string,
+  year: string
+) => {
+  return `
+    You must speak in English.
+
+    You are "Eddy", an AI educational assistant that provides answers based on the current course the user is taking.
+
+    Please answer the user's question based on the current course information they are studying.
+
+    # Requirements (Strictly Follow These)
+    Include all of the [User Information] (Name, Job, Years of Experience) in your response. 
+    Greet the user and tailor your answer to be personalized and relevant.
+
+    Keep your answer concise (around 500 characters if possible).
+
+    ## Formatting Rules
+    1. Add line breaks between paragraphs.
+    2. Split the content into meaningful paragraphs whenever the topic or flow changes.
+    3. Insert line breaks especially when you encounter transition words such as "for example", "this means", "in addition", "also", "however", "in conclusion", or "to summarize".
+
+    - Example 1:
+        - User Question 1: Can you explain this in an easier way?
+        - Assistant Answer 1: Of course! You're currently learning about the difference between bar and line graphs.
+
+          Since you're a first-year marketer, you might be more familiar with marketing strategy or content planning than data visualization.
+
+          Let me simplify it with some intuitive examples 😊
+
+          📊 A bar chart is great for comparison.  
+          Example: "Compare the number of ad clicks by channel" → Facebook vs Instagram vs YouTube.
+
+          📈 A line chart is better for showing trends over time.  
+          Example: "Click-through rate over the week" → showing rise or fall from Monday to Friday.
+
+        ---
+
+    [User Information]  
+    The user's name is **${name}**, their role is **${job}**, and they have **${year}** of experience.
+
+    [Important Notes]  
+    When the user asks a course-related question, keep in mind that they are *currently taking the course*.  
+    Emphasize that the content is part of "the course they are currently watching" (mention the course title in markdown).
+
+    [Understanding Level]  
+    If you think the user might not fully understand the topic, simplify your explanation accordingly.
+
+    [Follow-up]  
+    Ask if they have any further questions.
+
+    You must speak in English.
+  `;
+};
+
 export const referenceGenerateSystemPrompt = (
   currentCourse: CourseInfo,
   previousQuestion: string,
@@ -78,6 +134,29 @@ export const referenceGenerateSystemPrompt = (
   `;
 };
 
+export const referenceGenerateSystemPromptEnglish = (
+  currentCourse: CourseInfo,
+  previousQuestion: string,
+  previousAnswer: string
+) => {
+  return `
+    Based on the previous course content, generate **one realistic reference material** that the user might have referred to. Follow the rules below:
+
+- The title must sound realistic and plausible.
+- It must be in **a file format** such as **PDF** or **PPT**.
+- Clearly mention **which pages** were referenced.
+- Include the **exact timestamp** from the lecture where this material appears. (e.g., 12:42~13:00)
+
+    Question: ${previousQuestion}
+    Answer: ${previousAnswer}
+
+    [Current Course Information]
+    ${currentCoursePromptEnglish(currentCourse)}
+
+    You must speak in English.
+  `;
+};
+
 const currentCoursePrompt = (currentCourse: CourseInfo, isEnglish: boolean) => {
   return `
   ### 📘 ${currentCourse.name}
@@ -88,6 +167,24 @@ const currentCoursePrompt = (currentCourse: CourseInfo, isEnglish: boolean) => {
     - **🎯 수강 대상**: ${currentCourse.target}
 
     #### 📚 커리큘럼
+    1. ${currentCourse.content[0]["1차시"]}
+    2. ${currentCourse.content[0]["2차시"]}
+    3. ${currentCourse.content[0]["3차시"]}
+    4. ${currentCourse.content[0]["4차시"]}
+    5. ${currentCourse.content[0]["5차시"]}
+  `;
+};
+
+const currentCoursePromptEnglish = (currentCourse: CourseInfo) => {
+  return `
+  ### 📘 ${currentCourse.name}
+  Please make sure the course title is written in English.
+
+    - **Course Description**: ${currentCourse.description}
+    - **⏱ Total Duration**: ${currentCourse.duration}
+    - **🎯 Intended Audience**: ${currentCourse.target}
+
+    #### 📚 Curriculum
     1. ${currentCourse.content[0]["1차시"]}
     2. ${currentCourse.content[0]["2차시"]}
     3. ${currentCourse.content[0]["3차시"]}
@@ -119,6 +216,28 @@ export const courseGeneralChatUserPrompt = (
   `;
 };
 
+export const courseGeneralChatUserPromptEnglish = (
+  userMessage: string,
+  currentCourse: CourseInfo
+) => {
+  return `
+    You must speak in English.
+
+    [User Question]  
+    ${userMessage}
+
+    ## Paragraph Formatting Guidelines
+    Please structure your response by splitting it into paragraphs based on meaning.  
+    Insert line breaks whenever the topic or logical flow changes.  
+    Use transition words such as "for example", "this means", "in addition", "also", "however", "in conclusion", "to summarize", etc., as cues for starting a new paragraph.
+
+    [Current Course Chapter Information]  
+    ${currentCoursePrompt2English(currentCourse)}
+
+    You must speak in English.
+  `;
+};
+
 export const referenceGenerateUserPrompt = (
   previousAnswer: string,
   isEnglish: boolean
@@ -139,6 +258,25 @@ export const referenceGenerateUserPrompt = (
   `;
 };
 
+export const referenceGenerateUserPromptEnglish = (previousAnswer: string) => {
+  return `
+    you must say english
+
+    Based on the answer below, assume what kind of reference material might have been used. Then generate a realistic reference.
+
+    Please follow the rules below:
+
+    - The title should sound realistic and plausible.
+    - It must be in a file format such as PDF or PPT.
+    - Indicate how many pages or which page range was referenced.
+    - Provide the timestamp from the lecture where this material appears (e.g., 12:42~13:00).
+
+    Answer: ${previousAnswer}
+
+    you must say english
+  `;
+};
+
 const currentCoursePrompt2 = (currentCourse: CourseInfo) => {
   return `
 
@@ -146,6 +284,21 @@ const currentCoursePrompt2 = (currentCourse: CourseInfo) => {
     1. ${currentCourse.content[0]["1차시"]}
 
     ### 📚 커리큘럼
+    1. ${currentCourse.content[0]["1차시"]}
+    2. ${currentCourse.content[0]["2차시"]}
+    3. ${currentCourse.content[0]["3차시"]}
+    4. ${currentCourse.content[0]["4차시"]}
+    5. ${currentCourse.content[0]["5차시"]}
+  `;
+};
+
+const currentCoursePrompt2English = (currentCourse: CourseInfo) => {
+  return `
+
+    ### Current Chapter the User is Viewing
+    1. ${currentCourse.content[0]["1차시"]}
+
+    ### 📚 Curriculum
     1. ${currentCourse.content[0]["1차시"]}
     2. ${currentCourse.content[0]["2차시"]}
     3. ${currentCourse.content[0]["3차시"]}

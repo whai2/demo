@@ -2,12 +2,16 @@ import { EnglishCourses, KoreanCourses } from "@/features/chat";
 import { useUserInfo } from "@/features/userInfo";
 import { functionChat, streamChat } from "../apis/chat.api";
 import { useChatStore } from "../useChat";
-import { referenceFunctions } from "./functionCall";
+import { referenceFunctions, referenceFunctionsEnglish } from "./functionCall";
 import {
   courseGeneralChatUserPrompt,
+  courseGeneralChatUserPromptEnglish,
   generalQuestionSystemPrompt,
+  generalQuestionSystemPromptEnglish,
   referenceGenerateSystemPrompt,
+  referenceGenerateSystemPromptEnglish,
   referenceGenerateUserPrompt,
+  referenceGenerateUserPromptEnglish,
 } from "./prompt";
 
 import { CourseInfo, MessageType } from "../type";
@@ -23,11 +27,25 @@ export const runGeneralStreaming = async (
   year: string,
   currentLanguage: string
 ) => {
-  const enhancedUserMessage = courseGeneralChatUserPrompt(userMessage, course, currentLanguage === "English");
+  const enhancedUserMessage =
+    currentLanguage === "한국어"
+      ? courseGeneralChatUserPrompt(
+          userMessage,
+          course,
+          currentLanguage === "한국어"
+        )
+      : courseGeneralChatUserPromptEnglish(userMessage, course);
 
   const response = await streamChat(
     enhancedUserMessage,
-    generalQuestionSystemPrompt(name, job, year, currentLanguage === "English")
+    currentLanguage === "한국어"
+      ? generalQuestionSystemPrompt(
+          name,
+          job,
+          year,
+          currentLanguage === "한국어"
+        )
+      : generalQuestionSystemPromptEnglish(name, job, year)
   );
 
   if (!response.ok || !response.body) {
@@ -93,9 +111,28 @@ export const runGeneralStreaming = async (
   });
 
   const referenceResponse = await functionChat(
-    referenceGenerateUserPrompt(previousAnswer, currentLanguage === "English"),
-    referenceGenerateSystemPrompt(course, previousQuestion, previousAnswer, currentLanguage === "English"),
-    referenceFunctions(currentLanguage)
+    currentLanguage === "한국어"
+      ? referenceGenerateUserPrompt(
+          previousAnswer,
+          currentLanguage === "한국어"
+        )
+      : referenceGenerateUserPromptEnglish(previousAnswer),
+    currentLanguage === "한국어"
+      ? referenceGenerateSystemPrompt(
+          course,
+          previousQuestion,
+          previousAnswer,
+          currentLanguage === "한국어"
+        )
+      : referenceGenerateSystemPromptEnglish(
+          course,
+          previousQuestion,
+          previousAnswer
+        ),
+
+    currentLanguage === "한국어"
+      ? referenceFunctions(currentLanguage)
+      : referenceFunctionsEnglish()
   );
 
   const responseData = await referenceResponse.json();
