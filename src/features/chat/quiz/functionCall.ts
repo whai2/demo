@@ -13,7 +13,8 @@ export const courseQuizFunctionsEnglish = [
           type: "object",
           description: `
             You must answer in English.
-            A single quiz question with four answer choices and a correct answer index. The question and answer must be accurate and error-free. (Incorrect example: stating that there's one correct answer when multiple answers are actually possible.)
+            A single quiz question with four answer choices and a correct answer index. The question and answer must be accurate and error-free.
+            (Incorrect example: stating that there's one correct answer when multiple answers are actually possible.)
             You must answer in English.
           `,
           properties: {
@@ -44,8 +45,24 @@ export const courseQuizFunctionsEnglish = [
         },
         introMessage: {
           type: "string",
-          description:
-            "An encouraging message before the quiz begins. It should include the user’s name, years of experience, job role, and the current session's progress percentage. Format example: '**You're doing great at XX%!**'",
+          description: `
+            A friendly and personalized message shown before the quiz begins.
+
+            It must:
+            - Be written in English
+            - Include the user’s name, years of experience, and job role
+            - Reflect the user's course progress percentage
+            - Be motivational and adjusted to the progress
+
+            Example messages:
+
+            - (Progress = 0%): "Hi [name], you haven’t started the lesson yet — no worries! This quiz will give you a quick preview of what you’ll learn."
+            - (Progress < 30%): "You've just started, [name]! Great to see your initiative. Try the quiz, and if it's tricky, feel free to review the lesson a bit more."
+            - (Progress 30% ~ 79%): "You're doing great, [name]! With [progress]% completed, let’s check your understanding so far."
+            - (Progress >= 80%): "Impressive work, [name]! You've finished [progress]% of the lesson. This quiz will help reinforce what you’ve learned."
+
+            The message should always sound encouraging and contextual.
+          `,
         },
       },
       required: ["question", "introMessage"],
@@ -61,7 +78,7 @@ export const courseQuizFunctions = (currentLanguage: string) => [
     }
       현재 수강 중인 강의에 대한 객관식 퀴즈 문제를 생성합니다.
       ${currentLanguage === "English" ? "you must say english\n" : ""}
-      `,
+    `,
     parameters: {
       type: "object",
       properties: {
@@ -70,9 +87,10 @@ export const courseQuizFunctions = (currentLanguage: string) => [
           description: `${
             currentLanguage === "English" ? "you must say english\n" : ""
           }
-            하나의 퀴즈 문제와 그에 따른 보기 및 정답 정보. 문제와 답은 정확해야 하며, 출제 오류가 없어야 합니다. (잘못 된 예: 정답이 1개라고 제시했는데, 실제는 복수 정답이 가능한 경우)
+            하나의 퀴즈 문제와 그에 따른 보기 및 정답 정보. 문제와 답은 정확해야 하며, 출제 오류가 없어야 합니다. 
+            (잘못 된 예: 정답이 1개라고 제시했는데, 실제는 복수 정답이 가능한 경우)
             ${currentLanguage === "English" ? "you must say english\n" : ""}
-            `,
+          `,
           properties: {
             question: {
               type: "string",
@@ -87,22 +105,36 @@ export const courseQuizFunctions = (currentLanguage: string) => [
               minItems: 4,
               maxItems: 4,
               description:
-                "객관식 보기 4개. 정답이 혼동되지 않도록 명확히 구분되어야 합니다. 넘버링은 금지이며, 문제 문장만 제시해야 합니다.",
+                "객관식 보기 4개. 정답이 혼동되지 않도록 명확히 구분되어야 합니다. 넘버링은 금지이며, 보기 문장만 제시해야 합니다.",
             },
             answerIndex: {
               type: "number",
               minimum: 0,
               maximum: 3,
               description:
-                "정답인 보기의 인덱스 (0~3). quiz 내용과 일치해야 합니다.",
+                "정답인 보기의 인덱스 (0~3). 문제 내용과 일치해야 합니다.",
             },
           },
           required: ["question", "choices", "answerIndex"],
         },
         introMessage: {
           type: "string",
-          description:
-            "퀴즈 시작 전 수강생을 격려하는 메시지. 이번 회차 %, 사용자 이름, 연차, 직무를 포함해야 합니다. **이번 회차 %에 격려합니다.**",
+          description: `
+퀴즈 시작 전 수강생을 격려하는 메시지입니다.
+
+- 반드시 한국어로 작성되어야 합니다.
+- 수강생의 이름, 직무, 연차, 그리고 이번 회차의 수강률(%) 정보를 포함해야 합니다.
+- 수강률에 따라 아래와 같이 맞춤형 문구를 사용하세요.
+
+예시:
+
+- (진행률 = 0%): "[이름]님, 아직 강의를 시작하지 않으셨네요. 이번 퀴즈는 강의의 핵심 내용을 미리 체험해볼 수 있도록 준비했어요."
+- (진행률 < 30%): "[이름]님, 강의를 막 시작하셨군요! 간단한 퀴즈로 학습 내용을 확인해보는 건 어떨까요?"
+- (진행률 30~79%): "[이름]님, 현재 수강률은 [진행률]%예요. 지금까지 배운 내용을 퀴즈로 점검해보세요!"
+- (진행률 ≥ 80%): "[이름]님, 거의 다 들으셨네요! ([진행률]%) 퀴즈로 마무리 복습을 해보는 건 어떨까요?"
+
+이 메시지는 반드시 격려와 맥락을 함께 담아야 하며, 사용자에게 긍정적인 경험을 제공해야 합니다.
+          `.trim(),
         },
       },
       required: ["question", "introMessage"],
@@ -350,6 +382,67 @@ export const referenceFunctions = (currentLanguage: string) => [
                   ? "you must provide english\n"
                   : ""
               }`,
+            },
+          },
+          required: ["time", "title", "file", "pages"],
+        },
+      },
+      required: ["reference"],
+    },
+  },
+];
+
+export const referenceFunctionsEnglish = () => [
+  {
+    name: "generate_reference",
+    description: `
+      You must respond in English only.
+
+      Use the user's previous question and answer to create a realistic reference material (e.g., video, document, etc.) that could have been mentioned in the lecture.
+
+      You must respond in English only.
+    `,
+    parameters: {
+      type: "object",
+      properties: {
+        reference: {
+          type: "object",
+          properties: {
+            time: {
+              type: "string",
+              description:
+                "The time segment in the lecture video where the reference is mentioned. Must be in a range format. (e.g., 5:15~6:30)",
+            },
+            title: {
+              type: "string",
+              description: `
+              # Very Important  
+              You must provide English only.  
+              Provide the title of the reference material.  
+              (Example: Introduction to Data Science)  
+              You must provide English only.
+              `,
+            },
+            file: {
+              type: "string",
+              description: `
+              # Very Important  
+              You must provide English only.  
+              Provide the file name and extension.  
+              Keep it within 10 characters.  
+              (Example: IntroDS.pdf)  
+              You must provide English only.
+              `,
+            },
+            pages: {
+              type: "string",
+              description: `
+              # Very Important  
+              You must provide English only.  
+              Specify the page or page range referenced.  
+              (Example: 24page, 10-12p)  
+              You must provide English only.
+              `,
             },
           },
           required: ["time", "title", "file", "pages"],

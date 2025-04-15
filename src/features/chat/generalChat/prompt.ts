@@ -279,10 +279,10 @@ const currentCoursePrompt = (currentCourse: CourseInfo) => {
 
     #### 📚 커리큘럼
     1. ${currentCourse.content[0]["1차시"]}
-    2. ${currentCourse.content[0]["2차시"]}
-    3. ${currentCourse.content[0]["3차시"]}
-    4. ${currentCourse.content[0]["4차시"]}
-    5. ${currentCourse.content[0]["5차시"]}
+    2. ${currentCourse.content[1]["2차시"]}
+    3. ${currentCourse.content[2]["3차시"]}
+    4. ${currentCourse.content[3]["4차시"]}
+    5. ${currentCourse.content[4]["5차시"]}
   `;
 };
 
@@ -295,10 +295,10 @@ const currentCoursePromptEnglish = (currentCourse: CourseInfo) => {
 
   #### 📚 Curriculum
   1. ${currentCourse.content[0]["1차시"]}
-  2. ${currentCourse.content[0]["2차시"]}
-  3. ${currentCourse.content[0]["3차시"]}
-  4. ${currentCourse.content[0]["4차시"]}
-  5. ${currentCourse.content[0]["5차시"]}
+  2. ${currentCourse.content[1]["2차시"]}
+  3. ${currentCourse.content[2]["3차시"]}
+  4. ${currentCourse.content[3]["4차시"]}
+  5. ${currentCourse.content[4]["5차시"]}
   `;
 };
 

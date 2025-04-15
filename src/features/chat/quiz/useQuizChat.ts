@@ -9,19 +9,25 @@ import {
   courseQuizAnswerFunctions,
   courseQuizAnswerFunctionsEnglish,
   courseQuizFunctions,
-  referenceFunctions,
   courseQuizFunctionsEnglish,
+  referenceFunctions,
+  referenceFunctionsEnglish,
 } from "./functionCall";
 import {
   courseQuizSystemPrompt,
+  courseQuizSystemPromptEnglish,
   currentCoursePrompt,
+  currentCoursePromptEnglish,
   nextQuizSystemPrompt,
+  nextQuizSystemPromptEnglish,
   quizAnswerSystemPrompt,
   quizAnswerUserPrompt,
+  quizAnswerUserPromptEnglish,
   quizMarkdownPrompt,
+  quizMarkdownPromptEnglish,
   referenceGenerateSystemPrompt,
+  referenceGenerateSystemPromptEnglish,
   referenceGenerateUserPrompt,
-  nextQuizSystemPromptEnglish,
 } from "./prompt";
 
 export const runCourseQuizFlow = async (
@@ -39,7 +45,10 @@ export const runCourseQuizFlow = async (
   currentLanguage: string,
   progressPercentage?: number
 ) => {
-  const prompt = currentCoursePrompt(course);
+  const prompt =
+    currentLanguage === "한국어"
+      ? currentCoursePrompt(course)
+      : currentCoursePromptEnglish(course);
 
   const types = ["객관식", "단답형"];
   const randomType = types[Math.floor(Math.random() * types.length)];
@@ -64,19 +73,44 @@ export const runCourseQuizFlow = async (
     ${currentLanguage === "English" ? "you must say english\n" : ""}
   `;
 
+  const enhancedUserMessageEnglish = `
+  # Very Important  
+  You must respond in English only.
+
+  [User Question]  
+  ${userMessage}
+
+  [Quiz Guidelines]  
+  Please provide a quiz if the user is looking for a way to review through questions.  
+  Also, provide a quiz if the user wants to assess their understanding of the content.
+
+  [Question Type]  
+  ${randomType}
+
+  [Current Course Information]  
+  ${prompt}
+
+  You must respond in English only.
+`;
+
   const response = await functionChat(
-    enhancedUserMessage,
-    courseQuizSystemPrompt(
-      prompt,
-      name,
-      job,
-      year,
-      currentLanguage === "English",
-      progressPercentage
-    ),
-    currentLanguage === "English"
-      ? courseQuizFunctionsEnglish
-      : courseQuizFunctions(currentLanguage)
+    currentLanguage === "한국어"
+      ? enhancedUserMessage
+      : enhancedUserMessageEnglish,
+
+    currentLanguage === "한국어"
+      ? courseQuizSystemPrompt(prompt, name, job, year, progressPercentage)
+      : courseQuizSystemPromptEnglish(
+          prompt,
+          name,
+          job,
+          year,
+          progressPercentage
+        ),
+
+    currentLanguage === "한국어"
+      ? courseQuizFunctions(currentLanguage)
+      : courseQuizFunctionsEnglish
   );
 
   if (!response.ok || !response.body) {
@@ -181,11 +215,10 @@ export const useSendQuizAnswer = (quiz: Quiz | Quiz2) => {
   // );
 
   const sendQuizAnswerCallback = async (answer: string) => {
-    const userMessage = quizAnswerUserPrompt(
-      name,
-      answer,
-      currentLanguage === "English"
-    );
+    const userMessage =
+      currentLanguage === "한국어"
+        ? quizAnswerUserPrompt(name, answer)
+        : quizAnswerUserPromptEnglish(name, answer);
 
     setMessages((prevMessages) => [
       ...prevMessages,
@@ -335,11 +368,10 @@ export const runCourseQuizAnswerFlow = async (
   currentLanguage: string,
   isInput?: boolean
 ) => {
-  const userMessage = quizAnswerUserPrompt(
-    name,
-    currentText,
-    currentLanguage === "English"
-  );
+  const userMessage =
+    currentLanguage === "한국어"
+      ? quizAnswerUserPrompt(name, currentText)
+      : quizAnswerUserPromptEnglish(name, currentText);
 
   if (!isInput) {
     setMessages((prevMessages) => [
@@ -436,7 +468,9 @@ export const runCourseQuizAnswerFlow = async (
       name,
       currentLanguage === "English"
     ),
-    courseQuizAnswerFunctions(currentLanguage)
+    currentLanguage === "한국어"
+      ? courseQuizAnswerFunctions(currentLanguage)
+      : courseQuizAnswerFunctionsEnglish()
   );
 
   if (!answerResponse.ok || !answerResponse.body) {
@@ -496,17 +530,19 @@ export const useNextQuiz = () => {
     (course) => course.name === courseName
   );
 
-  const prompt = currentCoursePrompt(course as unknown as CourseInfo);
+  const prompt =
+    currentLanguage === "한국어"
+      ? currentCoursePrompt(course as unknown as CourseInfo)
+      : currentCoursePromptEnglish(course as unknown as CourseInfo);
 
   const types = ["객관식", "단답형"];
   const randomType = types[Math.floor(Math.random() * types.length)];
 
   const nextQuizCallback = async (nextQuiz: string) => {
-    const userMessage = quizAnswerUserPrompt(
-      name,
-      nextQuiz,
-      currentLanguage === "English"
-    );
+    const userMessage =
+      currentLanguage === "한국어"
+        ? quizAnswerUserPrompt(name, nextQuiz)
+        : quizAnswerUserPromptEnglish(name, nextQuiz);
 
     const enhancedUserMessage = `
     # very important
@@ -535,7 +571,7 @@ export const useNextQuiz = () => {
       ${userMessage}
 
       [Previous Quiz]  
-      ${quizMarkdownPrompt(lastQuiz as Quiz | Quiz2)}
+      ${quizMarkdownPromptEnglish(lastQuiz as Quiz | Quiz2)}
 
       [Question Type]  
       ${randomType}
@@ -567,20 +603,31 @@ export const useNextQuiz = () => {
         ? enhancedUserMessageEnglish
         : enhancedUserMessage,
       currentLanguage === "English"
-        ? nextQuizSystemPromptEnglish(
+        ? nextQuizSystemPromptEnglish(prompt, name, job, year)
+        : nextQuizSystemPrompt(
             prompt,
             name,
             job,
-            year
-          )
-        : nextQuizSystemPrompt(prompt, name, job, year, currentLanguage === "English"),
-      courseQuizFunctions(currentLanguage)
+            year,
+            currentLanguage === "English"
+          ),
+      currentLanguage === "한국어"
+        ? courseQuizFunctions(currentLanguage)
+        : courseQuizFunctionsEnglish
     );
 
     if (!response.ok || !response.body) {
       setMessages((prevMessages) => {
         const updated = [...prevMessages];
         updated[updated.length - 1].isLoading = false;
+        updated[updated.length - 1].courseQuiz = {
+          isLoading: false,
+          quiz: {
+            question: "",
+            choices: [],
+            answerIndex: 0,
+          },
+        };
         return updated;
       });
       setIsLoading(false);
@@ -593,6 +640,7 @@ export const useNextQuiz = () => {
     if (!functionCall) {
       setMessages((prevMessages) => {
         const updated = [...prevMessages];
+        updated[updated.length - 1].isLoading = false;
         updated[updated.length - 1].courseQuiz = {
           isLoading: false,
           quiz: {
@@ -603,6 +651,7 @@ export const useNextQuiz = () => {
         };
         return updated;
       });
+      setIsLoading(false);
       return;
     }
 
@@ -747,13 +796,20 @@ export const useQuizReference = () => {
         course as unknown as CourseInfo,
         currentLanguage === "English"
       ),
-      referenceGenerateSystemPrompt(
-        course as unknown as CourseInfo,
-        previousQuestion,
-        lastQuiz as Quiz | Quiz2,
-        currentLanguage === "English"
-      ),
-      referenceFunctions(currentLanguage)
+      currentLanguage === "한국어"
+        ? referenceGenerateSystemPrompt(
+            course as unknown as CourseInfo,
+            previousQuestion,
+            lastQuiz as Quiz | Quiz2
+          )
+        : referenceGenerateSystemPromptEnglish(
+            course as unknown as CourseInfo,
+            previousQuestion,
+            lastQuiz as Quiz | Quiz2
+          ),
+      currentLanguage === "한국어"
+        ? referenceFunctions(currentLanguage)
+        : referenceFunctionsEnglish()
     );
 
     const responseData = await referenceResponse.json();
