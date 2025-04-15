@@ -49,14 +49,8 @@ export const quizIntentClassificationSystemPrompt = (
   `;
 };
 
-export function followupQuestionPrompt(
-  previousAnswer: string,
-  isEnglish: boolean
-): string {
+export function followupQuestionPrompt(previousAnswer: string): string {
   return `
-   # Very Important   
-    ${isEnglish ? "you must say english\n" : ""}
-
     아래 답변을 읽고, 유저가 이어서 할 법한 자연스러운 꼬리 질문 두 개를 생성하세요.
 
     답변:
@@ -66,9 +60,26 @@ export function followupQuestionPrompt(
     - 전체 흐름과 관련성 있는 질문일 것
     - 너무 포괄적이거나 모호하지 않게 작성
     - 정보 탐색을 이어갈 수 있도록 실용적으로 작성
+  `;
+}
 
-    # Very Important
-    ${isEnglish ? "you must say english\n" : ""}
+export function followupQuestionPromptEnglish(previousAnswer: string): string {
+  return `
+    # Very Important  
+    You must respond in English only.
+
+    Read the answer below and generate **two natural follow-up questions** the user might ask next.
+
+    Answer:  
+    ${previousAnswer}
+
+    Requirements:
+    - The questions must be clearly related to the previous answer.
+    - Avoid overly broad or vague questions.
+    - Make them practical and helpful for continuing the information flow.
+
+    # Very Important  
+    You must respond in English only.
   `;
 }
 
@@ -89,7 +100,10 @@ export const userEnhancePrompt = (userMessage: string, isEnglish: boolean) => {
   `;
 };
 
-export const userEnhanceQuizPrompt = (userMessage: string, isEnglish: boolean) => {
+export const userEnhanceQuizPrompt = (
+  userMessage: string,
+  isEnglish: boolean
+) => {
   return `
     # Very Important
     ${isEnglish ? "you must say english\n" : ""}

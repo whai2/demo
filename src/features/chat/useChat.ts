@@ -3,12 +3,14 @@ import { create } from "zustand";
 import { functionChat } from "./apis/chat.api";
 import {
   followupQuestionFunctions,
+  followupQuestionFunctionsEnglish,
   metaFunctions,
   metaQuizFunctions,
 } from "./functions";
 import {
   currentCoursePrompt,
   followupQuestionPrompt,
+  followupQuestionPromptEnglish,
   metaIntentClassificationSystemPrompt,
   quizIntentClassificationSystemPrompt,
   userEnhancePrompt,
@@ -307,15 +309,15 @@ export const getTailQuestion = async (
 
   try {
     const followupResponse = await functionChat(
-      followupQuestionPrompt(
-        lastAssistantMessage.content,
-        currentLanguage === "English"
-      ),
-      followupQuestionPrompt(
-        lastAssistantMessage.content,
-        currentLanguage === "English"
-      ),
-      followupQuestionFunctions(currentLanguage)
+      currentLanguage === "한국어"
+        ? followupQuestionPrompt(lastAssistantMessage.content)
+        : followupQuestionPromptEnglish(lastAssistantMessage.content),
+      currentLanguage === "한국어"
+        ? followupQuestionPrompt(lastAssistantMessage.content)
+        : followupQuestionPromptEnglish(lastAssistantMessage.content),
+      currentLanguage === "한국어"
+        ? followupQuestionFunctions(currentLanguage)
+        : followupQuestionFunctionsEnglish()
     );
 
     const responseData = await followupResponse.json();
@@ -338,7 +340,7 @@ export const useSendTailQuestion = () => {
   const { courseCategory, courseName, name, job, year, currentLanguage } =
     useUserInfo();
 
-    const courses = currentLanguage === "한국어" ? KoreanCourses : EnglishCourses;
+  const courses = currentLanguage === "한국어" ? KoreanCourses : EnglishCourses;
 
   const currentCourses = courses.category.find(
     (cat) => cat.name === courseCategory
