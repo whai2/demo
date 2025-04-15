@@ -9,8 +9,7 @@ interface CourseSummationStore {
 
 export const useCourseSummationStore = create<CourseSummationStore>((set) => ({
   courseSummation: "",
-  setCourseSummation: (courseSummation: string) =>
-    set({ courseSummation }),
+  setCourseSummation: (courseSummation: string) => set({ courseSummation }),
   isSummationLoading: false,
   setIsSummationLoading: (isSummationLoading: boolean) =>
     set({ isSummationLoading }),
@@ -29,7 +28,11 @@ export const handleCourseSummation = async (
     # Very Important
     ${currentLanguage === "English" ? "you must say english\n" : ""}
 
-    "최대 150자 이내로 강의 개요를 요약해줘"
+    ${
+      currentLanguage === "English"
+        ? "Summarize the course overview within 150 characters, and be sure to include relevant keywords."
+        : "최대 150자 이내로 강의 개요를 요약해줘"
+    }
 
     ${currentLanguage === "English" ? "you must say english\n" : ""}
     `,
