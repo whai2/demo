@@ -1,9 +1,12 @@
 import { functionChat, streamChat } from "../apis/chat.api";
-import { functions } from "./functionCall";
+import { functions, functionsEnglish } from "./functionCall";
 import {
   courseFunctionSystemPrompt,
+  courseFunctionSystemPromptEnglish,
   courseRecommendationSystemPrompt,
+  courseRecommendationSystemPromptEnglish,
   courseRecommendationUserPrompt,
+  courseRecommendationUserPromptEnglish,
 } from "./prompt";
 
 import { useUserInfo } from "@/features/userInfo";
@@ -27,13 +30,20 @@ export const useCourseRecommendChat = () => {
   );
 
   const callback = async (userMessage: string) => {
-    const enhancedUserMessage = courseRecommendationUserPrompt(
-      course as unknown as CourseInfo,
-      currentCourses as unknown as CourseCategory,
-      userMessage,
-      courseCategory,
-      currentLanguage === "English"
-    );
+    const enhancedUserMessage =
+      currentLanguage === "한국어"
+        ? courseRecommendationUserPrompt(
+            course as unknown as CourseInfo,
+            currentCourses as unknown as CourseCategory,
+            userMessage,
+            courseCategory
+          )
+        : courseRecommendationUserPromptEnglish(
+            course as unknown as CourseInfo,
+            currentCourses as unknown as CourseCategory,
+            userMessage,
+            courseCategory
+          );
 
     setMessages((prevMessages) => [
       ...prevMessages,
@@ -49,15 +59,23 @@ export const useCourseRecommendChat = () => {
 
     const response = await streamChat(
       enhancedUserMessage,
-      courseRecommendationSystemPrompt(
-        name,
-        job,
-        year,
-        course as unknown as CourseInfo,
-        currentCourses as unknown as CourseCategory,
-        courseCategory,
-        currentLanguage === "English"
-      )
+      currentLanguage === "한국어"
+        ? courseRecommendationSystemPrompt(
+            name,
+            job,
+            year,
+            course as unknown as CourseInfo,
+            currentCourses as unknown as CourseCategory,
+            courseCategory
+          )
+        : courseRecommendationSystemPromptEnglish(
+            name,
+            job,
+            year,
+            course as unknown as CourseInfo,
+            currentCourses as unknown as CourseCategory,
+            courseCategory
+          )
     );
     if (!response.ok || !response.body) {
       throw new Error("네트워크 응답 실패");
@@ -130,15 +148,24 @@ export const useCourseRecommendChat = () => {
 
       const getRecommendationCoursesResponse = await functionChat(
         enhancedUserMessage,
-        courseFunctionSystemPrompt(
-          name,
-          job,
-          year,
-          generatedAnswer,
-          courseCategory,
-          currentLanguage === "English"
-        ),
-        functions(currentLanguage)
+        currentLanguage === "한국어"
+          ? courseFunctionSystemPrompt(
+              name,
+              job,
+              year,
+              generatedAnswer,
+              courseCategory
+            )
+          : courseFunctionSystemPromptEnglish(
+              name,
+              job,
+              year,
+              generatedAnswer,
+              courseCategory
+            ),
+        currentLanguage === "한국어"
+          ? functions(currentLanguage)
+          : functionsEnglish()
       );
 
       if (

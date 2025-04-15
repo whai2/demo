@@ -1,10 +1,16 @@
 import { functionChat, streamChat } from "../apis/chat.api";
 import { CourseCategory, CourseInfo, MessageType } from "../type";
-import { userIntentClassificationFunctions } from "./functionCall";
 import {
-  userIntentClassificationSystemPrompt,
-  userIntentClassificationFunctionPrompt,
+  userIntentClassificationFunctions,
+  userIntentClassificationFunctionsEnglish,
+} from "./functionCall";
+import {
   courseRecommendationUserPrompt,
+  courseRecommendationUserPromptEnglish,
+  userIntentClassificationFunctionPrompt,
+  userIntentClassificationFunctionPromptEnglish,
+  userIntentClassificationSystemPrompt,
+  userIntentClassificationSystemPromptEnglish,
 } from "./prompt";
 
 export const runRecommendationFlow = async (
@@ -22,25 +28,38 @@ export const runRecommendationFlow = async (
   courseAttendanceRate: number,
   currentLanguage: string
 ) => {
-  const enhancedUserMessage = courseRecommendationUserPrompt(
-    course,
-    currentCourses,
-    userMessage,
-    courseCategory,
-    currentLanguage === "English"
-  );
+  const enhancedUserMessage =
+    currentLanguage === "한국어"
+      ? courseRecommendationUserPrompt(
+          course,
+          currentCourses,
+          userMessage,
+          courseCategory
+        )
+      : courseRecommendationUserPromptEnglish(
+          course,
+          currentCourses,
+          userMessage,
+          courseCategory
+        );
 
   setIsLoading(true);
 
   const response = await streamChat(
     enhancedUserMessage,
-    userIntentClassificationSystemPrompt(
-      name,
-      job,
-      year,
-      courseAttendanceRate,
-      currentLanguage === "English"
-    )
+    currentLanguage === "한국어"
+      ? userIntentClassificationSystemPrompt(
+          name,
+          job,
+          year,
+          courseAttendanceRate
+        )
+      : userIntentClassificationSystemPromptEnglish(
+          name,
+          job,
+          year,
+          courseAttendanceRate
+        )
   );
 
   if (!response.ok || !response.body) {
@@ -114,21 +133,28 @@ export const runRecommendationFlow = async (
 
     const getRecommendationCoursesResponse = await functionChat(
       enhancedUserMessage,
-      userIntentClassificationFunctionPrompt(
-        name,
-        job,
-        year,
-        generatedAnswer,
-        currentLanguage === "English"
-      ),
-      userIntentClassificationFunctions(currentLanguage)
+      currentLanguage === "한국어"
+        ? userIntentClassificationFunctionPrompt(
+            name,
+            job,
+            year,
+            generatedAnswer
+          )
+        : userIntentClassificationFunctionPromptEnglish(
+            name,
+            job,
+            year,
+            generatedAnswer
+          ),
+      currentLanguage === "한국어"
+        ? userIntentClassificationFunctions(currentLanguage)
+        : userIntentClassificationFunctionsEnglish()
     );
 
     if (
       !getRecommendationCoursesResponse.ok ||
       !getRecommendationCoursesResponse.body
     ) {
-
       setIsLoading(false);
       throw new Error("네트워크 응답 실패");
     }
