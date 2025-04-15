@@ -45,8 +45,10 @@ const YoutubePlaylist = () => {
     currentLanguage,
   } = useUserInfo();
 
-  const { isHighlighted, animationData } =
-    useLottieHighLight(courseAttendanceRate);
+  const { isHighlighted, animationData } = useLottieHighLight(
+    courseAttendanceRate,
+    currentLanguage === "English"
+  );
 
   const courses = currentLanguage === "한국어" ? KoreanCourses : EnglishCourses;
 
@@ -128,34 +130,41 @@ const YoutubePlaylist = () => {
                 </S.CourseCompleteWrapperEnglish>
               ) : (
                 <S.CourseCompleteWrapperEnglish>
-                  {/* {isHighlighted ? (
+                  {isHighlighted ? (
                     <S.LottieContainer $isKorean={currentLanguage === "한국어"}>
                       <Lottie
                         animationData={animationData}
                         style={{
-                          width: 250,
+                          width: 280,
                           paddingBottom: 0,
                           margin: 0,
                           display: "block",
                         }}
                       />
-                      <S.LottiePercentage
-                        $isKorean={currentLanguage === "한국어"}
-                        $isCompleted={courseAttendanceRate === 1}
-                      >
-                        {Math.round(courseAttendanceRate * 100)}%
-                      </S.LottiePercentage>
                     </S.LottieContainer>
                   ) : (
                     <S.CourseComplete $isHighlighted={isHighlighted}>
                       Course Completion Rate{" "}
                       {Math.round(courseAttendanceRate * 100)}%
                     </S.CourseComplete>
-                  )} */}
+                  )}
+
+                  {/* <S.LottieContainer $isKorean={currentLanguage === "한국어"}>
+                    <Lottie
+                      animationData={animationData}
+                      style={{
+                        width: 280,
+                        paddingBottom: 0,
+                        margin: 0,
+                        display: "block",
+                      }}
+                    />
+                  </S.LottieContainer>
                   <S.CourseComplete $isHighlighted={isHighlighted}>
-                      Course Completion Rate{" "}
-                      {Math.round(courseAttendanceRate * 100)}%
-                    </S.CourseComplete>
+                    Course Completion Rate{" "}
+                    {Math.round(courseAttendanceRate * 100)}%
+                  </S.CourseComplete> */}
+
                   <S.VideoProgress>
                     Video Progress{" "}
                     <S.Percentage $progressPercentage={progressPercentage}>
@@ -708,7 +717,7 @@ const S = {
   }>`
     position: absolute;
     top: -20px;
-    ${({ $isKorean }) => ($isKorean ? "right: 115px;" : "right: 20px;")}
+    ${({ $isKorean }) => ($isKorean ? "right: 115px;" : "right: 14px;")}
     display: flex;
     align-items: center;
     justify-content: center;
