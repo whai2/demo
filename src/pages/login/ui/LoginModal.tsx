@@ -29,6 +29,12 @@ function LoginModal() {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && password.length > 0) {
+      handleConfirm();
+    }
+  };
+
   if (isPasswordCorrect || isPassPassword) {
     return <></>;
   }
@@ -54,6 +60,7 @@ function LoginModal() {
                 setPassword(e.target.value);
                 if (isPasswordWrong) setIsPasswordWrong(false);
               }}
+              onKeyDown={handleKeyDown}
               $isWrong={isPasswordWrong}
             />
             {isPasswordWrong && (
