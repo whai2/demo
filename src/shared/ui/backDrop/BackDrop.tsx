@@ -4,7 +4,15 @@ function BackDrop({ onClose }: { onClose: () => void }) {
   return <S.BackDrop onClick={onClose} />;
 }
 
-export function TransparentBackDrop({ onClose, transparent }: { onClose: () => void, transparent?: boolean }) {
+export function TransparentBackDrop({
+  onClose,
+  transparent,
+  isHighest,
+}: {
+  onClose: () => void;
+  transparent?: boolean;
+  isHighest?: boolean;
+}) {
   return (
     <S.TransparentBackDrop
       onClick={(event) => {
@@ -12,6 +20,7 @@ export function TransparentBackDrop({ onClose, transparent }: { onClose: () => v
         onClose();
       }}
       $transparent={transparent}
+      $isHighest={isHighest}
     />
   );
 }
@@ -32,15 +41,19 @@ const S = {
     z-index: -1;
   `,
 
-  TransparentBackDrop: styled.div<{ $transparent?: boolean }>`
+  TransparentBackDrop: styled.div<{
+    $transparent?: boolean;
+    $isHighest?: boolean;
+  }>`
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1001; // 1000은 채팅 전체
+    z-index: ${({ $isHighest }) => ($isHighest ? "1005" : "1001")}; // 1000은 채팅 전체
     border-radius: 10px;
-    background-color: ${({ $transparent }) => $transparent ? "transparent" : "rgba(72, 72, 72, 0.5)"};
+    background-color: ${({ $transparent }) =>
+      $transparent ? "transparent" : "rgba(72, 72, 72, 0.5)"};
   `,
 
   ImageBackDrop: styled.div`

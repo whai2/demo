@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { TransparentBackDrop } from "@/shared/ui";
 import LanguageToggle from "./LanguageToggle";
+import LoginModal from "./LoginModal";
 
 import { EnglishCourses, KoreanCourses } from "@/features/chat";
 import { usePopUpOpen } from "@/features/popUpOpen";
@@ -188,6 +189,7 @@ function LoginPage() {
 
   return (
     <S.LoginLayout>
+      <LoginModal />
       <LanguageToggle
         isOn={currentLanguage === "English"}
         onToggle={() => {

@@ -30,6 +30,7 @@ const S = {
     // width: 143px;
     // height: 40px;
     // flex-shrink: 0;
+    z-index: 1006;
   `,
 
   Label: styled.span`
