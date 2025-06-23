@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 
-import { Router } from "@/app/routers";
+// import { Router } from "@/app/routers";
 import { Video } from "@/pages/background/video";
 import { LoginPage } from "@/pages/login";
 import { TotalSkeleton } from "@/pages/skeleton";
 
 // import { Loading } from "@/shared/ui";
-import { WidgetButton } from "@/widgets/widgetButton";
+// import { WidgetButton } from "@/widgets/widgetButton";
 
 import {
   EnglishCourses,
@@ -89,8 +89,8 @@ function App() {
           ) : (
             <>
               <Video />
-              <WidgetButton isOpen={isOpen} setIsOpen={setToggle} />
-              {isOpen && <Router />}
+              {/* <WidgetButton isOpen={isOpen} setIsOpen={setToggle} />
+              {isOpen && <Router />} */}
             </>
           )}
         </S.Container>

@@ -32,6 +32,7 @@ function TotalSkeleton() {
           </S.Tab>
         </S.BottomBar>
       </S.Content>
+      
       <S.SideBar>
         <S.SideBarHeader>
           <S.FloatingButtonText />

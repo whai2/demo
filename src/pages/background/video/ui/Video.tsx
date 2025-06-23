@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import YouTube from "react-youtube";
 
 import { Lottie } from "@/shared/ui";
+import TutorButton from "./TutorButton";
 
 import { useAlarmStore } from "@/features/alarm";
 import { EnglishCourses, KoreanCourses } from "@/features/chat";
@@ -227,13 +228,11 @@ const YoutubePlaylist = () => {
 
       <S.SideBar>
         <S.SideBarHeader>
-          <S.SideBarHeaderInner>
-            <S.SideBarHeaderInnerInner>
-              <S.SideBarHeaderText>
-                {currentLanguage === "한국어" ? "강의 목차" : "Course Outline"}
-              </S.SideBarHeaderText>
-            </S.SideBarHeaderInnerInner>
-          </S.SideBarHeaderInner>
+          <S.SideBarHeaderText>
+            {currentLanguage === "한국어" ? "강의 목차" : "Course Outline"}
+          </S.SideBarHeaderText>
+
+          <TutorButton />
         </S.SideBarHeader>
 
         <S.SideBarUnderBar />
@@ -354,7 +353,6 @@ const S = {
   `,
 
   SideBar: styled.div`
-    width: 400px;
     background-color: #f4f4f4;
     // padding: 16px 24px;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
@@ -402,10 +400,11 @@ const S = {
 
   SideBarHeader: styled.div`
     display: flex;
+    position: relative;
     align-items: center;
-    flex: 1 0 0;
+    justify-content: space-between;
     align-self: stretch;
-    padding: 0 0 20px 0;
+    padding: 10px 24px 0 30px;
   `,
 
   SideBarHeaderInner: styled.div`
@@ -426,7 +425,6 @@ const S = {
   `,
 
   SideBarHeaderText: styled.div`
-    padding-top: 30px;
     display: flex;
     width: 49px;
     flex-direction: column;
@@ -445,7 +443,7 @@ const S = {
   `,
 
   SideBarUnderBar: styled.div`
-    margin-left: 15px;
+    margin-left: 24px;
     width: 80px;
     height: 4px;
     align-self: stretch;

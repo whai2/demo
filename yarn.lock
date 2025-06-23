@@ -1719,6 +1719,11 @@ asynckit@^0.4.0:
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
   integrity sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==
 
+ax-sdk-chatbot@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/ax-sdk-chatbot/-/ax-sdk-chatbot-1.1.1.tgz#b3901f91cdd9b62ae625dbe79796e5d31add6c1d"
+  integrity sha512-sES/rsIUwhmQLr3jgMrXFoZCihYKxVECBmkuK9msFSlVRr+44qEae734SP6oAT/J8F2FsXcrHw1HOoRqzU08lg==
+
 babel-plugin-polyfill-corejs2@^0.4.10:
   version "0.4.13"
   resolved "https://registry.yarnpkg.com/babel-plugin-polyfill-corejs2/-/babel-plugin-polyfill-corejs2-0.4.13.tgz#7d445f0e0607ebc8fb6b01d7e8fb02069b91dd8b"
