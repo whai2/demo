@@ -24,7 +24,7 @@ import styled from "styled-components";
 function App() {
   const { isLogin, courseCategory, courseName, currentLanguage } =
     useUserInfo();
-  const { isOpen, setToggle } = usePopUpOpen();
+  const { setToggle } = usePopUpOpen();
   const { setCurrentPage } = useNavigate();
   const { setMessages } = useChatStore();
   const { isSummationLoading, setIsSummationLoading, setCourseSummation } =
