@@ -20,6 +20,7 @@ export const courseInfo = {
         chapter_title: "인사관리 핵심요약",
         chapter_description: "경영지도사 2차 인사관리 이론 정리",
         time: "54:34",
+        url: "https://ax-demofile.s3.ap-northeast-2.amazonaws.com/023.mp4",
         clips: [
           {
             clip_id: "theory_clip",
@@ -37,6 +38,7 @@ export const courseInfo = {
         chapter_title: "인사관리 예상문제풀이",
         chapter_description: "경영지도사 2차 인사관리 문제풀이",
         time: "32:46",
+        url: "https://ax-demofile.s3.ap-northeast-2.amazonaws.com/024.mp4",
         clips: [
           {
             clip_id: "practice_clip",
@@ -80,6 +82,7 @@ export const useVideoStore = create<VideoType>()(
           chapter_title: "인사관리 핵심요약",
           chapter_description: "경영지도사 2차 인사관리 이론 정리",
           time: "54:34",
+          url: "https://ax-demofile.s3.ap-northeast-2.amazonaws.com/023.mp4",
           clips: [
             {
               clip_id: "theory_clip",
@@ -97,6 +100,7 @@ export const useVideoStore = create<VideoType>()(
           chapter_title: "인사관리 예상문제풀이",
           chapter_description: "경영지도사 2차 인사관리 문제풀이",
           time: "32:46",
+          url: "https://ax-demofile.s3.ap-northeast-2.amazonaws.com/024.mp4",
           clips: [
             {
               clip_id: "practice_clip",

@@ -68,6 +68,8 @@ const YoutubePlaylist = () => {
     setCourseAttendanceRate(takenVideos.length / videos.length);
   }, [videos, currentVideo]);
 
+  console.log(currentVideo.url);
+
   return (
     <S.Container>
       <S.Content>
@@ -145,7 +147,7 @@ const YoutubePlaylist = () => {
         </S.TopBar>
 
         <ReactPlayer
-          url="/023.mp4"
+          url={currentVideo?.url}
           controls
           playing={false}
           width="100%"
