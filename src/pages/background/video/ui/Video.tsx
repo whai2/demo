@@ -144,20 +144,23 @@ const YoutubePlaylist = () => {
           )}
         </S.TopBar>
 
-        <ReactPlayer
-          url={currentVideo?.url}
-          controls
-          playing={false}
-          width="100%"
-          height="auto"
-          onPlay={() => console.log("재생 시작")}
-          onPause={() => console.log("일시 정지")}
-          onEnded={() => console.log("영상 끝남")}
-          onProgress={({ playedSeconds }) => {
-            setProgress(currentVideoId, playedSeconds / 60);
-          }}
-          onSeek={(seconds) => console.log("사용자가 이동한 위치:", seconds)}
-        />
+        <S.PlayerWrapper>
+          <ReactPlayer
+            url={currentVideo?.url}
+            controls
+            playing={false}
+            width="100%"
+            height="100%"
+            style={{ position: "absolute", top: 0, left: 0 }}
+            onPlay={() => console.log("재생 시작")}
+            onPause={() => console.log("일시 정지")}
+            onEnded={() => console.log("영상 끝남")}
+            onProgress={({ playedSeconds }) => {
+              setProgress(currentVideoId, playedSeconds / 60);
+            }}
+            onSeek={(seconds) => console.log("사용자가 이동한 위치:", seconds)}
+          />
+        </S.PlayerWrapper>
 
         <S.BottomContainer>
           <S.Tab>
@@ -354,7 +357,7 @@ const S = {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    max-height: 100vh;
+    // max-height: 100vh;
   `,
 
   VideoContainer: styled.div`
@@ -440,20 +443,14 @@ const S = {
   `,
 
   PlayerWrapper: styled.div`
-    position: relative;
-    width: 100%;
-    max-width: 1500px; //
-    height: auto;
+    idth: 100%;
     aspect-ratio: 16 / 9;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     overflow: hidden;
-
-    iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
+    max-width: 100%; // 컨테이너 폭 제한 시 유용
   `,
 
   UserInfoButton: styled.button`
@@ -593,6 +590,7 @@ const S = {
     /* Elevation_5 */
     box-shadow: 0px 0px 16px 0px rgba(0, 0, 0, 0.16);
     min-height: 60px;
+    height: 60px;
   `,
 
   TabBar: styled.div`
