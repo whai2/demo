@@ -41,14 +41,6 @@ const YoutubePlaylist = () => {
     currentLanguage === "English"
   );
 
-  // useEffect(() => {
-  //   if (courseAttendanceRate === 0) {
-  //     setCurrentVideo(videos[0]);
-  //   }
-  // }, [videos, courseAttendanceRate]);
-
-  console.log(courseAttendanceRate, isHighlighted);
-
   useEffect(() => {
     if (courseAttendanceRate === 0) {
       setCurrentVideo(videos[0]);
@@ -215,7 +207,7 @@ const YoutubePlaylist = () => {
               return (
                 <S.SideBarItem
                   key={chapter.chapter_id}
-                  active={chapter.chapter_id}
+                  active={chapter.chapter_id === currentVideo?.chapter_id}
                   onClick={() => {
                     // useAlarmStore.getState().reset();
                     setCurrentVideo(chapter);

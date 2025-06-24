@@ -71,7 +71,7 @@ interface VideoType {
 }
 
 export const useVideoStore = create<VideoType>()(
-  // persist(
+  persist(
     (set) => ({
       videos: [
         {
@@ -133,9 +133,9 @@ export const useVideoStore = create<VideoType>()(
       setClassName: (className) => set({ className }),
       setIsPause: (isPause) => set({ isPause }),
     }),
-    // {
-    //   name: "video",
-    //   partialize: (state) => ({ videos: state.videos }),
-    // }
-  // )
+    {
+      name: "video",
+      partialize: (state) => ({ videos: state.videos }),
+    }
+  )
 );
