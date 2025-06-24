@@ -68,8 +68,6 @@ const YoutubePlaylist = () => {
     setCourseAttendanceRate(takenVideos.length / videos.length);
   }, [videos, currentVideo]);
 
-  console.log(currentVideo.url);
-
   return (
     <S.Container>
       <S.Content>
