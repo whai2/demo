@@ -60,7 +60,7 @@ interface VideoType {
   setProgress: (videoId: string, currentTime: number) => void;
   setIsTaken: (videoId: string, isTaken: boolean) => void;
   setClassName: (className: string) => void;
-  setIsPause: (isPause: boolean) => void; 
+  setIsPause: (isPause: boolean) => void;
 }
 
 export const videoStore = create<VideoType>()(

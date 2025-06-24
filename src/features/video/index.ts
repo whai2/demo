@@ -4,3 +4,5 @@ export {
   useGetVideo,
   videoStore,
 } from "./useGetVideo";
+
+export { courseInfo, demoCourse, useVideoStore } from "./useVideo";

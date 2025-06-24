@@ -1,23 +1,16 @@
-import { useEffect, useRef } from "react";
-import YouTube from "react-youtube";
+import { useEffect } from "react";
+import ReactPlayer from "react-player";
 
 import { Lottie } from "@/shared/ui";
 import TutorButton from "./TutorButton";
 
-import { useAlarmStore } from "@/features/alarm";
-import { EnglishCourses, KoreanCourses } from "@/features/chat";
 import { useUserInfo } from "@/features/userInfo";
-import {
-  parseDuration,
-  parseDurationToSeconds,
-  useGetVideo,
-  videoStore,
-} from "@/features/video";
+import { courseInfo, useVideoStore } from "@/features/video";
 import { useLottieHighLight } from "../../hooks/useLottieHighLight";
 
 import { ReactComponent as Alert } from "../assets/alert.svg";
-import { ReactComponent as Bar } from "../assets/bar.svg";
 // import animationData2 from "../assets/courseCompleteEnglish.json";
+import { ReactComponent as Bar } from "../assets/bar.svg";
 import { ReactComponent as Docs } from "../assets/docs.svg";
 import { ReactComponent as Docs2 } from "../assets/docs2.svg";
 import { ReactComponent as Introduction } from "../assets/introduce.svg";
@@ -26,17 +19,14 @@ import { ReactComponent as Statistics } from "../assets/statistics.svg";
 import styled from "styled-components";
 
 const EnglishLesson = {
-  "1차시": "Lesson 1",
-  "2차시": "Lesson 2",
-  "3차시": "Lesson 3",
-  "4차시": "Lesson 4",
-  "5차시": "Lesson 5",
-  "6차시": "Lesson 6",
+  1: "Lesson 1",
+  2: "Lesson 2",
 };
 
 const YoutubePlaylist = () => {
-  const { currentVideo, videos, setCurrentVideo } = useGetVideo();
-  const { setIsTaken, progress, setClassName, setProgress } = videoStore();
+  const { videos, currentVideo, setCurrentVideo, setIsTaken, setProgress } =
+    useVideoStore();
+
   const {
     setCourseAttendanceRate,
     courseCategory,
@@ -51,30 +41,21 @@ const YoutubePlaylist = () => {
     currentLanguage === "English"
   );
 
-  const courses = currentLanguage === "한국어" ? KoreanCourses : EnglishCourses;
+  // useEffect(() => {
+  //   if (courseAttendanceRate === 0) {
+  //     setCurrentVideo(videos[0]);
+  //   }
+  // }, [videos, courseAttendanceRate]);
 
-  const currentCourses = courses.category.find(
-    (cat) => cat.name === courseCategory
-  );
-
-  const course = currentCourses?.courses.find(
-    (course) => course.name === courseName
-  );
-
-  const currentVideoDuration = parseDurationToSeconds(
-    currentVideo?.duration ?? ""
-  );
-
-  const currentVideoId = currentVideo?.id;
-  const currentVideoProgress = progress[currentVideoId ?? ""];
-
-  const progressPercentage = currentVideoDuration
-    ? (currentVideoProgress / currentVideoDuration) * 100
-    : 0;
+  console.log(courseAttendanceRate, isHighlighted);
 
   useEffect(() => {
-    setIsTaken(videos[0]?.id, true);
-  }, [currentVideo]);
+    if (courseAttendanceRate === 0) {
+      setCurrentVideo(videos[0]);
+    }
+
+    setIsTaken(currentVideo?.chapter_id, true);
+  }, [currentVideo, courseAttendanceRate]);
 
   useEffect(() => {
     const takenVideos = videos.filter((video) => video.isTaken);
@@ -85,102 +66,93 @@ const YoutubePlaylist = () => {
   return (
     <S.Container>
       <S.Content>
-        {currentVideo && currentVideo.id && (
-          <>
-            <S.TopBar>
-              <S.UserInfoButton onClick={reset}>
-                <S.ButtonText>
-                  {currentLanguage === "한국어"
-                    ? "강의 정보 변경"
-                    : "Edit Course Info"}
-                </S.ButtonText>
-              </S.UserInfoButton>
+        <S.TopBar>
+          <S.UserInfoButton onClick={reset}>
+            <S.ButtonText>
+              {currentLanguage === "한국어"
+                ? "강의 정보 변경"
+                : "Edit Course Info"}
+            </S.ButtonText>
+          </S.UserInfoButton>
 
-              <S.TopBarInner>
-                <S.TopBarCategory>{courseCategory}</S.TopBarCategory>
-                <Bar />
-                <S.TopBarTitle>{course?.name}</S.TopBarTitle>
-              </S.TopBarInner>
+          <S.TopBarInner>
+            <S.TopBarCategory>{courseCategory}</S.TopBarCategory>
+            <Bar />
+            <S.TopBarTitle>{courseName}</S.TopBarTitle>
+          </S.TopBarInner>
 
-              {currentLanguage === "한국어" ? (
-                <S.CourseCompleteWrapperEnglish>
-                  {isHighlighted ? (
-                    <S.LottieContainer $isKorean={currentLanguage === "한국어"}>
-                      <Lottie
-                        animationData={animationData}
-                        style={{
-                          width: 160,
-                          paddingBottom: 0,
-                          margin: 0,
-                          display: "block",
-                        }}
-                      />
-                    </S.LottieContainer>
-                  ) : (
-                    <S.CourseComplete $isHighlighted={isHighlighted}>
-                      강의 완료율 {Math.round(courseAttendanceRate * 100)}%
-                    </S.CourseComplete>
-                  )}
-
-                  <S.VideoProgress>
-                    영상 진행률{" "}
-                    <S.Percentage $progressPercentage={progressPercentage}>
-                      {progressPercentage ? progressPercentage.toFixed(0) : 0}%
-                    </S.Percentage>
-                  </S.VideoProgress>
-                </S.CourseCompleteWrapperEnglish>
+          {currentLanguage === "한국어" ? (
+            <S.CourseCompleteWrapperEnglish>
+              {isHighlighted ? (
+                <S.LottieContainer $isKorean={currentLanguage === "한국어"}>
+                  <Lottie
+                    animationData={animationData}
+                    style={{
+                      width: 160,
+                      paddingBottom: 0,
+                      margin: 0,
+                      display: "block",
+                    }}
+                  />
+                </S.LottieContainer>
               ) : (
-                <S.CourseCompleteWrapperEnglish>
-                  {isHighlighted ? (
-                    <S.LottieContainer $isKorean={currentLanguage === "한국어"}>
-                      <Lottie
-                        animationData={animationData}
-                        style={{
-                          width: 280,
-                          paddingBottom: 0,
-                          margin: 0,
-                          display: "block",
-                        }}
-                      />
-                    </S.LottieContainer>
-                  ) : (
-                    <S.CourseComplete $isHighlighted={isHighlighted}>
-                      Course Completion Rate{" "}
-                      {Math.round(courseAttendanceRate * 100)}%
-                    </S.CourseComplete>
-                  )}
-
-                  {/* <S.LottieContainer $isKorean={currentLanguage === "한국어"}>
-                    <Lottie
-                      animationData={animationData}
-                      style={{
-                        width: 280,
-                        paddingBottom: 0,
-                        margin: 0,
-                        display: "block",
-                      }}
-                    />
-                  </S.LottieContainer>
-                  <S.CourseComplete $isHighlighted={isHighlighted}>
-                    Course Completion Rate{" "}
-                    {Math.round(courseAttendanceRate * 100)}%
-                  </S.CourseComplete> */}
-
-                  <S.VideoProgress>
-                    Video Progress{" "}
-                    <S.Percentage $progressPercentage={progressPercentage}>
-                      {progressPercentage ? progressPercentage.toFixed(0) : 0}%
-                    </S.Percentage>
-                  </S.VideoProgress>
-                </S.CourseCompleteWrapperEnglish>
+                <S.CourseComplete $isHighlighted={isHighlighted}>
+                  강의 완료율 {Math.round(courseAttendanceRate * 100)}%
+                </S.CourseComplete>
               )}
-            </S.TopBar>
 
-            <S.VideoContainer>
-              <InteractiveYouTubePlayer videoId={currentVideo.id} />
-            </S.VideoContainer>
-          </>
-        )}
+              <S.VideoProgress>
+                영상 진행률{" "}
+                {/* <S.Percentage $progressPercentage={progressPercentage}>
+                  {progressPercentage ? progressPercentage.toFixed(0) : 0}%
+                </S.Percentage> */}
+              </S.VideoProgress>
+            </S.CourseCompleteWrapperEnglish>
+          ) : (
+            <S.CourseCompleteWrapperEnglish>
+              {isHighlighted ? (
+                <S.LottieContainer $isKorean={currentLanguage === "한국어"}>
+                  <Lottie
+                    animationData={animationData}
+                    style={{
+                      width: 280,
+                      paddingBottom: 0,
+                      margin: 0,
+                      display: "block",
+                    }}
+                  />
+                </S.LottieContainer>
+              ) : (
+                <S.CourseComplete $isHighlighted={isHighlighted}>
+                  Course Completion Rate{" "}
+                  {Math.round(courseAttendanceRate * 100)}%
+                </S.CourseComplete>
+              )}
+
+              <S.VideoProgress>
+                Video Progress{" "}
+                {/* <S.Percentage $progressPercentage={progressPercentage}>
+                  {progressPercentage ? progressPercentage.toFixed(0) : 0}%
+                </S.Percentage> */}
+              </S.VideoProgress>
+            </S.CourseCompleteWrapperEnglish>
+          )}
+        </S.TopBar>
+
+        <ReactPlayer
+          url="/023.mp4"
+          controls
+          playing={false}
+          width="100%"
+          height="auto"
+          onPlay={() => console.log("재생 시작")}
+          onPause={() => console.log("일시 정지")}
+          onEnded={() => console.log("영상 끝남")}
+          onProgress={({ playedSeconds }) =>
+            console.log("현재 재생 시간:", playedSeconds)
+          }
+          onSeek={(seconds) => console.log("사용자가 이동한 위치:", seconds)}
+        />
 
         <S.BottomContainer>
           <S.Tab>
@@ -238,24 +210,17 @@ const YoutubePlaylist = () => {
         <S.SideBarUnderBar />
 
         <S.SideBarContent>
-          {course &&
-            course.content &&
-            videos.map((video: any, index: number) => {
-              const item = course.content[index];
-              const sessionTitle = item && Object.keys(item)[0];
-              const contentTitle =
-                item && item[sessionTitle as keyof typeof item];
-
+          {courseInfo.course_curriculum.chapters.map(
+            (chapter: any, index: number) => {
               return (
                 <S.SideBarItem
-                  key={video.id}
-                  active={currentVideo?.id === video.id}
+                  key={chapter.chapter_id}
+                  active={chapter.chapter_id}
                   onClick={() => {
-                    useAlarmStore.getState().reset();
-                    setCurrentVideo(video);
-                    setIsTaken(video.id, true);
-                    setClassName(sessionTitle);
-                    setProgress(video.id, 0);
+                    // useAlarmStore.getState().reset();
+                    setCurrentVideo(chapter);
+                    setIsTaken(chapter.chapter_id, true);
+                    setProgress(chapter.chapter_id, 0);
                   }}
                 >
                   <S.Number>
@@ -263,15 +228,16 @@ const YoutubePlaylist = () => {
                     {currentLanguage === "한국어"
                       ? `${index + 1}회차`
                       : EnglishLesson[
-                          sessionTitle as keyof typeof EnglishLesson
+                          (index + 1) as keyof typeof EnglishLesson
                         ]}
                     ]
                   </S.Number>
-                  {contentTitle}
-                  <S.Duration>{parseDuration(video.duration)}</S.Duration>
+                  {chapter.chapter_title}
+                  <S.Duration>{chapter.time}</S.Duration>
                 </S.SideBarItem>
               );
-            })}
+            }
+          )}
         </S.SideBarContent>
       </S.SideBar>
     </S.Container>
@@ -280,70 +246,70 @@ const YoutubePlaylist = () => {
 
 export default YoutubePlaylist;
 
-const InteractiveYouTubePlayer = ({ videoId }: { videoId: string }) => {
-  const { progress, setProgress, setIsPause } = videoStore();
+// const InteractiveYouTubePlayer = ({ videoId }: { videoId: string }) => {
+//   const { progress, setProgress, setIsPause } = videoStore();
 
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+//   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const onReady = (event: any) => {
-    const savedTime = progress[videoId];
+//   const onReady = (event: any) => {
+//     const savedTime = progress[videoId];
 
-    if (savedTime) {
-      event.target.seekTo(savedTime);
-    }
+//     if (savedTime) {
+//       event.target.seekTo(savedTime);
+//     }
 
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
+//     if (intervalRef.current) {
+//       clearInterval(intervalRef.current);
+//     }
 
-    intervalRef.current = setInterval(() => {
-      const currentTime = event.target.getCurrentTime();
+//     intervalRef.current = setInterval(() => {
+//       const currentTime = event.target.getCurrentTime();
 
-      if (currentTime) {
-        setIsPause(false);
-        setProgress(videoId, currentTime);
-      }
-    }, 500);
-  };
+//       if (currentTime) {
+//         setIsPause(false);
+//         setProgress(videoId, currentTime);
+//       }
+//     }, 500);
+//   };
 
-  const onStateChange = async (event: any) => {
-    const playerState = event.data;
+//   const onStateChange = async (event: any) => {
+//     const playerState = event.data;
 
-    if (playerState === 2) {
-      const currentTime = await event.target.getCurrentTime();
-      const savedProgress = progress[videoId] ?? 0;
+//     if (playerState === 2) {
+//       const currentTime = await event.target.getCurrentTime();
+//       const savedProgress = progress[videoId] ?? 0;
 
-      const diff = Math.abs(currentTime - savedProgress);
+//       const diff = Math.abs(currentTime - savedProgress);
 
-      if (diff < 0.5) {
-        setIsPause(true);
-      } else {
-        setIsPause(false);
-      }
+//       if (diff < 0.5) {
+//         setIsPause(true);
+//       } else {
+//         setIsPause(false);
+//       }
 
-      setProgress(videoId, currentTime);
-    }
-  };
+//       setProgress(videoId, currentTime);
+//     }
+//   };
 
-  useEffect(() => {
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, []);
+//   useEffect(() => {
+//     return () => {
+//       if (intervalRef.current) {
+//         clearInterval(intervalRef.current);
+//       }
+//     };
+//   }, []);
 
-  return (
-    <S.PlayerWrapper>
-      <YouTube
-        videoId={videoId}
-        opts={{ width: "100%", height: "100%" }}
-        onReady={onReady}
-        onStateChange={onStateChange}
-      />
-    </S.PlayerWrapper>
-  );
-};
+//   return (
+//     <S.PlayerWrapper>
+//       <YouTube
+//         videoId={videoId}
+//         opts={{ width: "100%", height: "100%" }}
+//         onReady={onReady}
+//         onStateChange={onStateChange}
+//       />
+//     </S.PlayerWrapper>
+//   );
+// };
 
 const S = {
   Container: styled.div`

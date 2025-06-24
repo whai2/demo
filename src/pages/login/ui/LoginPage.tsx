@@ -4,161 +4,45 @@ import { TransparentBackDrop } from "@/shared/ui";
 import LanguageToggle from "./LanguageToggle";
 import LoginModal from "./LoginModal";
 
-import { EnglishCourses, KoreanCourses } from "@/features/chat";
 import { usePopUpOpen } from "@/features/popUpOpen";
-import { COURSE_CATEGORY, JOBS, useUserInfo, YEARS } from "@/features/userInfo";
+import { useUserInfo } from "@/features/userInfo";
 
 import { ReactComponent as CoxwaveLogo } from "@/shared/assets/coxwave.svg";
 import { ReactComponent as Arrow } from "../assets/arrow.svg";
 
 import styled from "styled-components";
 
+const DemoCourse = {
+  title: "경영지도사 2차 인사관리",
+  description: "국가공인 경영지도사 2차 인사관리 과정",
+  category: "경영지도사",
+};
+
 function LoginPage() {
   const { setOpen, setFirstModalOpen } = usePopUpOpen();
-  const [isJobOpen, setIsJobOpen] = useState(false);
-  const [isYearOpen, setIsYearOpen] = useState(false);
   const [isCourseCategoryOpen, setIsCourseCategoryOpen] = useState(false);
-  // const [isCourseOpen, setIsCourseOpen] = useState(false);
-  const [courseList, setCourseList] = useState<string[]>([]);
-
-  const [selectedJobs, setSelectedJobs] = useState<string[]>([]);
-  const [selectedYears, setSelectedYears] = useState<string[]>([]);
-  const [selectedCourseCategories, setSelectedCourseCategories] = useState<
-    string[]
-  >([]);
 
   const {
     name,
-    job,
-    year,
     courseCategory,
     courseName,
     currentLanguage,
     setName,
-    setJob,
-    setYear,
     setCourseCategory,
     setCourseName,
     setIsLogin,
     setCurrentLanguage,
   } = useUserInfo();
 
-  useEffect(() => {
-    if (courseCategory) {
-      let selectedCategory;
-      if (currentLanguage === "한국어") {
-        selectedCategory = KoreanCourses.category.find(
-          (cat) => cat.name === courseCategory
-        );
-      } else {
-        selectedCategory = EnglishCourses.category.find(
-          (cat) => cat.name === courseCategory
-        );
-      }
-
-      if (selectedCategory) {
-        const courseTitles = selectedCategory.courses.map(
-          (course) => course.name
-        );
-        setCourseList(courseTitles);
-      } else {
-        setCourseList([]);
-      }
-    }
-  }, [courseCategory, currentLanguage]);
-
-  useEffect(() => {
-    const names = JOBS.map((job) =>
-      currentLanguage === "한국어" ? job.korean : job.english
-    );
-
-    setSelectedJobs(names);
-
-    const index = JOBS.findIndex((j) => j.korean === job || j.english === job);
-
-    if (index !== -1) {
-      const newJob =
-        currentLanguage === "한국어" ? JOBS[index].korean : JOBS[index].english;
-
-      setJob(newJob);
-    }
-  }, [job, currentLanguage]);
-
-  useEffect(() => {
-    const names = YEARS.map((year) =>
-      currentLanguage === "한국어" ? year.korean : year.english
-    );
-    setSelectedYears(names);
-
-    const index = YEARS.findIndex(
-      (y) => y.korean === year || y.english === year
-    );
-
-    if (index !== -1) {
-      const newYear =
-        currentLanguage === "한국어"
-          ? YEARS[index].korean
-          : YEARS[index].english;
-
-      setYear(newYear);
-    }
-  }, [year, currentLanguage]);
-
-  useEffect(() => {
-    const names = COURSE_CATEGORY.map((courseCategory) =>
-      currentLanguage === "한국어"
-        ? courseCategory.korean
-        : courseCategory.english
-    );
-    setSelectedCourseCategories(names);
-
-    const index = COURSE_CATEGORY.findIndex(
-      (c) => c.korean === courseCategory || c.english === courseCategory
-    );
-
-    if (index !== -1) {
-      const newCourseCategory =
-        currentLanguage === "한국어"
-          ? COURSE_CATEGORY[index].korean
-          : COURSE_CATEGORY[index].english;
-
-      setCourseCategory(newCourseCategory);
-    }
-  }, [courseCategory, currentLanguage]);
-
-  useEffect(() => {
-    if (courseCategory) {
-      setCourseName(courseList[0]);
-    }
-  }, [courseCategory, courseList]);
-
-  const toggleJobOpen = () => {
-    setIsJobOpen(!isJobOpen);
-  };
-
-  const toggleYearOpen = () => {
-    setIsYearOpen(!isYearOpen);
-  };
-
   const toggleCourseCategoryOpen = () => {
     setIsCourseCategoryOpen(!isCourseCategoryOpen);
   };
 
   // 클릭 이벤트
-  const handleJobClick = (job: string) => {
-    setJob(job);
-    setIsJobOpen(false);
-  };
-
   const handleCourseCategoryClick = (courseCategory: string) => {
     setCourseCategory(courseCategory);
     setIsCourseCategoryOpen(false);
     setCourseName("");
-  };
-
-  const handleYearClick = (year: string) => {
-    setYear(year);
-    setIsYearOpen(false);
   };
 
   const handleLanguageClick = (language: string) => {
@@ -167,8 +51,6 @@ function LoginPage() {
 
   const isLoginActive =
     name !== "" &&
-    job !== "" &&
-    year !== "" &&
     courseCategory !== "" &&
     courseName !== "" &&
     currentLanguage !== "";
@@ -186,6 +68,12 @@ function LoginPage() {
       setCurrentLanguage("한국어");
     }
   }, [currentLanguage]);
+
+  useEffect(() => {
+    if (courseCategory) {
+      setCourseName(DemoCourse.title);
+    }
+  }, [courseCategory]);
 
   return (
     <S.LoginLayout>
@@ -206,22 +94,7 @@ function LoginPage() {
         }
         notLabel={currentLanguage === "English" ? "한글" : "English"}
       />
-      {isJobOpen && (
-        <TransparentBackDrop
-          onClose={() => {
-            setIsJobOpen(false);
-          }}
-          transparent={true}
-        />
-      )}
-      {isYearOpen && (
-        <TransparentBackDrop
-          onClose={() => {
-            setIsYearOpen(false);
-          }}
-          transparent={true}
-        />
-      )}
+
       {isCourseCategoryOpen && (
         <TransparentBackDrop
           onClose={() => {
@@ -256,57 +129,6 @@ function LoginPage() {
         </S.Wrapper>
 
         <S.Wrapper>
-          <S.Title>{currentLanguage === "한국어" ? "직무" : "Role"}</S.Title>
-
-          <S.InputContainer $isOpen={isJobOpen}>
-            <S.InputWrapper onClick={toggleJobOpen}>
-              <S.InnerInput>
-                <S.InnerInputText>
-                  {job ? job : currentLanguage === "한국어" ? "선택" : "Select"}
-                </S.InnerInputText>
-              </S.InnerInput>
-              <S.ChevronDown $isOpen={isJobOpen} />
-            </S.InputWrapper>
-
-            <S.JobList $isOpen={isJobOpen}>
-              {selectedJobs.map((job) => (
-                <S.JobItem key={job} onClick={() => handleJobClick(job)}>
-                  {job}
-                </S.JobItem>
-              ))}
-            </S.JobList>
-          </S.InputContainer>
-        </S.Wrapper>
-        <S.Wrapper>
-          <S.Title>
-            {currentLanguage === "한국어" ? "연차" : "Years of Experience"}
-          </S.Title>
-
-          <S.InputContainer $isOpen={isYearOpen}>
-            <S.InputWrapper onClick={toggleYearOpen}>
-              <S.InnerInput>
-                <S.InnerInputText>
-                  {year
-                    ? year
-                    : currentLanguage === "한국어"
-                    ? "선택"
-                    : "Select"}
-                </S.InnerInputText>
-              </S.InnerInput>
-              <S.ChevronDown $isOpen={isYearOpen} />
-            </S.InputWrapper>
-
-            <S.JobList $isOpen={isYearOpen}>
-              {selectedYears.map((year) => (
-                <S.JobItem key={year} onClick={() => handleYearClick(year)}>
-                  {year}
-                </S.JobItem>
-              ))}
-            </S.JobList>
-          </S.InputContainer>
-        </S.Wrapper>
-
-        <S.Wrapper>
           <S.Title>
             {currentLanguage === "한국어" ? "강의 카테고리" : "Course Category"}
           </S.Title>
@@ -326,7 +148,7 @@ function LoginPage() {
             </S.InputWrapper>
 
             <S.JobList $isOpen={isCourseCategoryOpen}>
-              {selectedCourseCategories.map((courseCategory) => (
+              {[DemoCourse.category].map((courseCategory) => (
                 <S.JobItem
                   key={courseCategory}
                   onClick={() => handleCourseCategoryClick(courseCategory)}

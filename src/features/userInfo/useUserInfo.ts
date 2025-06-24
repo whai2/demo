@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface UserInfoType {
   name: string;
@@ -23,27 +24,9 @@ interface UserInfoType {
   reset: () => void;
 }
 
-export const useUserInfo = create<UserInfoType>()((set) => ({
-  name: "",
-  job: "",
-  year: "",
-  courseCategory: "",
-  courseName: "",
-  isLogin: false,
-  courseAttendanceRate: 0,
-  currentLanguage: "",
-  isPassPassword: false,
-  setName: (name) => set({ name }),
-  setJob: (job) => set({ job }),
-  setYear: (year) => set({ year }),
-  setCourseCategory: (category) => set({ courseCategory: category }),
-  setCourseName: (name) => set({ courseName: name }),
-  setIsLogin: (isLogin) => set({ isLogin }),
-  setCourseAttendanceRate: (rate) => set({ courseAttendanceRate: rate }),
-  setCurrentLanguage: (language) => set({ currentLanguage: language }),
-  setIsPassPassword: (isPassPassword) => set({ isPassPassword }),
-  reset: () =>
-    set({
+export const useUserInfo = create<UserInfoType>()(
+  persist(
+    (set) => ({
       name: "",
       job: "",
       year: "",
@@ -52,5 +35,32 @@ export const useUserInfo = create<UserInfoType>()((set) => ({
       isLogin: false,
       courseAttendanceRate: 0,
       currentLanguage: "",
+      isPassPassword: false,
+
+      setName: (name) => set({ name }),
+      setJob: (job) => set({ job }),
+      setYear: (year) => set({ year }),
+      setCourseCategory: (category) => set({ courseCategory: category }),
+      setCourseName: (name) => set({ courseName: name }),
+      setIsLogin: (isLogin) => set({ isLogin }),
+      setCourseAttendanceRate: (rate) => set({ courseAttendanceRate: rate }),
+      setCurrentLanguage: (language) => set({ currentLanguage: language }),
+      setIsPassPassword: (isPassPassword) => set({ isPassPassword }),
+      reset: () =>
+        set({
+          name: "",
+          job: "",
+          year: "",
+          courseCategory: "",
+          courseName: "",
+          isLogin: false,
+          courseAttendanceRate: 0,
+          currentLanguage: "",
+          isPassPassword: false,
+        }),
     }),
-}));
+    {
+      name: "user-info",
+    }
+  )
+);

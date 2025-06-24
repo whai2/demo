@@ -40,7 +40,7 @@ export const useLottieHighLight = (courseAttendanceRate: number, isEnglish: bool
           setAnimationData(animationData100);
           break;
         default:
-          setAnimationData(undefined);
+          return;
       }
 
       const timeout = setTimeout(() => setIsHighlighted(false), 2000);
