@@ -24,8 +24,14 @@ const EnglishLesson = {
 };
 
 const YoutubePlaylist = () => {
-  const { videos, currentVideo, setCurrentVideo, setIsTaken, setProgress } =
-    useVideoStore();
+  const {
+    progress,
+    videos,
+    currentVideo,
+    setCurrentVideo,
+    setIsTaken,
+    setProgress,
+  } = useVideoStore();
 
   const {
     setCourseAttendanceRate,
@@ -40,6 +46,13 @@ const YoutubePlaylist = () => {
     courseAttendanceRate,
     currentLanguage === "English"
   );
+
+  const currentVideoDuration = currentVideo?.clips[0]?.clip_play_time;
+  const currentVideoId = currentVideo?.chapter_id;
+  const currentVideoProgress = progress[currentVideoId ?? ""];
+  const progressPercentage = currentVideoDuration
+    ? (currentVideoProgress / currentVideoDuration) * 100
+    : 0;
 
   useEffect(() => {
     if (courseAttendanceRate === 0) {
@@ -95,9 +108,9 @@ const YoutubePlaylist = () => {
 
               <S.VideoProgress>
                 영상 진행률{" "}
-                {/* <S.Percentage $progressPercentage={progressPercentage}>
+                <S.Percentage $progressPercentage={progressPercentage}>
                   {progressPercentage ? progressPercentage.toFixed(0) : 0}%
-                </S.Percentage> */}
+                </S.Percentage>
               </S.VideoProgress>
             </S.CourseCompleteWrapperEnglish>
           ) : (
@@ -123,9 +136,9 @@ const YoutubePlaylist = () => {
 
               <S.VideoProgress>
                 Video Progress{" "}
-                {/* <S.Percentage $progressPercentage={progressPercentage}>
+                <S.Percentage $progressPercentage={progressPercentage}>
                   {progressPercentage ? progressPercentage.toFixed(0) : 0}%
-                </S.Percentage> */}
+                </S.Percentage>
               </S.VideoProgress>
             </S.CourseCompleteWrapperEnglish>
           )}
@@ -140,9 +153,9 @@ const YoutubePlaylist = () => {
           onPlay={() => console.log("재생 시작")}
           onPause={() => console.log("일시 정지")}
           onEnded={() => console.log("영상 끝남")}
-          onProgress={({ playedSeconds }) =>
-            console.log("현재 재생 시간:", playedSeconds)
-          }
+          onProgress={({ playedSeconds }) => {
+            setProgress(currentVideoId, playedSeconds / 60);
+          }}
           onSeek={(seconds) => console.log("사용자가 이동한 위치:", seconds)}
         />
 
