@@ -35,6 +35,11 @@ function TutorButton() {
           isInElement: true,
           parentElementId: "root-button",
         },
+        chatBody: {
+          position: {
+            top: "66px",
+          }
+        },
         theme: {
           AIRecommendGradient: {
             base: "#9C47F7",
