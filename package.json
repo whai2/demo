@@ -10,7 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "ax-sdk-chatbot": "^1.1.1",
+    "ax-sdk-chatbot": "^1.1.2",
+    "coxwave-sdk": "^1.0.11",
     "lottie-react": "^2.4.1",
     "openai": "^4.90.0",
     "path": "^0.12.7",

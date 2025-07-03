@@ -1,4 +1,4 @@
-import CoxwaveChatSDK from "ax-sdk-chatbot";
+import CoxwaveChatSDK from "coxwave-sdk";
 import { useEffect } from "react";
 
 import { useUserInfo } from "@/features/userInfo";
