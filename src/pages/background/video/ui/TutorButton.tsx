@@ -1,7 +1,9 @@
 import CoxwaveChatSDK from "ax-sdk-chatbot";
 import { useEffect } from "react";
+import ReactPlayer from "react-player";
 
 import { useUserInfo } from "@/features/userInfo";
+import { useVideoStore } from "@/features/video/useVideo";
 
 import { ReactComponent as ChatIcon } from "../assets/logo.svg";
 
@@ -16,8 +18,17 @@ const sdk = new CoxwaveChatSDK({
 const testCourseId = import.meta.env.VITE_FIRSTBRAIN_TEST_COURSE_ID;
 const testClipId = import.meta.env.VITE_FIRSTBRAIN_TEST_CLIP_ID;
 
-function TutorButton() {
+function TutorButton({
+  playerRef,
+}: {
+  playerRef: React.RefObject<ReactPlayer | null>;
+}) {
+  const { progress, currentVideo, setProgress } = useVideoStore();
   const { currentLanguage } = useUserInfo();
+
+  const chapterId = currentVideo?.chapter_id ?? "";
+  const rawValue = progress[chapterId] ?? 0;
+  const progressInSeconds = Math.floor(Number(rawValue) * 60);
 
   useEffect(() => {
     sdk.initChat({
@@ -28,7 +39,7 @@ function TutorButton() {
         courseCategory: "프로그래밍",
         courseSubCategory: "게임 개발",
         clipId: testClipId,
-        clipPlayHead: 0,
+        clipPlayHead: progressInSeconds,
       },
       customStyles: {
         floatingButton: {
@@ -38,7 +49,7 @@ function TutorButton() {
         chatBody: {
           position: {
             top: "66px",
-          }
+          },
         },
         theme: {
           AIRecommendGradient: {
@@ -53,6 +64,15 @@ function TutorButton() {
       sdk.removeChat();
     };
   }, []);
+
+  useEffect(() => {
+    sdk.getTimelineInfo({
+      callback: (clipPlayHead) => {
+        setProgress(chapterId, clipPlayHead / 60);
+        playerRef?.current?.seekTo(clipPlayHead, "seconds");
+      },
+    });
+  }, [progressInSeconds]);
 
   return (
     <S.ChatContainer id="root-button">

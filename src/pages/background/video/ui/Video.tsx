@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import ReactPlayer from "react-player";
 
 import { Lottie } from "@/shared/ui";
@@ -24,6 +24,8 @@ const EnglishLesson = {
 };
 
 const YoutubePlaylist = () => {
+  const playerRef = useRef<ReactPlayer>(null);
+
   const {
     progress,
     videos,
@@ -147,6 +149,7 @@ const YoutubePlaylist = () => {
         <S.PlayerWrapper>
           <ReactPlayer
             url={currentVideo?.url}
+            ref={playerRef}
             controls
             playing={false}
             width="100%"
@@ -212,7 +215,7 @@ const YoutubePlaylist = () => {
             {currentLanguage === "한국어" ? "강의 목차" : "Course Outline"}
           </S.SideBarHeaderText>
 
-          <TutorButton />
+          <TutorButton playerRef={playerRef} />
         </S.SideBarHeader>
 
         <S.SideBarUnderBar />
