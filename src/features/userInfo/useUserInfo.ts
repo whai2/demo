@@ -60,7 +60,7 @@ export const useUserInfo = create<UserInfoType>()(
         }),
     }),
     {
-      name: "user-info",
+      name: "user-info-2",
     }
   )
 );

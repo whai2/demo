@@ -155,7 +155,7 @@ export const useVideoStore = create<VideoType>()(
       setIsPause: (isPause) => set({ isPause }),
     }),
     {
-      name: "video",
+      name: "video-2",
       partialize: (state) => ({
         videos: state.videos,
         progress: state.progress,
