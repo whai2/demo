@@ -107,6 +107,5 @@ ul {
 }
 
 iframe {
-  display: block;
-  border: none;
+  display: flex;
 }
