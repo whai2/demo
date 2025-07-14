@@ -79,7 +79,7 @@ function TutorButton({
       <S.ChatButton>
         <S.ChatIcon />
         <S.Text>
-          {currentLanguage === "한국어" ? "AI 챗봇" : "AI Chatbot"}
+          {currentLanguage === "한국어" ? "AI 튜터" : "AI Tutor"}
         </S.Text>
       </S.ChatButton>
     </S.ChatContainer>
