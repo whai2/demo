@@ -105,7 +105,3 @@ ul {
   padding-inline-start: 25px;
   unicode-bidi: isolate;
 }
-
-iframe {
-  display: flex;
-}

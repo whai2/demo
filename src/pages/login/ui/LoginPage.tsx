@@ -124,7 +124,12 @@ function LoginPage() {
                 : "Please enter your name"
             }
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              const inputValue = e.target.value;
+
+              const filtered = inputValue.replace(/[^a-zA-Z0-9\s]/g, "");
+              setName(filtered);
+            }}
           />
         </S.Wrapper>
 

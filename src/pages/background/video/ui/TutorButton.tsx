@@ -23,6 +23,7 @@ function TutorButton({
 }: {
   playerRef: React.RefObject<ReactPlayer | null>;
 }) {
+  const { name } = useUserInfo();
   const { progress, currentVideo, setProgress } = useVideoStore();
   const { currentLanguage } = useUserInfo();
 
@@ -33,7 +34,7 @@ function TutorButton({
   useEffect(() => {
     sdk.initChat({
       chatApiParams: {
-        userId: "fc_2271729",
+        userId: name,
         courseId: testCourseId,
         courseName: "유니티 게임 포트폴리오 완성 올인원 패키지 Online.",
         courseCategory: "프로그래밍",
@@ -78,9 +79,7 @@ function TutorButton({
     <S.ChatContainer id="root-button">
       <S.ChatButton>
         <S.ChatIcon />
-        <S.Text>
-          {currentLanguage === "한국어" ? "AI 튜터" : "AI Tutor"}
-        </S.Text>
+        <S.Text>{currentLanguage === "한국어" ? "AI 튜터" : "AI Tutor"}</S.Text>
       </S.ChatButton>
     </S.ChatContainer>
   );
