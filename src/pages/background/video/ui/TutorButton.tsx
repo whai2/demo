@@ -23,7 +23,7 @@ function TutorButton({
 }: {
   playerRef: React.RefObject<ReactPlayer | null>;
 }) {
-  const { name } = useUserInfo();
+  const { userId } = useUserInfo();
   const { progress, currentVideo, setProgress } = useVideoStore();
   const { currentLanguage } = useUserInfo();
 
@@ -34,7 +34,7 @@ function TutorButton({
   useEffect(() => {
     sdk.initChat({
       chatApiParams: {
-        userId: name,
+        userId: userId,
         courseId: testCourseId,
         courseName: "유니티 게임 포트폴리오 완성 올인원 패키지 Online.",
         courseCategory: "프로그래밍",
