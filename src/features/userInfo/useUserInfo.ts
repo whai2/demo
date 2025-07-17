@@ -194,7 +194,7 @@ export const useUserInfo = create<UserInfoType>()(
       isPassPassword: false,
 
       setName: (name) =>
-        set((state) => ({
+        set(() => ({
           name,
           userId: convertHangulToKeyboard(name),
         })),
