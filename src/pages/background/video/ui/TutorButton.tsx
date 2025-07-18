@@ -87,7 +87,7 @@ function TutorButton({
       clipId: testClipId,
       clipPlayHead: progressInSeconds,
     });
-  }, [currentVideo]);
+  }, [progressInSeconds]);
 
   return (
     <S.ChatContainer id="root-button">
