@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import ReactPlayer from "react-player";
 
 import { useUserInfo } from "@/features/userInfo";
-import { useVideoStore } from "@/features/video/useVideo";
+import { courseInfo, useVideoStore } from "@/features/video";
 
 import { ReactComponent as ChatIcon } from "../assets/logo.svg";
 
@@ -24,7 +24,8 @@ function TutorButton({
   playerRef: React.RefObject<ReactPlayer | null>;
 }) {
   const { userId } = useUserInfo();
-  const { progress, currentVideo, setProgress } = useVideoStore();
+  const { progress, currentVideo, setProgress, setIsTaken, setCurrentVideo } =
+    useVideoStore();
   const { currentLanguage } = useUserInfo();
 
   const chapterId = currentVideo?.chapter_id ?? "";
@@ -68,12 +69,25 @@ function TutorButton({
 
   useEffect(() => {
     sdk.getTimelineInfo({
-      callback: (clipPlayHead) => {
+      callback: (clipPlayHead, clipId) => {
+        setCurrentVideo(
+          courseInfo.course_curriculum.chapters.find(
+            (chapter) => chapter.chapter_id === clipId
+          )
+        );
+        setIsTaken(clipId, true);
         setProgress(chapterId, clipPlayHead / 60);
         playerRef?.current?.seekTo(clipPlayHead, "seconds");
       },
     });
   }, [progressInSeconds]);
+
+  useEffect(() => {
+    sdk.postChatInfo({
+      clipId: testClipId,
+      clipPlayHead: progressInSeconds,
+    });
+  }, [currentVideo]);
 
   return (
     <S.ChatContainer id="root-button">

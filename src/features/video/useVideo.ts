@@ -15,7 +15,7 @@ export const courseInfo = {
   course_curriculum: {
     chapters: [
       {
-        chapter_id: "theory_chapter",
+        chapter_id: "23_1_1",
         chapter_number: 1,
         chapter_title: "인사관리 핵심요약",
         chapter_description: "경영지도사 2차 인사관리 이론 정리",
@@ -33,7 +33,7 @@ export const courseInfo = {
         ],
       },
       {
-        chapter_id: "practice_chapter",
+        chapter_id: "23_1_2",
         chapter_number: 2,
         chapter_title: "인사관리 예상문제풀이",
         chapter_description: "경영지도사 2차 인사관리 문제풀이",
