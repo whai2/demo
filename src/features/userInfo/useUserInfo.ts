@@ -31,7 +31,7 @@ export const useUserInfo = create<UserInfoType>()((set) => ({
   courseName: "",
   isLogin: false,
   courseAttendanceRate: 0,
-  currentLanguage: "",
+  currentLanguage: "English",
   isPassPassword: false,
   setName: (name) => set({ name }),
   setJob: (job) => set({ job }),
