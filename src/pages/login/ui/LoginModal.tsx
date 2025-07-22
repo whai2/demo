@@ -36,7 +36,7 @@ function LoginModal() {
   };
 
   if (isPasswordCorrect || isPassPassword) {
-    return <></>;
+    return null;
   }
 
   return (
