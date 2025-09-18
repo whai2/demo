@@ -6,7 +6,7 @@ import { useUserInfo } from "@/features/userInfo";
 
 import styled from "styled-components";
 
-const PASSWORD = "123456";
+const PASSWORD = "210525";
 
 function LoginModal() {
   const [password, setPassword] = useState("");
